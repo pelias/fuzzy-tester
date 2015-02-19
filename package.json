@@ -1,0 +1,30 @@
+{
+  "name": "pelias-acceptance-tests",
+  "version": "0.0.0",
+  "description": "Acceptance tests for Pelias Geocoder API",
+  "keywords": [
+    "tests",
+    "api",
+    "acceptance",
+    "regression",
+    "continuous-integration"
+  ],
+  "author": "mapzen",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha -R spec tests"
+  },
+  "dependencies": {
+    "mocha": "^2.1.0",
+    "supertest": "^0.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pelias/acceptance-tests"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pelias/acceptance-tests/issues"
+  },
+  "homepage": "https://github.com/pelias/acceptance-tests"
+}
