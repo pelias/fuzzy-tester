@@ -29,27 +29,41 @@ describe(testSuite.name, function () {
 
 });
 
-function _validateResults(testCase, done) {
-  var priorityThresh = testCase.priorityThresh || testSuite.priorityThresh;
-  var expectedLocation = testCase.out;
+/**
+ * Resolve a test-case's `out` property to an object of expected property
+ * values, to be tested against API return results.
+ *
+ * @param {string|null} expectedLocation The `out` property as found in a test
+ *    case in `test_cases/`.
+ * @return {error|object} An Error if the `out` could not be resolved to an
+ *    object; otherwise, the object.
+ */
+function getExpectedLocation( expectedLocation ){
   if ( typeof expectedLocation === 'string' ) {
     if( expectedLocation in locations ){
-      expectedLocation = locations[expectedLocation];
+      return locations[expectedLocation];
     }
     else {
-      process.nextTick( function (){
-        var errMsg = util.format(
-          'No `out` object matches `%s` in `locations.json`', expectedLocation
-        );
-        done( new Error( errMsg ) );
-      });
-      return;
+      var errMsg = util.format(
+        'No `out` object matches `%s` in `locations.json`', expectedLocation
+      );
+      return new Error( errMsg );
     }
   }
+  else if( expectedLocation === null ){
+    return new Error( 'No `out` object specified.' );
+  }
+  else {
+    return expectedLocation;
+  }
+}
 
-  if( expectedLocation === null ){
-    process.nextTick( function (){
-      done( new Error( 'No `out` object specified.' ) );
+function _validateResults(testCase, done) {
+  var priorityThresh = testCase.priorityThresh || testSuite.priorityThresh;
+  var expectedLocation = getExpectedLocation( testCase.out );
+  if( expectedLocation instanceof Error ){
+    process.nextTick( function (  ){
+      done( expectedLocation );
     });
     return;
   }
