@@ -31,6 +31,28 @@ describe(testSuite.name, function () {
 
 function _validateResults(testCase, done) {
   var priorityThresh = testCase.priorityThresh || testSuite.priorityThresh;
+  var expectedLocation = testCase.out;
+  if ( typeof expectedLocation === 'string' ) {
+    if( expectedLocation in locations ){
+      expectedLocation = locations[expectedLocation];
+    }
+    else {
+      process.nextTick( function (){
+        var errMsg = util.format(
+          'No `out` object matches `%s` in `locations.json`', expectedLocation
+        );
+        done( new Error( errMsg ) );
+      });
+      return;
+    }
+  }
+
+  if( expectedLocation === null ){
+    process.nextTick( function (){
+      done( new Error( 'No `out` object specified.' ) );
+    });
+    return;
+  }
 
   request(url)
     .get('/search?' + querystring.stringify(testCase.in))
@@ -49,11 +71,6 @@ function _validateResults(testCase, done) {
           actualResults: res.body
         }
       );
-
-      var expectedLocation = testCase.out;
-      if (typeof expectedLocation === 'string') {
-        expectedLocation = locations[expectedLocation];
-      }
 
       res.body.features.slice(0, priorityThresh).forEach(function (feature) {
         var match = true;
