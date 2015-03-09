@@ -12,24 +12,8 @@ framework with the following features:
 ### Usage
 
 ```
-    $ npm test
-
-    GET /search
-        ✓ [id:0] query: { input: 'brooklyn' } (top 3) (151ms)
-        ✓ [id:1] query: { input: 'brooklyn, ny' } (top 3) (69ms)
-        1) [id:2] query: { input: 'new york' } (top 3)
-        2) [id:3] query: { input: 'philadelphia' } (top 3)
-        3) [id:4] query: { input: 'new york, ny' } (top 3)
-        4) [id:5] query: { input: '130 dean street brooklyn, ny' } (top 1)
-        ✓ [id:6] query: { input: 'billerica' } (top 1) (71ms)
-        ✓ [id:7] query: { input: 'billerica, ma' } (top 1) (137ms)
-        5) [id:8] query: { input: '15 call street billerica, ma' } (top 1)
-
-
-      4 passing (895ms)
-      5 failing
+node test --help
 ```
-
 
 ### Test Case File
 
@@ -41,39 +25,39 @@ framework with the following features:
  + `id` is a unique identifier within the test suite (this could be unnecessary, let's discuss)
  + `user` is the name of the person that added the test case.
  + `in` is the json query that will be urlencoded and appended to the host url.
- + `out` is the expected result. This can be a string, in which case it will be used to look up a location in locations.json.
+ + `out` is the expected result. This can be a string, in which case it will be used to look up a location in `locations.json`.
   It can also be an object with various properties. Every property specified must be matched identically in the actual result location in order to claim success.
 
 
 ```javascript
+{
+  "name": "GET /search",
+  "priorityThresh": 3,
+  "tests": [
     {
-      "name": "GET /search",
-      "priorityThresh": 3,
-      "tests": [
-        {
-          "id": 1,
-          "user": "Randy",
-          "in": {
-            "input": "brooklyn"
-          },
-          "out": "Brooklyn , Cattaraugus County, New York"
-        },
-        {
-          "id": 6,
-          "user": "Randy",
-          "in": {
-            "input": "130 dean street brooklyn, ny"
-          },
-          "priorityThresh": 1,
-          "out": {
-            "text": "130 Dean Street, Brooklyn, NY",
-            "name": "130 Dean Street",
-            "admin0": "United States",
-            "admin1": "New York"
-          }
-        }
-      ]
+      "id": 1,
+      "user": "Randy",
+      "in": {
+        "input": "brooklyn"
+      },
+      "out": "Brooklyn , Cattaraugus County, New York"
+    },
+    {
+      "id": 6,
+      "user": "Randy",
+      "in": {
+        "input": "130 dean street brooklyn, ny"
+      },
+      "priorityThresh": 1,
+      "out": {
+        "text": "130 Dean Street, Brooklyn, NY",
+        "name": "130 Dean Street",
+        "admin0": "United States",
+        "admin1": "New York"
+      }
     }
+  ]
+}
 ```
 
 #### Locations
@@ -105,4 +89,3 @@ want to be here. Less specific =? less fragile.
   }
 }
 ```
-
