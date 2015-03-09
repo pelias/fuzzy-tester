@@ -4,10 +4,12 @@
  */
 
 var locations = require( './locations.json' );
+var util = require( 'util' );
 var querystring = require( 'querystring' );
 var supertest = require( 'supertest' );
 var colors = require( 'colors' );
-var util = require( 'util' );
+var commander = require( 'commander' );
+var requireDir = require( 'require-dir' );
 
 /**
  * Format and print a test result to the terminal.
@@ -158,29 +160,45 @@ var PELIAS_ENDPOINTS = {
  * added).
  */
 (function runTests(){
-  var argv = process.argv.slice( 2 );
+  var endpts = Object.keys( PELIAS_ENDPOINTS ).join( ', ' );
+  commander
+    .option(
+      '-e, --endpoint <endpoint>',
+      'The name of the Pelias API to target. Any of: ' + endpts, 'prod'
+    )
+    .parse( process.argv );
+
   var apiUrl;
-  if( argv.length > 0 ){
-    var endpt = argv[ 0 ];
-    if( endpt in PELIAS_ENDPOINTS ){
-      apiUrl = PELIAS_ENDPOINTS[ endpt ];
-    }
-    else {
-      console.error(
-        endpt, 'is not a recognized endpoint. Try one of:',
-        JSON.stringify( PELIAS_ENDPOINTS, undefined, 4 )
-      );
-      process.exit( 1 );
-    }
+  if( commander.endpoint in PELIAS_ENDPOINTS ){
+    apiUrl = PELIAS_ENDPOINTS[ commander.output ];
   }
   else {
-    apiUrl = PELIAS_ENDPOINTS.prod;
+    console.error(
+      apiUrl, 'is not a recognized endpoint. Try:',
+      JSON.stringify( PELIAS_ENDPOINTS, undefined, 4 )
+    );
+    process.exit( 1 );
   }
 
-  var testSuites = [ require( './test_cases/search.json' ) ];
+  var testSuites;
+  if( commander.args.length > 0 ){
+    testSuites = commander.args.map( function ( filePath ){
+      return require( './' + filePath );
+    });
+  }
+  else {
+    var testFiles = requireDir( 'test_cases' );
+    testSuites = [];
+    for( var file in testFiles ){
+      testSuites.push( testFiles[ file ] );
+    }
+  }
+
+  console.log( testSuites );
+  process.exit( 1 );
 
   console.log( 'Tests for:', apiUrl.bold, '\n' );
-  testSuites.forEach( function ( suite ){
+  testSuites.map( function ( suite ){
     console.log( suite.name.bold );
     var startTime = new Date().getTime();
     execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
