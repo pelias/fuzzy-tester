@@ -1,9 +1,9 @@
-var testSuites = [ require( './test_cases/search.json' ) ];
 var locations = require( './test_cases/locations.json' );
 var querystring = require( 'querystring' );
 var supertest = require( 'supertest' );
 
-testSuites.forEach( execTextSuite );
+var testSuites = [ require( './test_cases/search.json' ) ];
+testSuites.forEach( execTestSuite );
 
 function equalProperties( expected, actual ){
   for( var prop in expected ){
@@ -14,12 +14,51 @@ function equalProperties( expected, actual ){
   return true;
 }
 
-function execTextSuite( testSuite ){
+function evalTest( priorityThresh, testCase, apiResults ){
+  var expected;
+  if( typeof testCase.out === 'string' ){
+    if( testCase.out in locations ){
+      expected = locations;
+    }
+    else {
+      return {
+        success: false,
+        msg: 'Placeholder test, no `out` object matches in `locations.json`.'
+      }
+    }
+  }
+  else if( testCase.out === null ){
+    return {
+      success: false,
+      msg: 'Placeholder test, no `out` specified.'
+    };
+  }
+
+  for( var ind = 0; ind < apiResults.length; ind++ ){
+    var result = apiResults[ ind ];
+    if( equalProperties( expected, result.properties ) ){
+      var success = ( ind + 1 ) <= priorityThresh;
+      return ( success ) ?
+        { success: true } :
+        {
+          success: false,
+          msg: 'Result found, but not in top ' + priorityThresh
+        }
+    }
+  }
+
+  return {
+    success: false,
+    msg: 'No result found.'
+  }
+}
+
+function execTestSuite( testSuite ){
   var testResults = [];
 
-  testSuite.tests.forEach( function ( test ){
+  testSuite.tests.forEach( function ( testCase ){
     supertest( 'http://pelias.mapzen.com' )
-      .get( '/search?' + querystring.stringify( test.in ) )
+      .get( '/search?' + querystring.stringify( testCase.in ) )
       .expect( 'Content-Type', /json/ )
       .expect( 200 )
       .end( function ( err, res ) {
@@ -27,15 +66,13 @@ function execTextSuite( testSuite ){
           throw err;
         }
 
-        var expected;
-        if( typeof testSuite.out === 'string' ){
-          if( testSuite.out in locations ){
-            expected = locations;
-          }
-        }
-        var pass = equalProperties( testSuite. )
-        console.log( res.body );
-        process.exit( 0 );
+        var priority = ( 'priorityThresh' in result ) ?
+          result.priorityThresh :
+          testSuite.priorityThresh;
+
+        var results = evalTest( priority, testCase, res.body.features );
+        results.testCase = testCase;
+        testResults.append( results );
       });
   });
 }
