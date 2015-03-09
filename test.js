@@ -4,27 +4,6 @@ var supertest = require( 'supertest' );
 var colors = require( 'colors' );
 var util = require( 'util' );
 
-var testSuites = [ require( './test_cases/search.json' ) ];
-console.log( 'Tests for:', 'http://pelias.mapzen.com'.bold, '\n' );
-testSuites.forEach( function ( suite ){
-  console.log( suite.name.bold );
-  var startTime = new Date().getTime();
-  execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
-    var timeTaken = new Date().getTime() - startTime;
-    testResults.results.sort( function ( a, b ){
-      return (a.testCase.id > b.testCase.id) ? 1 : -1;
-    });
-    testResults.results.forEach( function ( result ){
-      prettyPrintResult( result );
-    });
-
-    console.log( '\n  Pass: ' + testResults.stats.pass.toString().green );
-    console.error( '  Fail: ' + testResults.stats.fail.toString().red );
-    console.error( '  Placeholders: ' + testResults.stats.placeholder.toString().yellow );
-    console.log( '  Took %sms', timeTaken );
-  });
-});
-
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   var input = result.testCase.in.input;
@@ -140,3 +119,27 @@ function execTestSuite( apiUrl, testSuite, cb ){
       });
   });
 }
+
+(function runTests(){
+  var testSuites = [ require( './test_cases/search.json' ) ];
+
+  console.log( 'Tests for:', 'http://pelias.mapzen.com'.bold, '\n' );
+  testSuites.forEach( function ( suite ){
+    console.log( suite.name.bold );
+    var startTime = new Date().getTime();
+    execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
+      var timeTaken = new Date().getTime() - startTime;
+      testResults.results.sort( function ( a, b ){
+        return (a.testCase.id > b.testCase.id) ? 1 : -1;
+      });
+      testResults.results.forEach( function ( result ){
+        prettyPrintResult( result );
+      });
+
+      console.log( '\n  Pass: ' + testResults.stats.pass.toString().green );
+      console.error( '  Fail: ' + testResults.stats.fail.toString().red );
+      console.error( '  Placeholders: ' + testResults.stats.placeholder.toString().yellow );
+      console.log( '  Took %sms', timeTaken );
+    });
+  });
+})();
