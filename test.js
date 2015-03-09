@@ -3,7 +3,7 @@
  * their results into grokkable output.
  */
 
-var locations = require( './test_cases/locations.json' );
+var locations = require( './locations.json' );
 var querystring = require( 'querystring' );
 var supertest = require( 'supertest' );
 var colors = require( 'colors' );
