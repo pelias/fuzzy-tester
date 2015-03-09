@@ -74,7 +74,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
       }
     }
   }
-  else if( testCase.out === null ){
+  else if( !( 'out' in testCase ) || testCase.out === null ){
     return {
       result: 'placeholder',
       msg: 'Placeholder test, no `out` specified.'
