@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "supertest": "^0.15.0",
-    "colors": "^1.x.x"
+    "colors": "^1.x.x",
+    "commander": "2.7.0",
+    "require-dir": "0.1.0"
   },
   "repository": {
     "type": "git",
