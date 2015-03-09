@@ -3,7 +3,11 @@ var querystring = require( 'querystring' );
 var supertest = require( 'supertest' );
 
 var testSuites = [ require( './test_cases/search.json' ) ];
-testSuites.forEach( execTestSuite );
+testSuites.forEach( function ( suite ){
+  execTestSuite( suite, function ( results ){
+    console.log( JSON.stringify( results, undefined, 4 ) );
+  });
+});
 
 function equalProperties( expected, actual ){
   for( var prop in expected ){
@@ -53,7 +57,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 }
 
-function execTestSuite( testSuite ){
+function execTestSuite( testSuite, cb ){
   var testResults = [];
 
   testSuite.tests.forEach( function ( testCase ){
@@ -66,13 +70,17 @@ function execTestSuite( testSuite ){
           throw err;
         }
 
-        var priority = ( 'priorityThresh' in result ) ?
+        var priority = ( 'priorityThresh' in res ) ?
           result.priorityThresh :
           testSuite.priorityThresh;
 
         var results = evalTest( priority, testCase, res.body.features );
         results.testCase = testCase;
-        testResults.append( results );
+        testResults.push( results );
+
+        if( testResults.length === testSuite.tests.length ){
+          cb( testResults );
+        }
       });
   });
 }
