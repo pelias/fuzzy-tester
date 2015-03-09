@@ -5,9 +5,11 @@ var colors = require( 'colors' );
 var util = require( 'util' );
 
 var testSuites = [ require( './test_cases/search.json' ) ];
+console.log( 'Tests for:', 'http://pelias.mapzen.com'.bold, '\n' );
 testSuites.forEach( function ( suite ){
+  console.log( suite.name.bold );
   var startTime = new Date().getTime();
-  execTestSuite( suite, function ( testResults ){
+  execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
     var timeTaken = new Date().getTime() - startTime;
     testResults.results.sort( function ( a, b ){
       return (a.testCase.id > b.testCase.id) ? 1 : -1;
@@ -16,42 +18,35 @@ testSuites.forEach( function ( suite ){
       prettyPrintResult( result );
     });
 
-    console.log( '\nPass: ' + testResults.stats.pass.toString().green );
-    console.error( 'Fail: ' + testResults.stats.fail.toString().red );
-    console.error( 'Placeholders: ' + testResults.stats.placeholder.toString().yellow );
-    console.log( 'Took %sms', timeTaken );
+    console.log( '\n  Pass: ' + testResults.stats.pass.toString().green );
+    console.error( '  Fail: ' + testResults.stats.fail.toString().red );
+    console.error( '  Placeholders: ' + testResults.stats.placeholder.toString().yellow );
+    console.log( '  Took %sms', timeTaken );
   });
 });
 
 function prettyPrintResult( result ){
+  var id = result.testCase.id;
+  var input = result.testCase.in.input;
   switch( result.result ){
     case 'pass':
-      var output = util.format(
-        '✔ [%s] "%s"', result.testCase.id, result.testCase.in.input
-      ).green;
+      var output = util.format( '  ✔ [%s] "%s"', id, input ).green;
       console.log( output );
       break;
 
     case 'fail':
-      var output = util.format(
-        '✘ [%s] "%s": %s', result.testCase.id, result.testCase.in.input,
-        result.msg
-      ).red;
+      var output = util.format( '  ✘ [%s] "%s": %s', id, input, result.msg ).red;
       console.error( output );
       break;
 
     case 'placeholder':
-      var output = util.format(
-        '! [%s] "%s": %s', result.testCase.id, result.testCase.in.input,
-        result.msg
-      ).yellow;
+      var output = util.format( '  ! [%s] "%s": %s', id, input, result.msg ).yellow;
       console.error( output );
       break;
 
     default:
-      console.error(
-        util.format( 'Result type `%s` not recognized.', result.result )
-      );
+      var output = util.format( 'Result type `%s` not recognized.', result.result );
+      console.error( output );
       process.exit( 1 );
       break;
   }
@@ -110,7 +105,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 }
 
-function execTestSuite( testSuite, cb ){
+function execTestSuite( apiUrl, testSuite, cb ){
   var testResults = {
     stats: {
       pass: 0,
@@ -121,7 +116,7 @@ function execTestSuite( testSuite, cb ){
   };
 
   testSuite.tests.forEach( function ( testCase ){
-    supertest( 'http://pelias.mapzen.com' )
+    supertest( apiUrl )
       .get( '/search?' + querystring.stringify( testCase.in ) )
       .expect( 'Content-Type', /json/ )
       .expect( 200 )
