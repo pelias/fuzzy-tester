@@ -12,7 +12,7 @@
   "author": "mapzen",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -R spec tests"
+    "test": "node test"
   },
   "dependencies": {
     "supertest": "^0.15.0",

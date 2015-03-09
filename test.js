@@ -170,7 +170,7 @@ var PELIAS_ENDPOINTS = {
 
   var apiUrl;
   if( commander.endpoint in PELIAS_ENDPOINTS ){
-    apiUrl = PELIAS_ENDPOINTS[ commander.output ];
+    apiUrl = PELIAS_ENDPOINTS[ commander.endpoint ];
   }
   else {
     console.error(
@@ -194,14 +194,11 @@ var PELIAS_ENDPOINTS = {
     }
   }
 
-  console.log( testSuites );
-  process.exit( 1 );
-
-  console.log( 'Tests for:', apiUrl.bold, '\n' );
+  console.log( 'Tests for:', apiUrl.bold );
   testSuites.map( function ( suite ){
-    console.log( suite.name.bold );
     var startTime = new Date().getTime();
     execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
+      console.log( '\n' + suite.name.bold );
       var timeTaken = new Date().getTime() - startTime;
       testResults.results.sort( function ( a, b ){
         return (a.testCase.id > b.testCase.id) ? 1 : -1;
