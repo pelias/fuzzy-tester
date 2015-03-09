@@ -15,6 +15,11 @@ testSuites.forEach( function ( suite ){
     testResults.results.forEach( function ( result ){
       prettyPrintResult( result );
     });
+
+    console.log( '\nPass: ' + testResults.stats.pass.toString().green );
+    console.error( 'Fail: ' + testResults.stats.fail.toString().red );
+    console.error( 'Placeholders: ' + testResults.stats.placeholder.toString().yellow );
+    console.log( 'Took %sms', timeTaken );
   });
 });
 
@@ -106,7 +111,14 @@ function evalTest( priorityThresh, testCase, apiResults ){
 }
 
 function execTestSuite( testSuite, cb ){
-  var testResults = [];
+  var testResults = {
+    stats: {
+      pass: 0,
+      fail: 0,
+      placeholder: 0
+    },
+    results: []
+  };
 
   testSuite.tests.forEach( function ( testCase ){
     supertest( 'http://pelias.mapzen.com' )
@@ -124,9 +136,10 @@ function execTestSuite( testSuite, cb ){
 
         var results = evalTest( priority, testCase, res.body.features );
         results.testCase = testCase;
-        testResults.push( results );
+        testResults.stats[ results.result ]++;
+        testResults.results.push( results );
 
-        if( testResults.length === testSuite.tests.length ){
+        if( testResults.results.length === testSuite.tests.length ){
           cb( testResults );
         }
       });
