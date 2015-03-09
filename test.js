@@ -120,10 +120,36 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 }
 
+var PELIAS_ENDPOINTS = {
+  local: 'http://localhost:3100/',
+  dev: 'http://pelias.dev.mapzen.com/',
+  stage: 'http://pelias.stage.mapzen.com/',
+  prod: 'http://pelias.mapzen.com/'
+};
+
 (function runTests(){
+  var argv = process.argv.slice( 2 );
+  var apiUrl;
+  if( argv.length > 0 ){
+    var endpt = argv[ 0 ];
+    if( endpt in PELIAS_ENDPOINTS ){
+      apiUrl = PELIAS_ENDPOINTS[ endpt ];
+    }
+    else {
+      console.error(
+        endpt, 'is not a recognized endpoint. Try one of:',
+        JSON.stringify( PELIAS_ENDPOINTS, undefined, 4 )
+      );
+      process.exit( 1 );
+    }
+  }
+  else {
+    apiUrl = PELIAS_ENDPOINTS.prod;
+  }
+
   var testSuites = [ require( './test_cases/search.json' ) ];
 
-  console.log( 'Tests for:', 'http://pelias.mapzen.com'.bold, '\n' );
+  console.log( 'Tests for:', apiUrl.bold, '\n' );
   testSuites.forEach( function ( suite ){
     console.log( suite.name.bold );
     var startTime = new Date().getTime();
