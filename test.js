@@ -156,8 +156,7 @@ var PELIAS_ENDPOINTS = {
 };
 
 /**
- * Execute all tests in `test_cases/search.json` (will change as more files are
- * added).
+ * Parse command-line arguments and execute indicated test-suites.
  */
 (function runTests(){
   var endpts = Object.keys( PELIAS_ENDPOINTS ).join( ', ' );
