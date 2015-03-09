@@ -1,9 +1,17 @@
+/**
+ * A tool for executing all of the `acceptance-tests` tests and formatting
+ * their results into grokkable output.
+ */
+
 var locations = require( './test_cases/locations.json' );
 var querystring = require( 'querystring' );
 var supertest = require( 'supertest' );
 var colors = require( 'colors' );
 var util = require( 'util' );
 
+/**
+ * Format and print a test result to the terminal.
+ */
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   var input = result.testCase.in.input;
@@ -33,6 +41,10 @@ function prettyPrintResult( result ){
   return output;
 }
 
+/**
+ * Return a boolean indicating whether `actual` has all the key value pairs
+ * contained in `expected`.
+ */
 function equalProperties( expected, actual ){
   for( var prop in expected ){
     if( actual[ prop ] !== expected[ prop ] ){
@@ -42,6 +54,11 @@ function equalProperties( expected, actual ){
   return true;
 }
 
+/**
+ * Given a test-case, the API results for the input it specifies, and a
+ * priority-threshold to find the results in, return an object indicating the
+ * status of this test (whether it passed, failed, is a placeholder, etc.)
+ */
 function evalTest( priorityThresh, testCase, apiResults ){
   var expected;
   if( typeof testCase.out === 'string' ){
@@ -84,6 +101,11 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 }
 
+/**
+ * Execute all the tests in a test-suite file with `evalTest()`, and pass an
+ * object containing the results to `cb()`. `apiUrl` contains the URL of the
+ * Pelias API to query.
+ */
 function execTestSuite( apiUrl, testSuite, cb ){
   var testResults = {
     stats: {
@@ -120,6 +142,10 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 }
 
+/**
+ * URLs for the various Pelias APIs out in the wild. Can be specified as a
+ * command-line argument (see `runTests()`).
+ */
 var PELIAS_ENDPOINTS = {
   local: 'http://localhost:3100/',
   dev: 'http://pelias.dev.mapzen.com/',
@@ -127,6 +153,10 @@ var PELIAS_ENDPOINTS = {
   prod: 'http://pelias.mapzen.com/'
 };
 
+/**
+ * Execute all tests in `test_cases/search.json` (will change as more files are
+ * added).
+ */
 (function runTests(){
   var argv = process.argv.slice( 2 );
   var apiUrl;
