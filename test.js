@@ -121,6 +121,37 @@ function execTestSuite( apiUrl, testSuite, cb ){
 }
 
 /**
+ * Asynchronously execute the given `testSuites` against the Pelias API running
+ * at `apiUrl`, and pass the results to the `outputGenerator` function.
+ */
+function execTestSuites( apiUrl, testSuites, outputGenerator ){
+  var suiteResults = {
+    stats: {
+      pass: 0,
+      fail: 0,
+      placeholder: 0,
+      timeTaken: 0,
+      url: apiUrl
+    },
+    results: []
+  };
+
+  testSuites.map( function ( suite ){
+    execTestSuite( apiUrl, suite, function ( testResults ){
+      suiteResults.results.push( testResults );
+
+      [ 'pass', 'fail', 'placeholder', 'timeTaken' ].forEach( function ( propName ){
+        suiteResults.stats[ propName ] += testResults.stats[ propName ];
+      });
+
+      if( suiteResults.results.length === testSuites.length ){
+        outputGenerator( suiteResults );
+      }
+    });
+  });
+}
+
+/**
  * URLs for the various Pelias APIs out in the wild. Can be specified as a
  * command-line argument (see `runTests()`).
  */
@@ -171,34 +202,3 @@ var PELIAS_ENDPOINTS = {
 
   execTestSuites( apiUrl, testSuites, terminalOutputGenerator );
 })();
-
-/**
- * Asynchronously execute the given `testSuites` against the Pelias API running
- * at `apiUrl`, and pass the results to the `outputGenerator` function.
- */
-function execTestSuites( apiUrl, testSuites, outputGenerator ){
-  var suiteResults = {
-    stats: {
-      pass: 0,
-      fail: 0,
-      placeholder: 0,
-      timeTaken: 0,
-      url: apiUrl
-    },
-    results: []
-  };
-
-  testSuites.map( function ( suite ){
-    execTestSuite( apiUrl, suite, function ( testResults ){
-      suiteResults.results.push( testResults );
-
-      [ 'pass', 'fail', 'placeholder', 'timeTaken' ].forEach( function ( propName ){
-        suiteResults.stats[ propName ] += testResults.stats[ propName ];
-      });
-
-      if( suiteResults.results.length === testSuites.length ){
-        outputGenerator( suiteResults );
-      }
-    });
-  });
-}
