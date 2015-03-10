@@ -44,6 +44,29 @@ function prettyPrintResult( result ){
 }
 
 /**
+ * Format and print all of the results from any number of test-suites.
+ */
+function prettyPrintSuiteResults( suiteResults ){
+  console.log( 'Tests for:', suiteResults.stats.url.bold );
+  suiteResults.results.forEach( function ( suiteResult ){
+    console.log( '\n' + suiteResult.stats.name.bold );
+    suiteResult.results.forEach( function ( testResult ){
+      prettyPrintResult( testResult );
+    });
+    console.log( '\n  Pass: ' + suiteResult.stats.pass.toString().green );
+    console.error( '  Fail: ' + suiteResult.stats.fail.toString().red );
+    console.error( '  Placeholders: ' + suiteResult.stats.placeholder.toString().yellow );
+    console.log( '  Took %sms', suiteResult.stats.timeTaken );
+  });
+
+  console.log( '\nAggregate test results'.bold );
+  console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
+  console.error( 'Fail: ' + suiteResults.stats.fail.toString().red );
+  console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().yellow );
+  console.log( 'Took %sms', suiteResults.stats.timeTaken );
+}
+
+/**
  * Return a boolean indicating whether `actual` has all the key value pairs
  * contained in `expected`.
  */
@@ -113,11 +136,14 @@ function execTestSuite( apiUrl, testSuite, cb ){
     stats: {
       pass: 0,
       fail: 0,
-      placeholder: 0
+      placeholder: 0,
+      timeTaken: null,
+      name: testSuite.name
     },
     results: []
   };
 
+  var startTime = new Date().getTime();
   testSuite.tests.forEach( function ( testCase ){
     supertest( apiUrl )
       .get( '/search?' + querystring.stringify( testCase.in ) )
@@ -138,6 +164,10 @@ function execTestSuite( apiUrl, testSuite, cb ){
         testResults.results.push( results );
 
         if( testResults.results.length === testSuite.tests.length ){
+          testResults.stats.timeTaken = new Date().getTime() - startTime;
+          testResults.results.sort( function ( a, b ){
+            return (a.testCase.id > b.testCase.id) ? 1 : -1;
+          });
           cb( testResults );
         }
       });
@@ -193,23 +223,32 @@ var PELIAS_ENDPOINTS = {
     }
   }
 
-  console.log( 'Tests for:', apiUrl.bold );
+  execTestSuites( apiUrl, testSuites, prettyPrintSuiteResults );
+})();
+
+function execTestSuites( apiUrl, testSuites, outputGenerator ){
+  var suiteResults = {
+    stats: {
+      pass: 0,
+      fail: 0,
+      placeholder: 0,
+      timeTaken: 0,
+      url: apiUrl
+    },
+    results: []
+  };
+
   testSuites.map( function ( suite ){
-    var startTime = new Date().getTime();
     execTestSuite( apiUrl, suite, function ( testResults ){
-      console.log( '\n' + suite.name.bold );
-      var timeTaken = new Date().getTime() - startTime;
-      testResults.results.sort( function ( a, b ){
-        return (a.testCase.id > b.testCase.id) ? 1 : -1;
-      });
-      testResults.results.forEach( function ( result ){
-        prettyPrintResult( result );
+      suiteResults.results.push( testResults );
+
+      [ 'pass', 'fail', 'placeholder', 'timeTaken' ].forEach( function ( propName ){
+        suiteResults.stats[ propName ] += testResults.stats[ propName ];
       });
 
-      console.log( '\n  Pass: ' + testResults.stats.pass.toString().green );
-      console.error( '  Fail: ' + testResults.stats.fail.toString().red );
-      console.error( '  Placeholders: ' + testResults.stats.placeholder.toString().yellow );
-      console.log( '  Took %sms', timeTaken );
+      if( suiteResults.results.length === testSuites.length ){
+        prettyPrintSuiteResults( suiteResults );
+      }
     });
   });
-})();
+}
