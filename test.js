@@ -196,7 +196,7 @@ var PELIAS_ENDPOINTS = {
   console.log( 'Tests for:', apiUrl.bold );
   testSuites.map( function ( suite ){
     var startTime = new Date().getTime();
-    execTestSuite( 'http://pelias.mapzen.com', suite, function ( testResults ){
+    execTestSuite( apiUrl, suite, function ( testResults ){
       console.log( '\n' + suite.name.bold );
       var timeTaken = new Date().getTime() - startTime;
       testResults.results.sort( function ( a, b ){
