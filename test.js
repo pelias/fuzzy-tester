@@ -10,6 +10,7 @@ var supertest = require( 'supertest' );
 var colors = require( 'colors' );
 var commander = require( 'commander' );
 var requireDir = require( 'require-dir' );
+var peliasConfig = require( 'pelias-config' ).generate();
 var terminalOutputGenerator = require( './output_generators/terminal.js' );
 
 /**
@@ -155,12 +156,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
  * URLs for the various Pelias APIs out in the wild. Can be specified as a
  * command-line argument (see `runTests()`).
  */
-var PELIAS_ENDPOINTS = {
-  local: 'http://localhost:3100/',
-  dev: 'http://pelias.dev.mapzen.com/',
-  stage: 'http://pelias.stage.mapzen.com/',
-  prod: 'http://pelias.mapzen.com/'
-};
+var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
 
 /**
  * Parse command-line arguments and execute indicated test-suites.
