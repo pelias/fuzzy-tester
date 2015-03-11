@@ -180,7 +180,7 @@ var PELIAS_ENDPOINTS = {
   }
   else {
     console.error(
-      apiUrl, 'is not a recognized endpoint. Try:',
+      commander.endpoint + ' is not a recognized endpoint. Try: ',
       JSON.stringify( PELIAS_ENDPOINTS, undefined, 4 )
     );
     process.exit( 1 );
