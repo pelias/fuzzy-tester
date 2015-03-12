@@ -97,6 +97,11 @@ function execTestSuite( apiUrl, testSuite, cb ){
           throw err;
         }
 
+        stats.testsCompleted++;
+        process.stderr.write( util.format(
+          '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
+          stats.testsTotal
+        ));
         var priority = ( 'priorityThresh' in res ) ?
           result.priorityThresh :
           testSuite.priorityThresh;
@@ -117,6 +122,11 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 }
 
+var stats = {
+  testsCompleted: 0,
+  testsTotal: 0
+};
+
 /**
  * Asynchronously execute the given `testSuites` against the Pelias API running
  * at `apiUrl`, and pass the results to the `outputGenerator` function.
@@ -134,6 +144,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
   };
 
   testSuites.map( function ( suite ){
+    stats.testsTotal += suite.tests.length;
     execTestSuite( apiUrl, suite, function ( testResults ){
       suiteResults.results.push( testResults );
 
@@ -142,6 +153,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
       });
 
       if( suiteResults.results.length === testSuites.length ){
+        process.stdout.write( '\r' ); // Clear the test-completion counter from the terminal.
         outputGenerator( suiteResults );
       }
     });
