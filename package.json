@@ -12,11 +12,14 @@
   "author": "mapzen",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -R spec tests"
+    "test": "node test"
   },
   "dependencies": {
-    "mocha": "^2.1.0",
-    "supertest": "^0.15.0"
+    "supertest": "^0.15.0",
+    "colors": "^1.x.x",
+    "commander": "2.7.0",
+    "require-dir": "0.1.0",
+    "pelias-config": "^0.x.x"
   },
   "repository": {
     "type": "git",
