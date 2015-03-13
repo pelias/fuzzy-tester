@@ -12,14 +12,15 @@ var util = require( 'util' );
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   var input = result.testCase.in.input;
+  var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      var output = util.format( '  ✔ [%s] "%s"', id, input ).green;
+      var output = util.format( '  ✔ %s[%s] "%s"', status, id, input ).green;
       console.log( output );
       break;
 
     case 'fail':
-      var output = util.format( '  ✘ [%s] "%s": %s', id, input, result.msg ).red;
+      var output = util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg ).red;
       console.error( output );
       break;
 
@@ -51,6 +52,7 @@ function prettyPrintSuiteResults( suiteResults ){
     console.log( '\n  Pass: ' + suiteResult.stats.pass.toString().green );
     console.error( '  Fail: ' + suiteResult.stats.fail.toString().red );
     console.error( '  Placeholders: ' + suiteResult.stats.placeholder.toString().yellow );
+    console.error( '  Regressions: ' + suiteResult.stats.regression.toString().bold );
     console.log( '  Took %sms', suiteResult.stats.timeTaken );
   });
 
@@ -58,7 +60,19 @@ function prettyPrintSuiteResults( suiteResults ){
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
   console.error( 'Fail: ' + suiteResults.stats.fail.toString().red );
   console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().yellow );
+
+  var numRegressions = suiteResults.stats.regression;
+  console.error( 'Regressions: ' + numRegressions.toString().bold );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
+
+  console.log( '' );
+  if( numRegressions > 0 ){
+    console.error( 'FATAL ERROR: %s regression(s) detected.'.bold.inverse, numRegressions );
+    process.exit( 1 );
+  }
+  else {
+    console.log( '0 regressions detected. All good.' );
+  }
 }
 
 module.exports = prettyPrintSuiteResults;
