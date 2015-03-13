@@ -69,6 +69,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 }
 
+var validTestStatuses = [ 'pass', 'fail', undefined ];
 /**
  * Execute all the tests in a test-suite file with `evalTest()`, and pass an
  * object containing the results to `cb()`. `apiUrl` contains the URL of the
@@ -80,11 +81,22 @@ function execTestSuite( apiUrl, testSuite, cb ){
       pass: 0,
       fail: 0,
       placeholder: 0,
+      regression: 0,
       timeTaken: null,
       name: testSuite.name
     },
     results: []
   };
+
+  testSuite.tests.forEach( function ( testCase ){
+    if( validTestStatuses.indexOf( testCase.status ) === -1 ){
+      console.error( util.format(
+        'Invalid test status: `%s`. Recognized statuses are: %s',
+        testCase.status, JSON.stringify( validTestStatuses )
+      ));
+      process.exit( 1 );
+    }
+  });
 
   var startTime = new Date().getTime();
   testSuite.tests.forEach( function ( testCase ){
@@ -107,14 +119,39 @@ function execTestSuite( apiUrl, testSuite, cb ){
           testSuite.priorityThresh;
 
         var results = evalTest( priority, testCase, res.body.features );
+        if( results.result === 'pass' && testCase.status === 'fail' ){
+          results.progress = 'improvement';
+        }
+        else if( results.result === 'fail' && testCase.status === 'pass' ){
+          testResults.stats.regression++;
+          results.progress = 'regression';
+        }
+
         results.testCase = testCase;
         testResults.stats[ results.result ]++;
         testResults.results.push( results );
 
         if( testResults.results.length === testSuite.tests.length ){
           testResults.stats.timeTaken = new Date().getTime() - startTime;
+
+          /**
+           * Sort the test-cases by id to force some output uniformity across
+           * test-runs (since otherwise it'd depend entirely on when a given
+           * request returned, and would be effectively random). Separate and
+           * sort string/number ids separately.
+           */
           testResults.results.sort( function ( a, b ){
-            return (a.testCase.id > b.testCase.id) ? 1 : -1;
+            var isAStr = typeof a.testCase.id === 'string';
+            var isBStr = typeof b.testCase.id === 'string';
+            if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
+              return a.testCase.id > b.testCase.id ? 1 : -1;
+            }
+            else if( isAStr ){
+              return 1;
+            }
+            else {
+              return -1;
+            }
           });
           cb( testResults );
         }
@@ -137,6 +174,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
       pass: 0,
       fail: 0,
       placeholder: 0,
+      regression: 0,
       timeTaken: 0,
       url: apiUrl
     },
@@ -148,7 +186,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
     execTestSuite( apiUrl, suite, function ( testResults ){
       suiteResults.results.push( testResults );
 
-      [ 'pass', 'fail', 'placeholder', 'timeTaken' ].forEach( function ( propName ){
+      [ 'pass', 'fail', 'placeholder', 'timeTaken', 'regression' ].forEach( function ( propName ){
         suiteResults.stats[ propName ] += testResults.stats[ propName ];
       });
 

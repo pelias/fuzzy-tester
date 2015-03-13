@@ -15,18 +15,23 @@ framework with the following features:
 node test --help
 ```
 
-### Test Case File
-
-#### Search
+### Test Case Files
+Test-cases live in `test_cases/`, and are split into test *suites* in individual JSON files. Each file must contain the
+following properties:
 
  + `name` is the suite title displayed when executing.
  + `priorityThresh` indicates the expected result must be found within the top N locations. This can be set for the entire suite as well as overwritten in individual test cases.
  + `tests` is an array of test cases that make up the suite.
+
+`tests` consists of objects with the following properties:
  + `id` is a unique identifier within the test suite (this could be unnecessary, let's discuss)
+ + `status` is the optional expected status of this test-case (whether it should pass/fail/etc.), and will be used to
+   identify improvements and regressions. May be either of `pass` or `fail`.
  + `user` is the name of the person that added the test case.
  + `in` is the json query that will be urlencoded and appended to the host url.
  + `out` is the expected result. This can be a string, in which case it will be used to look up a location in `locations.json`.
   It can also be an object with various properties. Every property specified must be matched identically in the actual result location in order to claim success.
+  If `null` or simply not defined, this test-case will be counted as a placeholder.
 
 
 ```javascript
@@ -37,6 +42,7 @@ node test --help
     {
       "id": 1,
       "user": "Randy",
+      "status": "pass",
       "in": {
         "input": "brooklyn"
       },

@@ -12,19 +12,21 @@ var util = require( 'util' );
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   var input = result.testCase.in.input;
+  var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      var output = util.format( '  ✔ [%s] "%s"', id, input ).green;
+      var output = util.format( '  ✔ %s[%s] "%s"', status, id, input ).green;
       console.log( output );
       break;
 
     case 'fail':
-      var output = util.format( '  ✘ [%s] "%s": %s', id, input, result.msg ).red;
+      var color = (result.progress === 'regression') ? 'red' : 'yellow';
+      var output = util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ];
       console.error( output );
       break;
 
     case 'placeholder':
-      var output = util.format( '  ! [%s] "%s": %s', id, input, result.msg ).yellow;
+      var output = util.format( '  ! [%s] "%s": %s', id, input, result.msg ).cyan;
       console.error( output );
       break;
 
@@ -42,23 +44,32 @@ function prettyPrintResult( result ){
  * Format and print all of the results from any number of test-suites.
  */
 function prettyPrintSuiteResults( suiteResults ){
-  console.log( 'Tests for:', suiteResults.stats.url.bold );
+  console.log( 'Tests for:', suiteResults.stats.url.blue );
   suiteResults.results.forEach( function ( suiteResult ){
-    console.log( '\n' + suiteResult.stats.name.bold );
+    console.log( '\n' + suiteResult.stats.name.blue );
     suiteResult.results.forEach( function ( testResult ){
       prettyPrintResult( testResult );
     });
-    console.log( '\n  Pass: ' + suiteResult.stats.pass.toString().green );
-    console.error( '  Fail: ' + suiteResult.stats.fail.toString().red );
-    console.error( '  Placeholders: ' + suiteResult.stats.placeholder.toString().yellow );
-    console.log( '  Took %sms', suiteResult.stats.timeTaken );
   });
 
-  console.log( '\nAggregate test results'.bold );
+  console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
-  console.error( 'Fail: ' + suiteResults.stats.fail.toString().red );
-  console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().yellow );
+  console.error( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
+  console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
+
+  var numRegressions = suiteResults.stats.regression;
+  var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
+  console.log( 'Regressions: ' + numRegressions.toString()[ regressionsColor ] );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
+
+  console.log( '' );
+  if( numRegressions > 0 ){
+    console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
+    process.exit( 1 );
+  }
+  else {
+    console.log( '0 regressions detected. All good.' );
+  }
 }
 
 module.exports = prettyPrintSuiteResults;
