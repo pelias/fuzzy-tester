@@ -131,8 +131,25 @@ function execTestSuite( apiUrl, testSuite, cb ){
 
         if( testResults.results.length === testSuite.tests.length ){
           testResults.stats.timeTaken = new Date().getTime() - startTime;
+
+          /**
+           * Sort the test-cases by id to force some output uniformity across
+           * test-runs (since otherwise it'd depend entirely on when a given
+           * request returned, and would be effectively random). Separate and
+           * sort string/number ids separately.
+           */
           testResults.results.sort( function ( a, b ){
-            return (a.testCase.id > b.testCase.id) ? 1 : -1;
+            var isAStr = typeof a.testCase.id === 'string';
+            var isBStr = typeof b.testCase.id === 'string';
+            if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
+              return a.testCase.id > b.testCase.id ? 1 : -1;
+            }
+            else if( isAStr ){
+              return 1;
+            }
+            else {
+              return -1;
+            }
           });
           cb( testResults );
         }
