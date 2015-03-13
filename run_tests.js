@@ -28,7 +28,7 @@ function equalProperties( expected, actual ){
  * status of this test (whether it passed, failed, is a placeholder, etc.)
  */
 function evalTest( priorityThresh, testCase, apiResults ){
-  if( !( 'expected' in testCase ) || testCase === null ){
+  if( !( 'expected' in testCase ) && !( 'unexpected' in testCase ) ){
     return {
       result: 'placeholder',
       msg: 'Placeholder test, no `expected` specified.'
@@ -36,48 +36,69 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 
   var expected = [];
-  for( var ind = 0; ind < testCase.expected.properties.length; ind++ ){
-    var testCaseProps = testCase.expected.properties[ ind ];
-    if( typeof testCaseProps === 'string' ){
-      if( testCaseProps in locations ){
-        expected.push(locations[ testCaseProps ]);
-      }
-      else {
-        return {
-          result: 'placeholder',
-          msg: 'Placeholder test, no `out` object matches in `locations.json`.'
+  var expectedPriorityThresh = priorityThresh;
+  if( 'expected' in testCase ){
+    for( var ind = 0; ind < testCase.expected.properties.length; ind++ ){
+      var testCaseProps = testCase.expected.properties[ ind ];
+      if( typeof testCaseProps === 'string' ){
+        if( testCaseProps in locations ){
+          expected.push(locations[ testCaseProps ]);
+        }
+        else {
+          return {
+            result: 'placeholder',
+            msg: 'Placeholder test, no `out` object matches in `locations.json`.'
+          }
         }
       }
+      else {
+        expected.push( testCaseProps );
+      }
     }
-    else {
-      expected.push( testCaseProps );
+
+    if( 'priorityThresh' in testCase.expected ){
+      expectedPriorityThresh = testCase.expected.priorityThresh;
     }
   }
 
-  if( testCase.expected.hasOwnProperty( 'priorityThresh' ) ){
-    priorityThresh = testCase.expected.priorityThresh;
-  }
+  var unexpected = ( testCase.hasOwnProperty( 'unexpected' ) ) ?
+    testCase.unexpected.properties : [];
+  var expectedResultFound = false;
 
   for( var ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
     for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
-      var expectedProps = expected[ expectedInd ];
-      if( equalProperties( expectedProps, result.properties ) ){
+      if( !expectedResultFound &&
+        equalProperties( expected[ expectedInd ], result.properties ) ){
         var success = ( ind + 1 ) <= priorityThresh;
-        return ( success ) ?
-          { result: 'pass' } :
-          {
+        if( !success ){
+          return {
             result: 'fail',
             msg: util.format( 'Result found, but not in top %s.', priorityThresh )
           }
+        }
+        else {
+          expectedResultFound = true;
+        }
+      }
+    }
+
+    for( var unexpectedInd = 0; unexpectedInd < unexpected.length; unexpectedInd++ ){
+      if( equalProperties( unexpected[ unexpectedInd ], result.properties ) ){
+        return {
+          result: 'fail',
+          msg: util.format( 'Unexpected result found.' )
+        }
       }
     }
   }
 
-  return {
-    result: 'fail',
-    msg: 'No result found.'
-  }
+  return ( expectedResultFound || (expected.length === 0 && unexpected.length > 0 ) ) ?
+    { result: 'pass' } :
+    {
+      result: 'fail',
+      msg: 'No result found.'
+    };
 }
 
 var validTestStatuses = [ 'pass', 'fail', undefined ];
