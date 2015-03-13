@@ -128,6 +128,18 @@ function execTestSuite( apiUrl, testSuite, cb ){
       ));
       process.exit( 1 );
     }
+
+    if( 'unexpected' in testCase ){
+      testCase.unexpected.properties.forEach( function ( props ){
+        if( typeof props !== 'object' ){
+          console.error(
+            'Unexpected properties MUST be objects! Strings are not supported. Exiting.'
+          );
+          console.error( JSON.stringify( testCase, undefined, 4 ) );
+          process.exit( 1 );
+        }
+      });
+    }
   });
 
   var startTime = new Date().getTime();
