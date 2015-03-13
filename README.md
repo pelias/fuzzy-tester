@@ -29,9 +29,16 @@ following properties:
    identify improvements and regressions. May be either of `pass` or `fail`.
  + `user` is the name of the person that added the test case.
  + `in` is the json query that will be urlencoded and appended to the host url.
- + `out` is the expected result. This can be a string, in which case it will be used to look up a location in `locations.json`.
-  It can also be an object with various properties. Every property specified must be matched identically in the actual result location in order to claim success.
-  If `null` or simply not defined, this test-case will be counted as a placeholder.
+ + `expected` contains *expected* results. The object can contain a `priorityThresh` property, which will override the
+   `priorityThresh` specified by the test-suite, and must contain a `properties` property. `properties` is mapped to an
+   array of either of:
+
+     + `object`: all of the key-value pairs will be tested against the objects returned by the API for exact matches.
+     + `string`: a matching object will be looked up in the `locations.json` file. Allows you to easily reuse the same
+      object for multiple test-cases.
+
++ `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
+  array does *not* support strings.
 
 
 ```javascript
