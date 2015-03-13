@@ -54,6 +54,10 @@ function evalTest( priorityThresh, testCase, apiResults ){
     }
   }
 
+  if( testCase.expected.hasOwnProperty( 'priorityThresh' ) ){
+    priorityThresh = testCase.expected.priorityThresh;
+  }
+
   for( var ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
     for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
@@ -121,11 +125,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
           '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
           stats.testsTotal
         ));
-        var priority = ( 'priorityThresh' in res ) ?
-          result.priorityThresh :
-          testSuite.priorityThresh;
 
-        var results = evalTest( priority, testCase, res.body.features );
+        var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
         if( results.result === 'pass' && testCase.status === 'fail' ){
           results.progress = 'improvement';
         }
