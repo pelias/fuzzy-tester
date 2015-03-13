@@ -69,6 +69,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
   }
 }
 
+var validTestStatuses = [ 'pass', 'fail', undefined ];
 /**
  * Execute all the tests in a test-suite file with `evalTest()`, and pass an
  * object containing the results to `cb()`. `apiUrl` contains the URL of the
@@ -80,6 +81,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
       pass: 0,
       fail: 0,
       placeholder: 0,
+      regression: 0,
       timeTaken: null,
       name: testSuite.name
     },
@@ -107,6 +109,22 @@ function execTestSuite( apiUrl, testSuite, cb ){
           testSuite.priorityThresh;
 
         var results = evalTest( priority, testCase, res.body.features );
+        if( validTestStatuses.indexOf( testCase.status ) === -1 ){
+          console.error( util.format(
+            'Invalid test status: `%s`. Recognized statuses are: %s',
+            testCase.status, JSON.stringify( validTestStatuses )
+          ));
+          process.exit( 1 );
+        }
+
+        if( results.result === 'pass' && testCase.status === 'fail' ){
+          results.progress = 'improvement';
+        }
+        else if( results.result === 'fail' && testCase.status === 'pass' ){
+          testResults.stats.regression++;
+          results.progress = 'regression';
+        }
+
         results.testCase = testCase;
         testResults.stats[ results.result ]++;
         testResults.results.push( results );
@@ -137,6 +155,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
       pass: 0,
       fail: 0,
       placeholder: 0,
+      regression: 0,
       timeTaken: 0,
       url: apiUrl
     },
@@ -148,7 +167,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
     execTestSuite( apiUrl, suite, function ( testResults ){
       suiteResults.results.push( testResults );
 
-      [ 'pass', 'fail', 'placeholder', 'timeTaken' ].forEach( function ( propName ){
+      [ 'pass', 'fail', 'placeholder', 'timeTaken', 'regression' ].forEach( function ( propName ){
         suiteResults.stats[ propName ] += testResults.stats[ propName ];
       });
 
