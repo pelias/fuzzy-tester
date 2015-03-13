@@ -88,6 +88,16 @@ function execTestSuite( apiUrl, testSuite, cb ){
     results: []
   };
 
+  testSuite.tests.forEach( function ( testCase ){
+    if( validTestStatuses.indexOf( testCase.status ) === -1 ){
+      console.error( util.format(
+        'Invalid test status: `%s`. Recognized statuses are: %s',
+        testCase.status, JSON.stringify( validTestStatuses )
+      ));
+      process.exit( 1 );
+    }
+  });
+
   var startTime = new Date().getTime();
   testSuite.tests.forEach( function ( testCase ){
     supertest( apiUrl )
@@ -109,14 +119,6 @@ function execTestSuite( apiUrl, testSuite, cb ){
           testSuite.priorityThresh;
 
         var results = evalTest( priority, testCase, res.body.features );
-        if( validTestStatuses.indexOf( testCase.status ) === -1 ){
-          console.error( util.format(
-            'Invalid test status: `%s`. Recognized statuses are: %s',
-            testCase.status, JSON.stringify( validTestStatuses )
-          ));
-          process.exit( 1 );
-        }
-
         if( results.result === 'pass' && testCase.status === 'fail' ){
           results.progress = 'improvement';
         }
