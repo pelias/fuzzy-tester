@@ -28,38 +28,45 @@ function equalProperties( expected, actual ){
  * status of this test (whether it passed, failed, is a placeholder, etc.)
  */
 function evalTest( priorityThresh, testCase, apiResults ){
-  var expected;
-  if( typeof testCase.out === 'string' ){
-    if( testCase.out in locations ){
-      expected = locations[ testCase.out ];
-    }
-    else {
-      return {
-        result: 'placeholder',
-        msg: 'Placeholder test, no `out` object matches in `locations.json`.'
-      }
-    }
-  }
-  else if( !( 'out' in testCase ) || testCase.out === null ){
+  if( !( 'expected' in testCase ) || testCase === null ){
     return {
       result: 'placeholder',
-      msg: 'Placeholder test, no `out` specified.'
+      msg: 'Placeholder test, no `expected` specified.'
     };
   }
-  else {
-    expected = testCase.out;
+
+  var expected = [];
+  for( var ind = 0; ind < testCase.expected.properties.length; ind++ ){
+    var testCaseProps = testCase.expected.properties[ ind ];
+    if( typeof testCaseProps === 'string' ){
+      if( testCaseProps in locations ){
+        expected.push(locations[ testCaseProps ]);
+      }
+      else {
+        return {
+          result: 'placeholder',
+          msg: 'Placeholder test, no `out` object matches in `locations.json`.'
+        }
+      }
+    }
+    else {
+      expected.push( testCaseProps );
+    }
   }
 
   for( var ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
-    if( equalProperties( expected, result.properties ) ){
-      var success = ( ind + 1 ) <= priorityThresh;
-      return ( success ) ?
-        { result: 'pass' } :
-        {
-          result: 'fail',
-          msg: util.format( 'Result found, but not in top %s.', priorityThresh )
-        }
+    for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
+      var expectedProps = expected[ expectedInd ];
+      if( equalProperties( expectedProps, result.properties ) ){
+        var success = ( ind + 1 ) <= priorityThresh;
+        return ( success ) ?
+          { result: 'pass' } :
+          {
+            result: 'fail',
+            msg: util.format( 'Result found, but not in top %s.', priorityThresh )
+          }
+      }
     }
   }
 
