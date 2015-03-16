@@ -241,5 +241,6 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
 
 module.exports = {
   exec: execTestSuites,
-  equalProperties: equalProperties
+  equalProperties: equalProperties,
+  evalTest: evalTest
 };
