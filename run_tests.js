@@ -28,45 +28,77 @@ function equalProperties( expected, actual ){
  * status of this test (whether it passed, failed, is a placeholder, etc.)
  */
 function evalTest( priorityThresh, testCase, apiResults ){
-  var expected;
-  if( typeof testCase.out === 'string' ){
-    if( testCase.out in locations ){
-      expected = locations[ testCase.out ];
-    }
-    else {
-      return {
-        result: 'placeholder',
-        msg: 'Placeholder test, no `out` object matches in `locations.json`.'
-      }
-    }
-  }
-  else if( !( 'out' in testCase ) || testCase.out === null ){
+  if( !( 'expected' in testCase ) && !( 'unexpected' in testCase ) ){
     return {
       result: 'placeholder',
-      msg: 'Placeholder test, no `out` specified.'
+      msg: 'Placeholder test, no `expected` specified.'
     };
   }
-  else {
-    expected = testCase.out;
+
+  var expected = [];
+  var expectedPriorityThresh = priorityThresh;
+  if( 'expected' in testCase ){
+    for( var ind = 0; ind < testCase.expected.properties.length; ind++ ){
+      var testCaseProps = testCase.expected.properties[ ind ];
+      if( typeof testCaseProps === 'string' ){
+        if( testCaseProps in locations ){
+          expected.push(locations[ testCaseProps ]);
+        }
+        else {
+          return {
+            result: 'placeholder',
+            msg: 'Placeholder test, no `out` object matches in `locations.json`.'
+          }
+        }
+      }
+      else {
+        expected.push( testCaseProps );
+      }
+    }
+
+    if( 'priorityThresh' in testCase.expected ){
+      expectedPriorityThresh = testCase.expected.priorityThresh;
+    }
   }
+
+  var unexpected = ( testCase.hasOwnProperty( 'unexpected' ) ) ?
+    testCase.unexpected.properties : [];
+  var expectedResultFound = false;
 
   for( var ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
-    if( equalProperties( expected, result.properties ) ){
-      var success = ( ind + 1 ) <= priorityThresh;
-      return ( success ) ?
-        { result: 'pass' } :
-        {
-          result: 'fail',
-          msg: util.format( 'Result found, but not in top %s.', priorityThresh )
+    for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
+      if( !expectedResultFound &&
+        equalProperties( expected[ expectedInd ], result.properties ) ){
+        var success = ( ind + 1 ) <= priorityThresh;
+        if( !success ){
+          return {
+            result: 'fail',
+            msg: util.format( 'Result found, but not in top %s.', priorityThresh )
+          }
         }
+        else {
+          expectedResultFound = true;
+        }
+      }
+    }
+
+    for( var unexpectedInd = 0; unexpectedInd < unexpected.length; unexpectedInd++ ){
+      if( equalProperties( unexpected[ unexpectedInd ], result.properties ) ){
+        return {
+          result: 'fail',
+          msg: util.format( 'Unexpected result found.' )
+        }
+      }
     }
   }
 
-  return {
-    result: 'fail',
-    msg: 'No result found.'
-  }
+  return ( expectedResultFound || (expected.length === 0 && unexpected.length > 0 ) ) ?
+    { result: 'pass' } :
+    {
+      result: 'fail',
+      msg: 'No result found.'
+    };
 }
 
 var validTestStatuses = [ 'pass', 'fail', undefined ];
@@ -96,6 +128,18 @@ function execTestSuite( apiUrl, testSuite, cb ){
       ));
       process.exit( 1 );
     }
+
+    if( 'unexpected' in testCase ){
+      testCase.unexpected.properties.forEach( function ( props ){
+        if( typeof props !== 'object' ){
+          console.error(
+            'Unexpected properties MUST be objects! Strings are not supported. Exiting.'
+          );
+          console.error( JSON.stringify( testCase, undefined, 4 ) );
+          process.exit( 1 );
+        }
+      });
+    }
   });
 
   var startTime = new Date().getTime();
@@ -114,11 +158,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
           '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
           stats.testsTotal
         ));
-        var priority = ( 'priorityThresh' in res ) ?
-          result.priorityThresh :
-          testSuite.priorityThresh;
 
-        var results = evalTest( priority, testCase, res.body.features );
+        var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
         if( results.result === 'pass' && testCase.status === 'fail' ){
           results.progress = 'improvement';
         }
@@ -198,4 +239,8 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
   });
 }
 
-module.exports = execTestSuites;
+module.exports = {
+  exec: execTestSuites,
+  equalProperties: equalProperties,
+  evalTest: evalTest
+};

@@ -54,5 +54,5 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
     }
   }
 
-  execTestSuites( apiUrl, testSuites, terminalOutputGenerator );
+  execTestSuites.exec( apiUrl, testSuites, terminalOutputGenerator );
 })();
