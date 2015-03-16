@@ -122,21 +122,17 @@ function execTestSuite( apiUrl, testSuite, cb ){
 
   testSuite.tests.forEach( function ( testCase ){
     if( validTestStatuses.indexOf( testCase.status ) === -1 ){
-      console.error( util.format(
+      throw util.format(
         'Invalid test status: `%s`. Recognized statuses are: %s',
         testCase.status, JSON.stringify( validTestStatuses )
-      ));
-      process.exit( 1 );
+      );
     }
 
     if( 'unexpected' in testCase ){
       testCase.unexpected.properties.forEach( function ( props ){
         if( typeof props !== 'object' ){
-          console.error(
-            'Unexpected properties MUST be objects! Strings are not supported. Exiting.'
-          );
-          console.error( JSON.stringify( testCase, undefined, 4 ) );
-          process.exit( 1 );
+          throw 'Unexpected properties MUST be objects! Strings are not supported. Exiting. ' +
+            JSON.stringify( testCase, undefined, 4 );
         }
       });
     }
@@ -240,6 +236,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
 }
 
 module.exports = {
+  execTestSuite: execTestSuite,
   exec: execTestSuites,
   equalProperties: equalProperties,
   evalTest: evalTest
