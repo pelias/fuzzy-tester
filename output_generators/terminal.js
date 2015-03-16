@@ -11,7 +11,7 @@ var util = require( 'util' );
  */
 function prettyPrintResult( result ){
   var id = result.testCase.id;
-  var input = result.testCase.in.input;
+  var input = JSON.stringify(result.testCase.in);
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':

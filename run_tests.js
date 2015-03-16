@@ -140,8 +140,10 @@ function execTestSuite( apiUrl, testSuite, cb ){
 
   var startTime = new Date().getTime();
   testSuite.tests.forEach( function ( testCase ){
+    var endpoint = '/' + (testCase.endpoint || 'search') + '?' +
+      querystring.stringify( testCase.in );
     supertest( apiUrl )
-      .get( '/search?' + querystring.stringify( testCase.in ) )
+      .get( endpoint )
       .expect( 'Content-Type', /json/ )
       .expect( 200 )
       .end( function ( err, res ) {
