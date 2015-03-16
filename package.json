@@ -12,7 +12,7 @@
   "author": "mapzen",
   "main": "index.js",
   "scripts": {
-    "test": "node test"
+    "test": "node test/test | tap-spec"
   },
   "dependencies": {
     "supertest": "^0.15.0",
