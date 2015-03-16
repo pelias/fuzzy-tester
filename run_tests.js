@@ -239,4 +239,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
   });
 }
 
-module.exports = execTestSuites;
+module.exports = {
+  exec: execTestSuites,
+  equalProperties: equalProperties
+};
