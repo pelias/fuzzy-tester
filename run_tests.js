@@ -28,7 +28,8 @@ function equalProperties( expected, actual ){
  * status of this test (whether it passed, failed, is a placeholder, etc.)
  */
 function evalTest( priorityThresh, testCase, apiResults ){
-  if( !( 'expected' in testCase ) && !( 'unexpected' in testCase ) ){
+  if( (!( 'expected' in testCase ) || testCase.expected.properties === null) &&
+      !( 'unexpected' in testCase ) ){
     return {
       result: 'placeholder',
       msg: 'Placeholder test, no `expected` specified.'

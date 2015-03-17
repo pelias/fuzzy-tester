@@ -37,5 +37,7 @@ following properties:
      + `string`: a matching object will be looked up in the `locations.json` file. Allows you to easily reuse the same
       object for multiple test-cases.
 
+   If `properties` is `null`, the test-case is assumed to be a placeholder.
+
 + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
