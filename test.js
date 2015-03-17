@@ -3,7 +3,7 @@
  * their results into grokkable output.
  */
 
-var colors = require( 'colors' );
+var colors = require( 'colors' ); // jshint ignore:line
 var commander = require( 'commander' );
 var requireDir = require( 'require-dir' );
 var peliasConfig = require( 'pelias-config' ).generate();

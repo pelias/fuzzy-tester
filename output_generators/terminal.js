@@ -15,29 +15,25 @@ function prettyPrintResult( result ){
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      var output = util.format( '  ✔ %s[%s] "%s"', status, id, input ).green;
-      console.log( output );
+      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, input ).green );
       break;
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
-      var output = util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ];
-      console.error( output );
+      console.error(
+        util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ]
+      );
       break;
 
     case 'placeholder':
-      var output = util.format( '  ! [%s] "%s": %s', id, input, result.msg ).cyan;
-      console.error( output );
+      console.error( util.format( '  ! [%s] "%s": %s', id, input, result.msg ).cyan );
       break;
 
     default:
-      var output = util.format( 'Result type `%s` not recognized.', result.result );
-      console.error( output );
+      console.error( util.format( 'Result type `%s` not recognized.', result.result ) );
       process.exit( 1 );
       break;
   }
-
-  return output;
 }
 
 /**

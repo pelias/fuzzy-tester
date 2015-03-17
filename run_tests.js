@@ -36,10 +36,11 @@ function evalTest( priorityThresh, testCase, apiResults ){
     };
   }
 
+  var ind;
   var expected = [];
   var expectedPriorityThresh = priorityThresh;
   if( 'expected' in testCase ){
-    for( var ind = 0; ind < testCase.expected.properties.length; ind++ ){
+    for( ind = 0; ind < testCase.expected.properties.length; ind++ ){
       var testCaseProps = testCase.expected.properties[ ind ];
       if( typeof testCaseProps === 'string' ){
         if( testCaseProps in locations ){
@@ -49,7 +50,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
           return {
             result: 'placeholder',
             msg: 'Placeholder test, no `out` object matches in `locations.json`.'
-          }
+          };
         }
       }
       else {
@@ -66,7 +67,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
     testCase.unexpected.properties : [];
   var expectedResultFound = false;
 
-  for( var ind = 0; ind < apiResults.length; ind++ ){
+  for( ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
     for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
       if( !expectedResultFound &&
@@ -76,7 +77,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
           return {
             result: 'fail',
             msg: util.format( 'Result found, but not in top %s.', priorityThresh )
-          }
+          };
         }
         else {
           expectedResultFound = true;
@@ -89,7 +90,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
         return {
           result: 'fail',
           msg: util.format( 'Unexpected result found.' )
-        }
+        };
       }
     }
   }
@@ -120,6 +121,13 @@ function execTestSuite( apiUrl, testSuite, cb ){
     },
     results: []
   };
+
+  if( testSuite.tests.length === 0 ){
+    process.nextTick( function (  ){
+      cb( testResults );
+    });
+    return;
+  }
 
   testSuite.tests.forEach( function ( testCase ){
     if( validTestStatuses.indexOf( testCase.status ) === -1 ){
