@@ -21,6 +21,10 @@
     "require-dir": "0.1.0",
     "pelias-config": "^0.x.x"
   },
+  "devDependencies": {
+    "precommit-hook": "*",
+    "tape": "3.5.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pelias/acceptance-tests"
