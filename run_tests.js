@@ -38,7 +38,6 @@ function evalTest( priorityThresh, testCase, apiResults ){
 
   var ind;
   var expected = [];
-  var expectedPriorityThresh = priorityThresh;
   if( 'expected' in testCase ){
     for( ind = 0; ind < testCase.expected.properties.length; ind++ ){
       var testCaseProps = testCase.expected.properties[ ind ];
@@ -59,7 +58,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
     }
 
     if( 'priorityThresh' in testCase.expected ){
-      expectedPriorityThresh = testCase.expected.priorityThresh;
+      priorityThresh = testCase.expected.priorityThresh;
     }
   }
 
@@ -148,7 +147,18 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 
   var startTime = new Date().getTime();
-  testSuite.tests.forEach( function ( testCase ){
+  var testInd = 0;
+
+  /**
+   * Rate limit HTTP requests to one per 100ms, to prevent the API from
+   * shutting us out.
+   */
+  var intervalId = setInterval( function (){
+    if( testInd === testSuite.tests.length ){
+      clearInterval( intervalId );
+      return;
+    }
+    var testCase = testSuite.tests[ testInd++ ];
     var endpoint = '/' + (testCase.endpoint || 'search') + '?' +
       querystring.stringify( testCase.in );
     supertest( apiUrl )
@@ -204,7 +214,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
           cb( testResults );
         }
       });
-  });
+  }, 100);
 }
 
 var stats = {
