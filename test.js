@@ -22,10 +22,12 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
 (function runTests(){
   var endpts = Object.keys( PELIAS_ENDPOINTS ).join( ', ' );
   commander
+    .usage( '[flags] [file]' )
     .option(
       '-e, --endpoint <endpoint>',
       'The name of the Pelias API to target. Any of: ' + endpts, 'prod'
     )
+    .option( 'file', 'The specific test-suite to execute instead of all of them.' )
     .parse( process.argv );
 
   var apiUrl;
