@@ -1,6 +1,62 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="style.css">
+<style>
+	body {
+		font-family: sans-serif;
+	}
 
+	h2 {
+		margin-bottom: 4;
+		font-size: 1.3em;
+	}
+
+	ul {
+		margin-top: 0;
+		list-style: none;
+	}
+
+	li {
+		margin-top: 2px;
+	}
+
+	.pass-pass, .pass-fail {
+		color: green;
+	}
+
+	.pass-fail > .status {
+		background-color: green;
+	}
+
+	.fail-pass {
+		color: red;
+	}
+
+	.fail-pass > .status {
+		background-color: red;
+	}
+
+	.fail-fail {
+		color: orange;
+	}
+
+	.placeholder-pass, .placeholder-fail {
+		color: blue;
+	}
+
+	.status {
+		font-weight: bold;
+		padding: 1px 3px;
+		color: white;
+	}
+
+	.fail {
+		font-weight: bold;
+		font-size: 1.1em;
+		color: red;
+	}
+
+	.success {
+		color: green;
+	}
+</style>
 Tests for: <b>{{stats.url}}</b>
 
 {{#each results}}
