@@ -5,6 +5,7 @@ var outputJson = require( '../output2.json' );
 var util = require( 'util' );
 var nodemailer = require( 'nodemailer' );
 var juice = require( 'juice' );
+var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
 
 handlebars.registerHelper( 'json', JSON.stringify );
 handlebars.registerHelper( 'testCase', function ( res ){
@@ -38,16 +39,13 @@ var emailTemplate = fs.readFileSync( path.join( __dirname, 'email_static/email.h
 var emailHtml = juice( handlebars.compile( emailTemplate )( outputJson ) );
 var transporter = nodemailer.createTransport({
   service: 'Gmail',
-  auth: {
-    user: '',
-    pass: ''
-  }
+  auth: peliasConfig
 });
 
 var emailOpts = {
-  from: 'Severyn Kozak',
-  to: 'severyn.kozak@gmail.com',
-  subject: '2 pelias acceptance-tests results',
+  from: 'pelias-acceptance-tests',
+  to: peliasConfig.recipients.join( ', ' ),
+  subject: 'pelias acceptance-tests results ' + new Date().toString(),
   html: emailHtml
 };
 
