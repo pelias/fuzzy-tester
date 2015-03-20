@@ -1,0 +1,27 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="style.css">
+
+Tests for: <b>{{stats.url}}</b>
+
+{{#each results}}
+	<h2>{{stats.name}}</h2>
+	<ul>
+		{{#each results}}
+			<li class="{{result}}-{{testCase.status}}">{{testCase this}}</li>
+		{{/each}}
+	</ul>
+{{/each}}
+
+<div>
+	pass: <span style="color: green;">{{stats.pass}}</span><br>
+	fail: <span style="color: orange;">{{stats.fail}}</span><br>
+	placeholder: <span style="color: blue;">{{stats.placeholder}}</span><br>
+	regressions: <span style="color: red;">{{stats.regression}}</span><br>
+	time taken: {{stats.timeTaken}}<br>
+
+	{{#if stats.regression}}
+		<p class="fail">{{stats.regression}} regression(s) detected!</p>
+	{{else}}
+		<p class="success">No regressions detected. All clear.</p>
+	{{/if}}
+</div>
