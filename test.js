@@ -32,7 +32,7 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
 
   var apiUrl;
   if( commander.endpoint in PELIAS_ENDPOINTS ){
-    apiUrl = PELIAS_ENDPOINTS[ commander.endpoint ];
+    apiUrl = PELIAS_ENDPOINTS[ commander.endpoint ].replace( /\/*$/, '' );
   }
   else {
     console.error(

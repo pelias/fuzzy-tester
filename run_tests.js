@@ -214,7 +214,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
           cb( testResults );
         }
       });
-  }, 100);
+  }, 200);
 }
 
 var stats = {
