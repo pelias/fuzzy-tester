@@ -19,7 +19,10 @@
     "colors": "^1.x.x",
     "commander": "2.7.0",
     "require-dir": "0.1.0",
-    "pelias-config": "^0.x.x"
+    "pelias-config": "^0.x.x",
+    "handlebars": "^3.x.x",
+    "juice": "^1.x.x",
+    "nodemailer": "^1.x.x"
   },
   "devDependencies": {
     "precommit-hook": "*",
