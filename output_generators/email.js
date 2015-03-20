@@ -1,14 +1,13 @@
-var handlebars = require( 'handlebars' );
 var fs = require( 'fs' );
 var path = require( 'path' );
-var outputJson = require( '../output2.json' );
 var util = require( 'util' );
+
+var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
 
-handlebars.registerHelper( 'json', JSON.stringify );
-handlebars.registerHelper( 'testCase', function ( res ){
+function formatTestCase( res ){
   var id = res.testCase.id;
   var input = JSON.stringify( res.testCase.in, undefined, 4 );
   var status = (res.progress === undefined) ? '' :
@@ -33,30 +32,33 @@ handlebars.registerHelper( 'testCase', function ( res ){
   }
 
   return out;
-});
+}
 
-var emailTemplate = fs.readFileSync( path.join( __dirname, 'email_static/email.html' ) ).toString();
-var emailHtml = juice( handlebars.compile( emailTemplate )( outputJson ) );
-var transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: peliasConfig
-});
+function emailResults( suiteResults  ){
+  handlebars.registerHelper( 'json', JSON.stringify );
+  handlebars.registerHelper( 'testCase', formatTestCase );
 
-var emailOpts = {
-  from: 'pelias-acceptance-tests',
-  to: peliasConfig.recipients.join( ', ' ),
-  subject: 'pelias acceptance-tests results ' + new Date().toString(),
-  html: emailHtml
-};
+  var emailTemplate = fs.readFileSync( path.join( __dirname, 'email_static/email.html' ) ).toString();
+  var emailHtml = juice( handlebars.compile( emailTemplate )( suiteResults ) );
+  var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: peliasConfig
+  });
 
-transporter.sendMail( emailOpts, function( err, info ){
-  if( err ){
-    console.error( err );
-  }
-  else {
-    console.log( 'Sent: ', info );
-  }
-});
-// module.exports = function ( suiteResults ){
-  // console.log( handlebars.compile( emailTemplate )( suiteResults ) );
-// };
+  var emailOpts = {
+    from: 'pelias-acceptance-tests',
+    to: peliasConfig.recipients.join( ', ' ),
+    subject: 'pelias acceptance-tests results ' + new Date().toString(),
+    html: emailHtml
+  };
+
+  transporter.sendMail( emailOpts, function( err, info ){
+    if( err ){
+      console.error( err );
+    }
+    else {
+      console.log( 'Sent: ', info );
+    }
+  });
+}
+module.exports = emailResults;
