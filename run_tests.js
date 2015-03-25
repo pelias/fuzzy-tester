@@ -167,7 +167,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
       .expect( 200 )
       .end( function ( err, res ) {
         if( err ){
-          throw err;
+          console.error( err );
+          return;
         }
 
         stats.testsCompleted++;
@@ -239,8 +240,12 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
     results: []
   };
 
-  testSuites.map( function ( suite ){
-    stats.testsTotal += suite.tests.length;
+  stats.testsTotal = testSuites.reduce( function ( acc, suite ){
+    return acc + suite.tests.length;
+  }, 0);
+  var numTestSuites = testSuites.length;
+  function runNextSuite(){
+    var suite = testSuites.pop();
     execTestSuite( apiUrl, suite, function ( testResults ){
       suiteResults.results.push( testResults );
 
@@ -248,12 +253,17 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
         suiteResults.stats[ propName ] += testResults.stats[ propName ];
       });
 
-      if( suiteResults.results.length === testSuites.length ){
+      if( suiteResults.results.length === numTestSuites ){
         process.stdout.write( '\r' ); // Clear the test-completion counter from the terminal.
         outputGenerator( suiteResults );
       }
+      else {
+        runNextSuite();
+      }
     });
-  });
+  };
+
+  runNextSuite();
 }
 
 module.exports = {
