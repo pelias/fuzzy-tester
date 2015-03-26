@@ -1,0 +1,83 @@
+<style>
+	body {
+		font-family: sans-serif;
+	}
+
+	h2 {
+		margin-bottom: 4;
+		font-size: 1.3em;
+	}
+
+	ul {
+		margin-top: 0;
+		list-style: none;
+	}
+
+	li {
+		margin-top: 2px;
+	}
+
+	.pass-pass, .pass-fail {
+		color: green;
+	}
+
+	.pass-fail > .status {
+		background-color: green;
+	}
+
+	.fail-pass {
+		color: red;
+	}
+
+	.fail-pass > .status {
+		background-color: red;
+	}
+
+	.fail-fail {
+		color: orange;
+	}
+
+	.placeholder-, .placeholder-pass, .placeholder-fail {
+		color: blue;
+	}
+
+	.status {
+		font-weight: bold;
+		padding: 1px 3px;
+		color: white;
+	}
+
+	.fail {
+		font-weight: bold;
+		font-size: 1.1em;
+		color: red;
+	}
+
+	.success {
+		color: green;
+	}
+</style>
+Tests for: <b>{{stats.url}}</b>
+
+{{#each results}}
+	<h2>{{stats.name}}</h2>
+	<ul>
+		{{#each results}}
+			<li class="{{result}}-{{testCase.status}}">{{testCase this}}</li>
+		{{/each}}
+	</ul>
+{{/each}}
+
+<div>
+	pass: <span style="color: green;">{{stats.pass}}</span><br>
+	fail: <span style="color: orange;">{{stats.fail}}</span><br>
+	placeholder: <span style="color: blue;">{{stats.placeholder}}</span><br>
+	regressions: <span style="color: red;">{{stats.regression}}</span><br>
+	time taken: {{stats.timeTaken}}<br>
+
+	{{#if stats.regression}}
+		<p class="fail">{{stats.regression}} regression(s) detected!</p>
+	{{else}}
+		<p class="success">No regressions detected. All clear.</p>
+	{{/if}}
+</div>
