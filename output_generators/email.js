@@ -7,6 +7,19 @@ var nodemailer = require( 'nodemailer' );
 var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
 
+[ 'user', 'pass', 'recipients' ].forEach( function ( prop ){
+  if( !peliasConfig.hasOwnProperty( prop ) ){
+    console.error([
+      'Your pelias-config\'s acceptance-tests.email object is missing the following property: ' + prop,
+      'Expected properties are:',
+      '\tuser: the username of the account sending the email.',
+      '\tpass: the password of the account sending the email.',
+      '\trecipients: an array of recipients\'s mailing addresses.'
+    ].join( '\n' ) );
+    process.exit( 1 );
+  }
+});
+
 function formatTestCase( res ){
   var id = res.testCase.id;
   var input = JSON.stringify( res.testCase.in, undefined, 4 );
