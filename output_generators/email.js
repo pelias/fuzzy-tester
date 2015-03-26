@@ -57,7 +57,7 @@ function emailResults( suiteResults  ){
       console.error( err );
     }
     else {
-      console.log( 'Sent: ', info );
+      console.log( 'Sent: ', JSON.stringify( info, undefined, 4 ) );
     }
   });
 }
