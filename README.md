@@ -1,21 +1,17 @@
-# QUALITY... I has it!
+# acceptance tests
 
-## Acceptance tests for Pelias Geocoder API
+This repository contains all of the Pelias API "acceptance" tests, which are automated tests used to identify
+improvements and regressions between builds. Since it's difficult/impossible to manually verify whether things have
+begun silently failing (eg, a certain query stopped returning the right results) after a data or search logic change,
+the acceptance tests should provide us with a scattershot overview of the status of any Pelias instance.
 
-This is an attempt at integration/acceptance/regression test framework that will allow us
-to keep an eye on Pelias quality as we continue to hack away at it. The goal is to provide a
-framework with the following features:
-
- * easily add test cases with input/expected output
- * generate a report for each run
-
-### Usage
+## Usage
 
 ```
 node test --help
 ```
 
-### Test Case Files
+## Test Case Files
 Test-cases live in `test_cases/`, and are split into test *suites* in individual JSON files. Each file must contain the
 following properties:
 
@@ -42,7 +38,7 @@ following properties:
 + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
 
-### output generators
+## output generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
 --help` for details on how to specify a generator besides the default. Note that the `email` generator requires a
 Gmail account, and that your `pelias-config` file contain the following configuration:
