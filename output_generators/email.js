@@ -4,17 +4,17 @@ var util = require( 'util' );
 
 var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
+var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
 var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
 
-[ 'user', 'pass', 'recipients' ].forEach( function ( prop ){
+[ 'recipients', 'ses' ].forEach( function ( prop ){
   if( !peliasConfig.hasOwnProperty( prop ) ){
     console.error([
       'Your pelias-config\'s acceptance-tests.email object is missing the following property: ' + prop,
       'Expected properties are:',
-      '\tuser: the username of the account sending the email.',
-      '\tpass: the password of the account sending the email.',
-      '\trecipients: an array of recipients\'s mailing addresses.'
+      '\trecipients: an array of recipients\'s mailing addresses.',
+      '\tses: options for nodemailer-ses-transport, for Amazon\'s SES.'
     ].join( '\n' ) );
     process.exit( 1 );
   }
@@ -51,12 +51,10 @@ function emailResults( suiteResults  ){
   handlebars.registerHelper( 'json', JSON.stringify );
   handlebars.registerHelper( 'testCase', formatTestCase );
 
-  var emailTemplate = fs.readFileSync( path.join( __dirname, 'email_static/email.html' ) ).toString();
+  var templatePath = path.join( __dirname, 'email_static/email.html' );
+  var emailTemplate = fs.readFileSync( templatePath ).toString();
   var emailHtml = juice( handlebars.compile( emailTemplate )( suiteResults ) );
-  var transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: peliasConfig
-  });
+  var transporter = nodemailer.createTransport( nodemailerSesTransport( peliasConfig.ses ) );
 
   var emailOpts = {
     from: 'pelias-acceptance-tests',
@@ -67,11 +65,12 @@ function emailResults( suiteResults  ){
 
   transporter.sendMail( emailOpts, function( err, info ){
     if( err ){
-      console.error( err );
+      console.error( JSON.stringify( err, undefined, 4 ) );
     }
     else {
       console.log( 'Sent: ', JSON.stringify( info, undefined, 4 ) );
     }
   });
 }
+
 module.exports = emailResults;
