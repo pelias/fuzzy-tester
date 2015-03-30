@@ -60,7 +60,11 @@ function emailResults( suiteResults  ){
     from: peliasConfig.from || '"pelias-acceptance-tests" <noreply@pelias-acceptance-tests>',
     to: peliasConfig.recipients.join( ', ' ),
     subject: 'pelias acceptance-tests results ' + new Date().toString(),
-    html: emailHtml
+    html: emailHtml,
+    attachments: [{
+      filename: 'results.json',
+      content: JSON.stringify( suiteResults, undefined, 4 )
+    }]
   };
 
   transporter.sendMail( emailOpts, function( err, info ){
