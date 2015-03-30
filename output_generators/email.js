@@ -57,7 +57,7 @@ function emailResults( suiteResults  ){
   var transporter = nodemailer.createTransport( nodemailerSesTransport( peliasConfig.ses ) );
 
   var emailOpts = {
-    from: 'pelias-acceptance-tests',
+    from: '"pelias-acceptance-tests" <noreply@pelias-acceptance-tests>',
     to: peliasConfig.recipients.join( ', ' ),
     subject: 'pelias acceptance-tests results ' + new Date().toString(),
     html: emailHtml
