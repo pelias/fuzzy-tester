@@ -44,16 +44,18 @@ following properties:
 
 ### output generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
---help` for details on how to specify a generator besides the default. Note that the `email` generator requires a
-Gmail account, and that your `pelias-config` file contain the following configuration:
+--help` for details on how to specify a generator besides the default. Note that the `email` generator requires an
+AWS account, and that your `pelias-config` file contain the following configuration:
 
 ```javascript
 {
 	"acceptance-tests": {
 		"email": {
+			"ses": {
+				"accessKeyId": "AWSACCESSKEY",
+				"secretAccessKey": "AWS/Secret/key",
+			},
 			"recipients": ["recipient1@domain.com", "recipient2@domain.com"], // the list of recipients
-			"user": "sender@domain.com", // the email sender's username
-			"pass": "0xdeadbeef" // the email sender's password
 		}
 	}
 }
