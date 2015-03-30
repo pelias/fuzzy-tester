@@ -8,7 +8,7 @@ var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
 var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
 
-[ 'recipients', 'ses' ].forEach( function ( prop ){
+[ 'recipients' ].forEach( function ( prop ){
   if( !peliasConfig.hasOwnProperty( prop ) ){
     console.error([
       'Your pelias-config\'s acceptance-tests.email object is missing the following property: ' + prop,
