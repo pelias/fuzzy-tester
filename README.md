@@ -24,7 +24,8 @@ following properties:
  + `status` is the optional expected status of this test-case (whether it should pass/fail/etc.), and will be used to
    identify improvements and regressions. May be either of `pass` or `fail`.
  + `user` is the name of the person that added the test case.
- + `in` is the json query that will be urlencoded and appended to the host url.
+ + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
+ + `in` contains the API parameters that will be urlencoded and appended to the API url.
  + `expected` contains *expected* results. The object can contain a `priorityThresh` property, which will override the
    `priorityThresh` specified by the test-suite, and must contain a `properties` property. `properties` is mapped to an
    array of either of:
@@ -52,6 +53,21 @@ AWS account, and that your `pelias-config` file contain the following configurat
 				"secretAccessKey": "AWS/Secret/key",
 			},
 			"recipients": ["recipient1@domain.com", "recipient2@domain.com"], // the list of recipients
+		}
+	}
+}
+```
+
+## API URL aliases
+The acceptance-tests runner recognizes a number of aliases for Pelias API URLs (eg, `stage` corresponds to
+`pelias.stage.mapzen.com`), which can be specified as command-line arguments when running a test suite. You can
+override the default aliases and define your own in `pelias-config`:
+
+```javascript
+{
+	"acceptance-tests": {
+		"endpoints": {
+			"alias": "http://my.pelias.instance"
 		}
 	}
 }
