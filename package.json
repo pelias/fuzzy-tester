@@ -22,7 +22,8 @@
     "pelias-config": "^0.x.x",
     "handlebars": "^3.x.x",
     "juice": "^1.x.x",
-    "nodemailer": "^1.x.x"
+    "nodemailer": "^1.x.x",
+    "nodemailer-ses-transport": "1.2.0"
   },
   "devDependencies": {
     "precommit-hook": "*",

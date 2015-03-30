@@ -261,7 +261,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
         runNextSuite();
       }
     });
-  };
+  }
 
   runNextSuite();
 }
