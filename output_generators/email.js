@@ -6,19 +6,33 @@ var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
 var juice = require( 'juice' );
-var peliasConfig = require( 'pelias-config' ).generate()[ 'acceptance-tests' ].email;
+var peliasConfig = require( 'pelias-config' ).generate();
 
-[ 'recipients' ].forEach( function ( prop ){
-  if( !peliasConfig.hasOwnProperty( prop ) ){
-    console.error([
-      'Your pelias-config\'s acceptance-tests.email object is missing the following property: ' + prop,
-      'Expected properties are:',
-      '\trecipients: an array of recipients\'s mailing addresses.',
-      '\tses: options for nodemailer-ses-transport, for Amazon\'s SES.'
-    ].join( '\n' ) );
-    process.exit( 1 );
+var sendEmail = false;
+
+(function checkEmailConfig() {
+
+  if( peliasConfig && peliasConfig['acceptance-tests'].email ) {
+    ['recipients'].forEach( function ( prop ) {
+      if( !peliasConfig['acceptance-tests'].email.hasOwnProperty( prop )) {
+        sendEmail = false;
+      }
+    });
+
+    if ( !sendEmail ) {
+      console.error( [
+        'Your pelias-config\'s acceptance-tests.email object is missing one or more properties.',
+        'Expected properties are:',
+        '\trecipients: an array of recipients\'s mailing addresses.',
+        '\tses: options for nodemailer-ses-transport, for Amazon\'s SES.'
+      ].join( '\n' ) );
+    }
   }
-});
+
+  if( !sendEmail ) {
+    console.error( 'WARNING: You are running without email config, results will not be emailed' );
+  }
+})();
 
 function formatTestCase( res ){
   var id = res.testCase.id;
@@ -48,6 +62,11 @@ function formatTestCase( res ){
 }
 
 function emailResults( suiteResults  ){
+
+  if( !sendEmail ) {
+    return;
+  }
+
   handlebars.registerHelper( 'json', JSON.stringify );
   handlebars.registerHelper( 'testCase', formatTestCase );
 
