@@ -4,21 +4,28 @@
     "admin0": "United States",
     "admin1": "New York",
     "admin2": "Kings County",
-    "text": "Brooklyn, Kings County, New York"
+    "locality": "New York",
+    "local_admin": "Brooklyn",
+    "alpha3": "USA",
+    "text": "Brooklyn, NY"
   },
   "New York, New York": {
     "name": "New York",
     "alpha3": "USA",
     "admin0": "United States",
     "admin1": "New York",
+    "admin1_abbr": "NY",
     "admin2": "New York",
-    "text": "New York"
+    "text": "New York, NY"
   },
   "Billerica, Middlesex County, Massachusetts": {
+    "text": "Billerica, MA",
+    "local_admin": "Billerica",
+    "admin2": "Middlesex County",
     "name": "Billerica",
+    "alpha3": "USA",
     "admin0": "United States",
     "admin1": "Massachusetts",
-    "admin2": "Middlesex County",
-    "text": "Billerica, Middlesex County, Massachusetts"
+    "admin1_abbr": "MA"
   }
 }
