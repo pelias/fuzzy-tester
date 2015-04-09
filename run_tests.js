@@ -251,7 +251,7 @@ function execTestSuites( apiUrl, testSuites, outputGenerator, testType ){
 
   testSuites.forEach( function ( suite ){
     suite.tests = suite.tests.filter( function ( testCase ){
-      return testCase.type === testType;
+      return testType === undefined || testCase.type === testType;
     });
   });
 
