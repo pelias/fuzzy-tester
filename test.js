@@ -7,9 +7,19 @@ var colors = require( 'colors' ); // jshint ignore:line
 var commander = require( 'commander' );
 var requireDir = require( 'require-dir' );
 var peliasConfig = require( 'pelias-config' ).generate();
-var outputGenerators = requireDir( './output_generators' );
 var execTestSuites = require( './run_tests.js' );
 var util = require( 'util' );
+
+var path = require( 'path' );
+var fs = require( 'fs' );
+var OUTPUT_GENERATOR_DIR = 'output_generators';
+var outputGenerators = fs.readdirSync( OUTPUT_GENERATOR_DIR )
+  .reduce( function ( modules, nextFile ){
+    if( nextFile.match( /.js$/ ) ){
+      modules.push( nextFile.replace( /.js$/, '' ) );
+    }
+    return modules;
+  }, []);
 
 /**
  * URLs for the various Pelias APIs out in the wild. Can be specified as a
@@ -22,7 +32,6 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
  */
 (function runTests(){
   var endpts = Object.keys( PELIAS_ENDPOINTS ).join( ', ' );
-  var generators = Object.keys( outputGenerators );
   commander
     .usage( '[flags] [file]' )
     .option(
@@ -33,7 +42,7 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
       '-o, --output <type>',
       util.format(
         'The type of output to generate. Any of: %s. Defaults to: terminal',
-        generators.join( ', ' )
+        outputGenerators.join( ', ' )
       ),
       'terminal'
     )
@@ -52,7 +61,7 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
     process.exit( 1 );
   }
 
-  if( generators.indexOf( commander.output ) === -1 ){
+  if( outputGenerators.indexOf( commander.output ) === -1 ){
     console.error( commander.output + ' is not a recognized output generator.' );
     process.exit( 1 );
   }
@@ -71,5 +80,6 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
     }
   }
 
-  execTestSuites.exec( apiUrl, testSuites, outputGenerators[ commander.output ] );
+  var outputGenerator = require( './' + path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
+  execTestSuites.exec( apiUrl, testSuites, outputGenerator );
 })();

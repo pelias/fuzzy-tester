@@ -213,7 +213,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
         cb( testResults );
       }
     });
-  }, 400);
+  }, 10);
 }
 
 var stats = {
