@@ -171,6 +171,14 @@ function execTestSuite( apiUrl, testSuite, cb ){
         console.error( err );
         return;
       }
+      else if( res.statusCode !== 200 ){
+        console.error( 'Non-200 status code:', res.statusCode );
+        testResults.results.push( {
+          result: 'placeholder',
+          testCase: testCase,
+        });
+        return;
+      }
 
       stats.testsCompleted++;
       process.stderr.write( util.format(
