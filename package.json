@@ -23,7 +23,7 @@
     "nodemailer-ses-transport": "1.2.0",
     "pelias-config": "^0.x.x",
     "require-dir": "0.1.0",
-    "supertest": "^0.15.0"
+    "request": "^2.55.0"
   },
   "devDependencies": {
     "jshint": "^2.6.3",
