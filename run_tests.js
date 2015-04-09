@@ -206,11 +206,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
           if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
             return a.testCase.id > b.testCase.id ? 1 : -1;
           }
-          else if( isAStr ){
-            return 1;
-          }
           else {
-            return -1;
+            return isAStr ? 1 : -1;
           }
         });
         cb( testResults );
