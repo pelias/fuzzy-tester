@@ -146,18 +146,18 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 
   var startTime = new Date().getTime();
-  var testInd = 0;
+  var totalTestsNum = testSuite.tests.length;
 
   /**
    * Rate limit HTTP requests to one per 100ms, to prevent the API from
    * shutting us out.
    */
   var intervalId = setInterval( function (){
-    if( testInd === testSuite.tests.length ){
-      clearInterval( intervalId );
+    if( testSuite.tests.length === 0 ){
       return;
     }
-    var testCase = testSuite.tests[ testInd++ ];
+
+    var testCase = testSuite.tests.pop();
 
     var requestOpts = {
       url: testCase.endpoint || 'search',
@@ -171,13 +171,15 @@ function execTestSuite( apiUrl, testSuite, cb ){
         console.error( err );
         return;
       }
-      else if( res.statusCode !== 200 ){
-        console.error( 'Non-200 status code:', res.statusCode );
-        testResults.results.push( {
-          result: 'placeholder',
-          testCase: testCase,
-        });
+      else if( res.statusCode === 413 ){
+        console.error( 'Rate limit breached, rerunning.' );
+        testSuite.tests.push( testCase );
         return;
+      }
+      else if( res.statusCode !== 200 ){
+        console.error( 'Non-{200,413} status code, exiting.', res.statusCode );
+        console.error( 'Failed for test case:', JSON.stringify( testCase, undefined, 4 ) );
+        process.exit( 1 );
       }
 
       stats.testsCompleted++;
@@ -199,7 +201,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
       testResults.stats[ results.result ]++;
       testResults.results.push( results );
 
-      if( testResults.results.length === testSuite.tests.length ){
+      if( testResults.results.length === totalTestsNum ){
+        clearInterval( intervalId );
         testResults.stats.timeTaken = new Date().getTime() - startTime;
 
         /**
@@ -221,7 +224,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
         cb( testResults );
       }
     });
-  }, 10);
+  }, 50);
 }
 
 var stats = {
