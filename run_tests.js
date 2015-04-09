@@ -5,9 +5,8 @@
 'use strict';
 
 var locations = require( './locations.json' );
-var querystring = require( 'querystring' );
-var supertest = require( 'supertest' );
 var util = require( 'util' );
+var request = require( 'request' );
 
 /**
  * Return a boolean indicating whether `actual` has all the key value pairs
@@ -147,75 +146,85 @@ function execTestSuite( apiUrl, testSuite, cb ){
   });
 
   var startTime = new Date().getTime();
-  var testInd = 0;
+  var totalTestsNum = testSuite.tests.length;
 
   /**
    * Rate limit HTTP requests to one per 100ms, to prevent the API from
    * shutting us out.
    */
   var intervalId = setInterval( function (){
-    if( testInd === testSuite.tests.length ){
-      clearInterval( intervalId );
+    if( testSuite.tests.length === 0 ){
       return;
     }
-    var testCase = testSuite.tests[ testInd++ ];
-    var endpoint = '/' + (testCase.endpoint || 'search') + '?' +
-      querystring.stringify( testCase.in );
-    supertest( apiUrl )
-      .get( endpoint )
-      .expect( 'Content-Type', /json/ )
-      .expect( 200 )
-      .end( function ( err, res ) {
-        if( err ){
-          console.error( err );
-          return;
-        }
 
-        stats.testsCompleted++;
-        process.stderr.write( util.format(
-          '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
-          stats.testsTotal
-        ));
+    var testCase = testSuite.tests.pop();
 
-        var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
-        if( results.result === 'pass' && testCase.status === 'fail' ){
-          results.progress = 'improvement';
-        }
-        else if( results.result === 'fail' && testCase.status === 'pass' ){
-          testResults.stats.regression++;
-          results.progress = 'regression';
-        }
+    var requestOpts = {
+      url: testCase.endpoint || 'search',
+      baseUrl: apiUrl,
+      qs: testCase.in,
+      json: true
+    };
 
-        results.testCase = testCase;
-        testResults.stats[ results.result ]++;
-        testResults.results.push( results );
+    request( requestOpts, function ( err, res ){
+      if( err ){
+        console.error( err );
+        return;
+      }
+      else if( res.statusCode === 413 ){
+        console.error( 'Rate limit breached, rerunning.' );
+        testSuite.tests.push( testCase );
+        return;
+      }
+      else if( res.statusCode !== 200 ){
+        console.error( 'Non-{200,413} status code, exiting.', res.statusCode );
+        console.error( 'Failed for test case:', JSON.stringify( testCase, undefined, 4 ) );
+        process.exit( 1 );
+      }
 
-        if( testResults.results.length === testSuite.tests.length ){
-          testResults.stats.timeTaken = new Date().getTime() - startTime;
+      stats.testsCompleted++;
+      process.stderr.write( util.format(
+        '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
+        stats.testsTotal
+      ));
 
-          /**
-           * Sort the test-cases by id to force some output uniformity across
-           * test-runs (since otherwise it'd depend entirely on when a given
-           * request returned, and would be effectively random). Separate and
-           * sort string/number ids separately.
-           */
-          testResults.results.sort( function ( a, b ){
-            var isAStr = typeof a.testCase.id === 'string';
-            var isBStr = typeof b.testCase.id === 'string';
-            if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
-              return a.testCase.id > b.testCase.id ? 1 : -1;
-            }
-            else if( isAStr ){
-              return 1;
-            }
-            else {
-              return -1;
-            }
-          });
-          cb( testResults );
-        }
-      });
-  }, 400);
+      var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
+      if( results.result === 'pass' && testCase.status === 'fail' ){
+        results.progress = 'improvement';
+      }
+      else if( results.result === 'fail' && testCase.status === 'pass' ){
+        testResults.stats.regression++;
+        results.progress = 'regression';
+      }
+
+      results.testCase = testCase;
+      testResults.stats[ results.result ]++;
+      testResults.results.push( results );
+
+      if( testResults.results.length === totalTestsNum ){
+        clearInterval( intervalId );
+        testResults.stats.timeTaken = new Date().getTime() - startTime;
+
+        /**
+         * Sort the test-cases by id to force some output uniformity across
+         * test-runs (since otherwise it'd depend entirely on when a given
+         * request returned, and would be effectively random). Separate and
+         * sort string/number ids separately.
+         */
+        testResults.results.sort( function ( a, b ){
+          var isAStr = typeof a.testCase.id === 'string';
+          var isBStr = typeof b.testCase.id === 'string';
+          if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
+            return a.testCase.id > b.testCase.id ? 1 : -1;
+          }
+          else {
+            return isAStr ? 1 : -1;
+          }
+        });
+        cb( testResults );
+      }
+    });
+  }, 50);
 }
 
 var stats = {
@@ -227,7 +236,7 @@ var stats = {
  * Asynchronously execute the given `testSuites` against the Pelias API running
  * at `apiUrl`, and pass the results to the `outputGenerator` function.
  */
-function execTestSuites( apiUrl, testSuites, outputGenerator ){
+function execTestSuites( apiUrl, testSuites, outputGenerator, testType ){
   var suiteResults = {
     stats: {
       pass: 0,
@@ -239,6 +248,12 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
     },
     results: []
   };
+
+  testSuites.forEach( function ( suite ){
+    suite.tests = suite.tests.filter( function ( testCase ){
+      return testCase.type === testType;
+    });
+  });
 
   stats.testsTotal = testSuites.reduce( function ( acc, suite ){
     return acc + suite.tests.length;
