@@ -3,6 +3,7 @@
     "name": "Brooklyn",
     "admin0": "United States",
     "admin1": "New York",
+    "admin1_abbr": "NY",
     "admin2": "Kings County",
     "locality": "New York",
     "local_admin": "Brooklyn",
