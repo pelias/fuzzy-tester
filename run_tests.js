@@ -236,7 +236,7 @@ var stats = {
  * Asynchronously execute the given `testSuites` against the Pelias API running
  * at `apiUrl`, and pass the results to the `outputGenerator` function.
  */
-function execTestSuites( apiUrl, testSuites, outputGenerator ){
+function execTestSuites( apiUrl, testSuites, outputGenerator, testType ){
   var suiteResults = {
     stats: {
       pass: 0,
@@ -248,6 +248,12 @@ function execTestSuites( apiUrl, testSuites, outputGenerator ){
     },
     results: []
   };
+
+  testSuites.forEach( function ( suite ){
+    suite.tests = suite.tests.filter( function ( testCase ){
+      return testCase.type === testType;
+    });
+  });
 
   stats.testsTotal = testSuites.reduce( function ( acc, suite ){
     return acc + suite.tests.length;

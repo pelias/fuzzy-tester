@@ -46,6 +46,10 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
       ),
       'terminal'
     )
+    .option(
+      '-t, --test-type <testType>',
+      util.format( 'The type of tests to run, as specified in test-cases\' `type` property.' )
+    )
     .option( 'file', 'The specific test-suite to execute instead of all of them.' )
     .parse( process.argv );
 
@@ -81,5 +85,5 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
   }
 
   var outputGenerator = require( './' + path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
-  execTestSuites.exec( apiUrl, testSuites, outputGenerator );
+  execTestSuites.exec( apiUrl, testSuites, outputGenerator, commander.testType );
 })();
