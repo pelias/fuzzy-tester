@@ -5,9 +5,8 @@
 'use strict';
 
 var locations = require( './locations.json' );
-var querystring = require( 'querystring' );
-var supertest = require( 'supertest' );
 var util = require( 'util' );
+var request = require( 'request' );
 
 /**
  * Return a boolean indicating whether `actual` has all the key value pairs
@@ -159,62 +158,64 @@ function execTestSuite( apiUrl, testSuite, cb ){
       return;
     }
     var testCase = testSuite.tests[ testInd++ ];
-    var endpoint = '/' + (testCase.endpoint || 'search') + '?' +
-      querystring.stringify( testCase.in );
-    supertest( apiUrl )
-      .get( endpoint )
-      .expect( 'Content-Type', /json/ )
-      .expect( 200 )
-      .end( function ( err, res ) {
-        if( err ){
-          console.error( err );
-          return;
-        }
 
-        stats.testsCompleted++;
-        process.stderr.write( util.format(
-          '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
-          stats.testsTotal
-        ));
+    var requestOpts = {
+      url: testCase.endpoint || 'search',
+      baseUrl: apiUrl,
+      qs: testCase.in,
+      json: true
+    };
 
-        var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
-        if( results.result === 'pass' && testCase.status === 'fail' ){
-          results.progress = 'improvement';
-        }
-        else if( results.result === 'fail' && testCase.status === 'pass' ){
-          testResults.stats.regression++;
-          results.progress = 'regression';
-        }
+    request( requestOpts, function ( err, res ){
+      if( err ){
+        console.error( err );
+        return;
+      }
 
-        results.testCase = testCase;
-        testResults.stats[ results.result ]++;
-        testResults.results.push( results );
+      stats.testsCompleted++;
+      process.stderr.write( util.format(
+        '\rTests completed: %s/%s', stats.testsCompleted.toString().bold,
+        stats.testsTotal
+      ));
 
-        if( testResults.results.length === testSuite.tests.length ){
-          testResults.stats.timeTaken = new Date().getTime() - startTime;
+      var results = evalTest( testSuite.priorityThresh, testCase, res.body.features );
+      if( results.result === 'pass' && testCase.status === 'fail' ){
+        results.progress = 'improvement';
+      }
+      else if( results.result === 'fail' && testCase.status === 'pass' ){
+        testResults.stats.regression++;
+        results.progress = 'regression';
+      }
 
-          /**
-           * Sort the test-cases by id to force some output uniformity across
-           * test-runs (since otherwise it'd depend entirely on when a given
-           * request returned, and would be effectively random). Separate and
-           * sort string/number ids separately.
-           */
-          testResults.results.sort( function ( a, b ){
-            var isAStr = typeof a.testCase.id === 'string';
-            var isBStr = typeof b.testCase.id === 'string';
-            if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
-              return a.testCase.id > b.testCase.id ? 1 : -1;
-            }
-            else if( isAStr ){
-              return 1;
-            }
-            else {
-              return -1;
-            }
-          });
-          cb( testResults );
-        }
-      });
+      results.testCase = testCase;
+      testResults.stats[ results.result ]++;
+      testResults.results.push( results );
+
+      if( testResults.results.length === testSuite.tests.length ){
+        testResults.stats.timeTaken = new Date().getTime() - startTime;
+
+        /**
+         * Sort the test-cases by id to force some output uniformity across
+         * test-runs (since otherwise it'd depend entirely on when a given
+         * request returned, and would be effectively random). Separate and
+         * sort string/number ids separately.
+         */
+        testResults.results.sort( function ( a, b ){
+          var isAStr = typeof a.testCase.id === 'string';
+          var isBStr = typeof b.testCase.id === 'string';
+          if( ( isAStr && isBStr ) || ( !isAStr && !isBStr ) ){
+            return a.testCase.id > b.testCase.id ? 1 : -1;
+          }
+          else if( isAStr ){
+            return 1;
+          }
+          else {
+            return -1;
+          }
+        });
+        cb( testResults );
+      }
+    });
   }, 400);
 }
 
