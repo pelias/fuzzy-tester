@@ -97,7 +97,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
     { result: 'pass' } :
     {
       result: 'fail',
-      msg: 'No result found.'
+      msg: 'No matching result found.'
     };
 }
 
