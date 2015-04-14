@@ -84,6 +84,10 @@ function emailResults( suiteResults  ){
     else {
       console.log( 'Sent: ', JSON.stringify( info, undefined, 4 ) );
     }
+
+    if( suiteResults.stats.regression > 0 ){
+      process.exit( 1 );
+    }
   });
 }
 
