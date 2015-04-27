@@ -18,13 +18,15 @@ following properties:
  + `name` is the suite title displayed when executing.
  + `priorityThresh` indicates the expected result must be found within the top N locations. This can be set for the entire suite as well as overwritten in individual test cases.
  + `tests` is an array of test cases that make up the suite.
+ + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
 
 `tests` consists of objects with the following properties:
  + `id` is a unique identifier within the test suite (this could be unnecessary, let's discuss)
  + `status` is the optional expected status of this test-case (whether it should pass/fail/etc.), and will be used to
    identify improvements and regressions. May be either of `pass` or `fail`.
  + `user` is the name of the person that added the test case.
- + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
+ + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`, which will override the
+   `endpoint` specified by the test-suite.
  + `in` contains the API parameters that will be urlencoded and appended to the API url.
  + `expected` contains *expected* results. The object can contain a `priorityThresh` property, which will override the
    `priorityThresh` specified by the test-suite, and must contain a `properties` property. `properties` is mapped to an

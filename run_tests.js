@@ -160,7 +160,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
     var testCase = testSuite.tests.pop();
 
     var requestOpts = {
-      url: testCase.endpoint || 'search',
+      url: testCase.endpoint || testSuite.endpoint || 'search',
       baseUrl: apiUrl,
       qs: testCase.in,
       json: true
