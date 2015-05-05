@@ -14,6 +14,14 @@ var request = require( 'request' );
  */
 function equalProperties( expected, actual ){
   for( var prop in expected ){
+    if ( typeof expected[ prop ] !== typeof actual[ prop ] ) {
+      return false;
+    }
+
+    if ( typeof expected[ prop ] === 'object' ) {
+      return equalProperties( expected[ prop ], actual[ prop ] );
+    }
+
     if( actual[ prop ] !== expected[ prop ] ){
       return false;
     }
@@ -32,6 +40,13 @@ function evalTest( priorityThresh, testCase, apiResults ){
     return {
       result: 'placeholder',
       msg: 'Placeholder test, no `expected` specified.'
+    };
+  }
+
+  if ( apiResults.length === 0 ) {
+    return {
+      result: 'fail',
+      msg: 'no results returned'
     };
   }
 
@@ -63,12 +78,13 @@ function evalTest( priorityThresh, testCase, apiResults ){
 
   var unexpected = ( testCase.hasOwnProperty( 'unexpected' ) ) ?
     testCase.unexpected.properties : [];
-  var expectedResultFound = false;
+
+  var expectedResultsFound = [];
 
   for( ind = 0; ind < apiResults.length; ind++ ){
     var result = apiResults[ ind ];
     for( var expectedInd = 0; expectedInd < expected.length; expectedInd++ ){
-      if( !expectedResultFound &&
+      if( expectedResultsFound.indexOf( expectedInd ) === -1 &&
         equalProperties( expected[ expectedInd ], result.properties ) ){
         var success = ( ind + 1 ) <= priorityThresh;
         if( !success ){
@@ -78,7 +94,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
           };
         }
         else {
-          expectedResultFound = true;
+          expectedResultsFound.push( expectedInd );
         }
       }
     }
@@ -93,9 +109,15 @@ function evalTest( priorityThresh, testCase, apiResults ){
     }
   }
 
-  return ( expectedResultFound || (expected.length === 0 && unexpected.length > 0 ) ) ?
-    { result: 'pass' } :
-    {
+  if ( expectedResultsFound.length === expected.length ) {
+    return { result: 'pass' };
+  }
+
+  if ( expected.length === 0 && unexpected.length > 0 ) {
+    return {result: 'pass'};
+  }
+
+  return {
       result: 'fail',
       msg: 'No matching result found.'
     };
@@ -193,6 +215,10 @@ function execTestSuite( apiUrl, testSuite, cb ){
         results.progress = 'improvement';
       }
       else if( results.result === 'fail' && testCase.status === 'pass' ){
+        // uncomment for debugging
+        // require('fs').writeFileSync('fail_' + testCase.id + '.json', JSON.stringify(res.body.features));
+        // end of debugging code
+
         testResults.stats.regression++;
         results.progress = 'regression';
       }
