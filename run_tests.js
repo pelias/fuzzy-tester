@@ -177,8 +177,16 @@ function execTestSuite( apiUrl, testSuite, cb ){
         return;
       }
       else if( res.statusCode !== 200 ){
-        console.error( 'Non-{200,413} status code, exiting.', res.statusCode );
-        console.error( 'Failed for test case:', JSON.stringify( testCase, undefined, 4 ) );
+        console.error( 'Non-{200,413} status code %s, exiting.\n'.red, res.statusCode );
+        console.error(
+          'Failed for test case:\n%s\n',
+          JSON.stringify( testCase, undefined, 4 ).replace( /^|\n/g, '\n\t' )
+        );
+        console.error(
+          'Response:\n%s\n',
+          JSON.stringify( res, undefined, 4 ).replace( /^|\n/g, '\n\t' )
+        );
+        console.error( '\nInvestigate manually:\n  curl %s', res.request.url.href );
         process.exit( 1 );
       }
 
