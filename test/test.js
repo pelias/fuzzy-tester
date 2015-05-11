@@ -94,7 +94,7 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
     {
       description: 'Test case with no `locations.json` props identified as a placeholder.',
       priorityThresh: -1,
-      apiResults: [],
+      apiResults: [{ properties: {} }, { properties: { a: 1 }}],
       testCase: {
         expected: {
           properties: [
@@ -147,6 +147,59 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
         },
       },
       expected: 'pass'
+    },
+    {
+      description: 'Multiple expected blocks should ALL be found',
+      priorityThresh: 3,
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:3, b:5} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:1, b:2},
+            {a:4, b:6}
+          ]
+        }
+      },
+      expected: 'pass'
+    },
+    {
+      description: 'Only one of multiple expected blocks found should fail',
+      priorityThresh: 3,
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:3, b:5} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:1, b:2},
+            {a:4, b:6}
+          ]
+        }
+      },
+      expected: 'fail'
+    },
+    {
+      description: 'Multiple expected blocks should ALL be found within priority threshold',
+      priorityThresh: 2,
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:3, b:5} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:1, b:2},
+            {a:4, b:6}
+          ]
+        }
+      },
+      expected: 'fail'
     }
   ];
 
