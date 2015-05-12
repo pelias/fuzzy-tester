@@ -5,6 +5,11 @@ improvements and regressions between builds. Since it's difficult/impossible to 
 begun silently failing (eg, a certain query stopped returning the right results) after a data or search logic change,
 the acceptance tests should provide us with a scattershot overview of the status of any Pelias instance.
 
+## Status of master against production
+
+[![Build Status](https://travis-ci.org/pelias/acceptance-tests.png)](https://travis-ci.org/pelias/acceptance-tests)
+
+
 ## Usage
 
 ```
