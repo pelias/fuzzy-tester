@@ -25,6 +25,8 @@ following properties:
 
 `tests` consists of objects with the following properties:
  + `id` is a unique identifier within the test suite (this could be unnecessary, let's discuss)
+ + `type` is simply a category to group the test under, to allowing running select groups of tests rather than all of
+   them.
  + `status` is the optional expected status of this test-case (whether it should pass/fail/etc.), and will be used to
    identify improvements and regressions. May be either of `pass` or `fail`.
  + `user` is the name of the person that added the test case.
