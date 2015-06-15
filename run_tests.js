@@ -194,7 +194,7 @@ function execTestSuite( apiUrl, testSuite, cb ){
         return;
       }
       else if( res.statusCode === 413 || res.statusCode === 429 ){
-        console.error( 'Rate limit breached, rerunning.' );
+        //console.error( 'Rate limit breached, rerunning.' );
         testSuite.tests.push( testCase );
         return;
       }
@@ -227,6 +227,8 @@ function execTestSuite( apiUrl, testSuite, cb ){
         // require('fs').writeFileSync('fail_' + testCase.id + '.json', JSON.stringify(res.body.features));
         // end of debugging code
 
+        // subtract the regression from fail count, so we don't double count them
+        testResults.stats.fail--;
         testResults.stats.regression++;
         results.progress = 'regression';
       }
