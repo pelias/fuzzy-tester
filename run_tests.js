@@ -194,7 +194,6 @@ function execTestSuite( apiUrl, testSuite, cb ){
         return;
       }
       else if( res.statusCode === 413 || res.statusCode === 429 ){
-        //console.error( 'Rate limit breached, rerunning.' );
         testSuite.tests.push( testCase );
         return;
       }
