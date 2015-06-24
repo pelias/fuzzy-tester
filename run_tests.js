@@ -90,7 +90,7 @@ function evalTest( priorityThresh, testCase, apiResults ){
         if( !success ){
           return {
             result: 'fail',
-            msg: util.format( 'Result found, but not in top %s.', priorityThresh )
+            msg: util.format( 'Result found, but not in top %s. (%s)', priorityThresh, ind+1 )
           };
         }
         else {
