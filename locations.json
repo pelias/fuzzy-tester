@@ -10,7 +10,7 @@
     "alpha3": "USA",
     "text": "Brooklyn, NY"
   },
-  "New York, New York": {
+  "New York City, NY": {
     "name": "New York City",
     "alpha3": "USA",
     "admin0": "United States",
@@ -20,6 +20,18 @@
     "local_admin": "Manhattan",
     "locality": "New York",
     "text": "New York City, Manhattan, NY"
+  },
+  "New York, NY": {
+    "name": "New York",
+    "alpha3": "USA",
+    "admin0": "United States",
+    "admin1": "New York",
+    "admin1_abbr": "NY",
+    "category": [
+      "admin:admin1",
+      "admin"
+    ],
+    "text": "New York, NY"
   },
   "Billerica, Middlesex County, Massachusetts": {
     "text": "Billerica, MA",
