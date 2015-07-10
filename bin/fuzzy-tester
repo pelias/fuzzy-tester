@@ -8,7 +8,7 @@ var colors = require( 'colors' ); // jshint ignore:line
 var commander = require( 'commander' );
 var requireDir = require( 'require-dir' );
 var peliasConfig = require( 'pelias-config' ).generate();
-var execTestSuites = require( './run_tests.js' );
+var execTestSuites = require( '../lib/run_tests.js' );
 var util = require( 'util' );
 
 var path = require( 'path' );
