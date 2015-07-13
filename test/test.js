@@ -5,7 +5,7 @@
 'use strict';
 
 var tape = require( 'tape' );
-var runTests = require( '../run_tests' );
+var runTests = require( '../lib/run_tests' );
 
 tape( 'equalProperties() works.', function ( test ){
   var testCases = [
