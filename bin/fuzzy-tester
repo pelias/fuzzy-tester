@@ -13,7 +13,7 @@ var util = require( 'util' );
 
 var path = require( 'path' );
 var fs = require( 'fs' );
-var OUTPUT_GENERATOR_DIR = 'output_generators';
+var OUTPUT_GENERATOR_DIR = __dirname + '/../output_generators';
 var outputGenerators = fs.readdirSync( OUTPUT_GENERATOR_DIR )
   .reduce( function ( modules, nextFile ){
     if( nextFile.match( /.js$/ ) ){
@@ -87,6 +87,6 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
     }
   }
 
-  var outputGenerator = require( '../' + path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
+  var outputGenerator = require( path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
   execTestSuites.exec( apiUrl, testSuites, outputGenerator, commander.testType );
 })();
