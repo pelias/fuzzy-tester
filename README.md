@@ -1,22 +1,23 @@
 #### status of [pelias.mapzen.com](http://pelias.mapzen.com): [![Build Status](https://travis-ci.org/pelias/acceptance-tests.png)](https://travis-ci.org/pelias/acceptance-tests)
 
-# acceptance tests
+# fuzzy tester
 
-This repository contains all of the Pelias API "acceptance" tests, which are automated tests used to identify
-improvements and regressions between various versions of the API and the underlying data. Since it's
-difficult/impossible to manually verify whether things have begun silently failing (eg, a certain query stopped
-returning the right results) after a data or search logic change, the acceptance tests should provide us with a
-shotgun overview of the status of any Pelias instance.
+This is the pelias fuzzy tester library, used for running our
+[acceptance-tests](https://github.com/pelias/acceptance-tests) and
+[fuzzy-tests](https://github.com/pelias/fuzzy-tests).
+
 
 ## Usage
 
 ```
-node test --help
+// in the root directory of the repo containing the tests
+fuzzy-tester --help
 ```
 
 ## Test Case Files
-Test-cases live in `test_cases/`, and are split into test *suites* in individual JSON files. Each file must contain the
-following properties:
+Test-cases are expected to live in `test_cases/`, and are split into test
+*suites* in individual JSON files. Each file must contain the following
+properties:
 
  + `name` is the suite title displayed when executing.
  + `priorityThresh` indicates the expected result must be found within the top N locations. This can be set for the entire suite as well as overwritten in individual test cases.
