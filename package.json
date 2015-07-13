@@ -12,10 +12,12 @@
   "author": "mapzen",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test | tap-spec"
+    "test": "node test/test | tap-spec",
+    "lint": "jshint .",
+    "validate": "npm ls"
   },
   "bin": {
-	  "fuzzy-tester": "./bin/fuzzy-tester"
+    "fuzzy-tester": "./bin/fuzzy-tester"
   },
   "dependencies": {
     "colors": "^1.x.x",
@@ -42,5 +44,10 @@
   "bugs": {
     "url": "https://github.com/pelias/fuzzy-tester/issues"
   },
-  "homepage": "https://github.com/pelias/fuzzy-tester"
+  "homepage": "https://github.com/pelias/fuzzy-tester",
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ]
 }
