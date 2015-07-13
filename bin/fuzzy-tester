@@ -22,6 +22,8 @@ var outputGenerators = fs.readdirSync( OUTPUT_GENERATOR_DIR )
     return modules;
   }, []);
 
+var cwd = path.resolve(process.cwd());
+
 /**
  * URLs for the various Pelias APIs out in the wild. Can be specified as a
  * command-line argument (see `runTests()`).
@@ -78,13 +80,13 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
     });
   }
   else {
-    var testFiles = requireDir( 'test_cases' );
+    var testFiles = requireDir( path.resolve(cwd, 'test_cases') );
     testSuites = [];
     for( var file in testFiles ){
       testSuites.push( testFiles[ file ] );
     }
   }
 
-  var outputGenerator = require( './' + path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
+  var outputGenerator = require( '../' + path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
   execTestSuites.exec( apiUrl, testSuites, outputGenerator, commander.testType );
 })();
