@@ -28,7 +28,8 @@
     "nodemailer-ses-transport": "1.2.0",
     "pelias-config": "^0.x.x",
     "require-dir": "0.1.0",
-    "request": "^2.55.0"
+    "request": "^2.55.0",
+    "is-object": "^1.0.1"
   },
   "devDependencies": {
     "jshint": "^2.6.3",
