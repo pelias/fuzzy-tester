@@ -4,7 +4,7 @@
 
 'use strict';
 
-require('./fuzzy-tester');
+require('./exec_test_suites');
 require('./ExponentialBackoff');
 require('./eval_test');
 require('./equal_properties');

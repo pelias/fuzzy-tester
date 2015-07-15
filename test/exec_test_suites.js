@@ -1,12 +1,12 @@
 var tape = require( 'tape' );
-var runTests = require( '../lib/run_tests' );
+var exec_test_suites = require( '../lib/exec_test_suites' );
 
 tape( 'execTestSuite() throws on bad test-cases.', function ( test ){
   test.throws( function (){
     var testSuite = {
       tests: [ { status: 'not a real status' } ]
     };
-    runTests.execTestSuite( 'not a url', testSuite, null);
+    exec_test_suites.execTestSuite( 'not a url', testSuite, null);
   }, /Invalid test status/, 'Throws exception on invalid test status.' );
 
   test.throws( function (){
@@ -19,7 +19,7 @@ tape( 'execTestSuite() throws on bad test-cases.', function ( test ){
         }
       }]
     };
-    runTests.execTestSuite( 'not a url', testSuite, null);
+    exec_test_suites.execTestSuite( 'not a url', testSuite, null);
   }, /MUST be objects/, 'Throws exception on non-object unexpected text-case.' );
   test.end();
 });
