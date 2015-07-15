@@ -88,5 +88,5 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
   }
 
   var outputGenerator = require( path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
-  execTestSuites.exec( apiUrl, commander.endpoint, testSuites, outputGenerator, commander.testType );
+  execTestSuites( apiUrl, commander.endpoint, testSuites, outputGenerator, commander.testType );
 })();
