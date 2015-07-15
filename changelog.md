@@ -1,3 +1,9 @@
+0.2.0 / 2015-07-15
+==================
+
+New features:
+  * [json output generator for failures](https://github.com/pelias/fuzzy-tester/tree/print_failures)
+
 0.1.0 / 2015-07-15
 ==================
 
