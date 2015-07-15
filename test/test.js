@@ -5,3 +5,4 @@
 'use strict';
 
 require('./fuzzy-tester');
+require('./ExponentialBackoff');
