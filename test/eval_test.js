@@ -126,6 +126,24 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'pass'
     },
     {
+      description: 'Expected blocks need not be specified in the order they appear in the api results',
+      priorityThresh: 3,
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:3, b:5} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:4, b:6},
+            {a:1, b:2}
+          ]
+        }
+      },
+      expected: 'pass'
+    },
+    {
       description: 'Only one of multiple expected blocks found should fail',
       priorityThresh: 3,
       apiResults: [
