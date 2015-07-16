@@ -51,6 +51,24 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'placeholder'
     },
     {
+      description: 'Test case with string in properties array matching location uses that location',
+      priorityThresh: 2,
+      locations:  {
+          'my home': {
+              'name': 'la casa'
+          }
+      },
+      apiResults: [{ properties: {} }, { properties: { name: 'la casa' }}],
+      testCase: {
+        expected: {
+          properties: [
+              'my home'
+          ]
+        }
+      },
+      expected: 'pass'
+    },
+    {
       description: 'Test case with no `locations.json` props identified as a placeholder.',
       priorityThresh: -1,
       apiResults: [{ properties: {} }, { properties: { a: 1 }}],
@@ -182,7 +200,7 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
 
   tests.forEach( function ( testCase ){
     var result = evalTest(
-      testCase.priorityThresh, testCase.testCase, testCase.apiResults
+      testCase.priorityThresh, testCase.testCase, testCase.apiResults, testCase.locations
     );
     test.equal( result.result, testCase.expected, testCase.description );
   });
