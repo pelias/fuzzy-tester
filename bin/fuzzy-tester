@@ -8,7 +8,7 @@ var colors = require( 'colors' ); // jshint ignore:line
 var commander = require( 'commander' );
 var requireDir = require( 'require-dir' );
 var peliasConfig = require( 'pelias-config' ).generate();
-var execTestSuites = require( '../lib/run_tests.js' );
+var execTestSuites = require( '../lib/exec_test_suites.js' );
 var util = require( 'util' );
 
 var path = require( 'path' );
@@ -88,5 +88,5 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
   }
 
   var outputGenerator = require( path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
-  execTestSuites.exec( apiUrl, commander.endpoint, testSuites, outputGenerator, commander.testType );
+  execTestSuites( apiUrl, commander.endpoint, testSuites, outputGenerator, commander.testType );
 })();

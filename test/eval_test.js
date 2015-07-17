@@ -1,41 +1,6 @@
 var tape = require( 'tape' );
-var runTests = require( '../lib/run_tests' );
 
-tape( 'equalProperties() works.', function ( test ){
-  var testCases = [
-    {
-      expected: {a: 1, b: 2},
-      actual: {a: 1},
-      match: false
-    },
-    {
-      expected: {a: 1, b: 2},
-      actual: {a: 1, b: 2},
-      match: true
-    },
-    {
-      expected: {a: 1, b: 2},
-      actual: {a: 1, b: 3},
-      match: false
-    },
-    {
-      expected: {a: 1},
-      actual: {a: 1, b: 2},
-      match: true
-    },
-    {
-      expected: {a: 1},
-      actual: {a: 1},
-      match: true
-    }
-  ];
-
-  testCases.forEach( function ( testCase ){
-    var match = runTests.equalProperties( testCase.expected, testCase.actual );
-    test.equal( match, testCase.match, 'Properties match succesful.' );
-  });
-  test.end();
-});
+var evalTest = require( '../lib/eval_test' );
 
 tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
   var tests = [
@@ -198,7 +163,7 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
   ];
 
   tests.forEach( function ( testCase ){
-    var result = runTests.evalTest(
+    var result = evalTest(
       testCase.priorityThresh, testCase.testCase, testCase.apiResults
     );
     test.equal( result.result, testCase.expected, testCase.description );
@@ -207,25 +172,3 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
   test.end();
 });
 
-tape( 'execTestSuite() throws on bad test-cases.', function ( test ){
-  test.throws( function (){
-    var testSuite = {
-      tests: [ { status: 'not a real status' } ]
-    };
-    runTests.execTestSuite( 'not a url', testSuite, null);
-  }, /Invalid test status/, 'Throws exception on invalid test status.' );
-
-  test.throws( function (){
-    var testSuite = {
-      tests: [{
-        unexpected: {
-          properties: [
-            'a string?!'
-          ]
-        }
-      }]
-    };
-    runTests.execTestSuite( 'not a url', testSuite, null);
-  }, /MUST be objects/, 'Throws exception on non-object unexpected text-case.' );
-  test.end();
-});
