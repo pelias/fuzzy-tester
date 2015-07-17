@@ -40,7 +40,7 @@ function prettyPrintResult( result ){
  * Format and print all of the results from any number of test-suites.
  */
 function prettyPrintSuiteResults( suiteResults ){
-  console.log( 'Tests for:', suiteResults.stats.url.blue );
+  console.log( 'Tests for:', suiteResults.stats.url.blue + ' (' + suiteResults.stats.endpoint.blue + ')' );
   suiteResults.results.forEach( function ( suiteResult ){
     console.log( '\n' + suiteResult.stats.name.blue );
     suiteResult.results.forEach( function ( testResult ){
