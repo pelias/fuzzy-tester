@@ -6,6 +6,8 @@ This is the pelias fuzzy tester library, used for running our
 [acceptance-tests](https://github.com/pelias/acceptance-tests) and
 [fuzzy-tests](https://github.com/pelias/fuzzy-tests).
 
+What are fuzzy tests? See the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
+that lead to the creation of this library.
 
 ## Usage
 
