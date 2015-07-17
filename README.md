@@ -13,7 +13,10 @@ that lead to the creation of this library.
 
 ```
 // in the root directory of the repo containing the tests
+fuzzy-tester
 fuzzy-tester --help
+fuzzy-tester -e prod
+fuzzy-tester -t dev
 ```
 
 ## Test Case Files
