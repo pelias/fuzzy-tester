@@ -1,3 +1,9 @@
+0.3.0 / 2015-07-17
+==================
+
+New features:
+ * [endpoint name in output generators](https://github.com/pelias/fuzzy-tester/tree/build-names)
+
 0.2.0 / 2015-07-15
 ==================
 
