@@ -1,3 +1,4 @@
+'use strict';
 
 var tape = require( 'tape' );
 var ExponentialBackoff = require( '../lib/ExponentialBackoff' );
