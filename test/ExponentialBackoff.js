@@ -1,14 +1,14 @@
+'use strict';
 
 var tape = require( 'tape' );
 var ExponentialBackoff = require( '../lib/ExponentialBackoff' );
-
 
 tape( 'ExponentialBackoff', function(test) {
     test.test( 'calling increaseBackoff() makes backoff larger', function(t) {
         var eb = new ExponentialBackoff();
         var startBackoff = eb.getBackoff();
         eb.increaseBackoff();
-        t.ok(startBackoff < eb.getBackoff(), 'backoff was not higher');
+        t.ok(startBackoff < eb.getBackoff(), 'backoff was higher');
         t.end();
     });
 
@@ -17,7 +17,7 @@ tape( 'ExponentialBackoff', function(test) {
         eb.increaseBackoff();
         var startBackoff = eb.getBackoff();
         eb.decreaseBackoff();
-        t.ok(startBackoff > eb.getBackoff(), 'backoff was not lower');
+        t.ok(startBackoff > eb.getBackoff(), 'backoff was lower');
         t.end();
     });
 
@@ -25,7 +25,7 @@ tape( 'ExponentialBackoff', function(test) {
         var eb = new ExponentialBackoff();
         var startBackoff = eb.getBackoff();
         eb.decreaseBackoff();
-        t.ok(startBackoff === eb.getBackoff(), 'backoff was not equal');
+        t.ok(startBackoff === eb.getBackoff(), 'backoff was at minimum');
         t.end();
     });
 
