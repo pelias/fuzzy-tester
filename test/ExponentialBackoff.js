@@ -3,7 +3,6 @@
 var tape = require( 'tape' );
 var ExponentialBackoff = require( '../lib/ExponentialBackoff' );
 
-
 tape( 'ExponentialBackoff', function(test) {
     test.test( 'calling increaseBackoff() makes backoff larger', function(t) {
         var eb = new ExponentialBackoff();
