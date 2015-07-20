@@ -9,6 +9,10 @@ This is the pelias fuzzy tester library, used for running our
 What are fuzzy tests? See the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
 that lead to the creation of this library.
 
+**Note:** fuzzy-tester requires NPM version 2 or greater. The NPM team
+[recommends](http://blog.npmjs.org/post/85484771375/how-to-install-npm) you update NPM using NPM
+itself with `sudo npm install -g npm`.
+
 ## Usage
 
 ```

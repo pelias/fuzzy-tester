@@ -52,5 +52,8 @@
     "lint",
     "validate",
     "test"
-  ]
+  ],
+  "engines": {
+	  "npm": "~2.0.0"
+  }
 }
