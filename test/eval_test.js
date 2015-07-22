@@ -195,14 +195,47 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
         }
       },
       expected: 'fail'
+    },
+    {
+      description: 'Weights can be set at the testSuite level',
+      priorityThresh: 3,
+      weights: {
+        properties: {
+          a: 50
+        }
+      },
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:1, b:2},
+            {a:4, b:6}
+          ]
+        }
+      },
+      expected: 'pass',
+      expected_score: 104 // 2x 50 for a, 2x1 for b, 2x1 for priorityThresh
     }
   ];
 
-  tests.forEach( function ( testCase ){
+  tests.forEach( function ( one_test ){
+    var context = {
+      priorityThresh: one_test.priorityThresh,
+      locations: one_test.locations,
+      weights: one_test.weights
+    };
+
     var result = evalTest(
-      testCase.priorityThresh, testCase.testCase, testCase.apiResults, testCase.locations
+      one_test.testCase, one_test.apiResults, context
     );
-    test.equal( result.result, testCase.expected, testCase.description );
+    test.equal( result.result, one_test.expected, one_test.description );
+
+    if (one_test.expected_score) {
+      test.equal( result.score, one_test.expected_score, 'score should be as expected');
+    }
   });
 
   test.end();
