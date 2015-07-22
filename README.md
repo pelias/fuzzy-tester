@@ -9,6 +9,10 @@ This is the pelias fuzzy tester library, used for running our
 What are fuzzy tests? See the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
 that lead to the creation of this library.
 
+Most importantly, fuzzy tests deliver more than just a single bit of pass or fail for each test:
+they specify a total number of points (a score) for the test, and return how many points out of the
+maximum were achieved. The weighting of individual parts of the test can be adjusted.
+
 ## Usage
 
 ```
@@ -28,6 +32,8 @@ properties:
  + `priorityThresh` indicates the expected result must be found within the top N locations. This can be set for the entire suite as well as overwritten in individual test cases.
  + `tests` is an array of test cases that make up the suite.
  + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
+ + `weights` (optional) test suite wide weighting for scores of the individual expectations. See the
+   weights section below
 
 `tests` consists of objects with the following properties:
  + `id` is a unique identifier within the test suite (this could be unnecessary, let's discuss)
@@ -51,6 +57,8 @@ properties:
 
 + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
+ + `weights` (optional) test case specific weighting for scores of the individual expectations. See the
+   weights section below
 
 ## output generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
@@ -85,3 +93,22 @@ override the default aliases and define your own in `pelias-config`:
 	}
 }
 ```
+
+## Weights
+
+Weights are used to influence the score each individual expectation contributes to the total score
+for a test. By default, all fields in expected properties, passing the priority threshold, and the
+absence of any unexpected properties each contribute one point.
+
+Any score for any individual property can be changed by specifying an object `weights` in a test
+suite, or in an individual test case. For example, to more heavily weight the `name` property by
+giving it a weight of 10 points, set weights to the following:
+```javascript
+{
+  "properties": {
+    "name": 10
+  }
+}
+```
+
+Weights can be nested and are completely optional, in which case the defaults will be in effect.
