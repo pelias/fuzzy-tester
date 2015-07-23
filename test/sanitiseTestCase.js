@@ -2,7 +2,6 @@
 
 var tape = require( 'tape' );
 
-var deepDiff = require( 'deep-diff' );
 var sanitiseTestCase = require( '../lib/sanitiseTestCase' );
 
 tape( 'testCaseSanitiser', function ( test ){
@@ -78,10 +77,8 @@ tape( 'testCaseSanitiser', function ( test ){
       }
     };
 
-
-    // deep diff returns undefined if there are no differences
-    var result = deepDiff.diff(expected_testCase, sanitiseTestCase(testCase, locations));
-    t.equal(result, undefined, 'test case has location filled in');
+    var result = sanitiseTestCase(testCase, locations);
+    t.deepEqual(result, expected_testCase, 'test case has location filled in');
     t.end();
   });
 
