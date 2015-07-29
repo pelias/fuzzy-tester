@@ -76,7 +76,7 @@ var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
   var testSuites;
   if( commander.args.length > 0 ){
     testSuites = commander.args.map( function ( filePath ){
-      return require( './' + filePath );
+      return require( path.resolve( filePath ) );
     });
   }
   else {
