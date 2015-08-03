@@ -19,9 +19,8 @@ function prettyPrintResult( result ){
       break;
 
     case 'fail':
-      var color = (result.progress === 'regression') ? 'red' : 'yellow';
       console.error(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ]
+        util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg ).red
       );
       break;
 
@@ -50,25 +49,23 @@ function prettyPrintSuiteResults( suiteResults ){
 
   console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
-  console.error( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
+  console.error( 'Fail: ' + suiteResults.stats.fail.toString().red );
   console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
-  var numRegressions = suiteResults.stats.regression;
-  var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
-  var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression;
-  var pass = total - numRegressions;
+  var numFail = suiteResults.stats.fail;
+  var total = suiteResults.stats.pass +  suiteResults.stats.fail;
+  var pass = suiteResults.stats.pass;
   var percentage = pass * 100.0 / total;
-  console.log( 'Regressions: ' + numRegressions.toString()[ regressionsColor ] );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
   console.log( 'Test success rate %s%%', Math.round(percentage).toString());
 
   console.log( '' );
-  if( numRegressions > 0 ){
-    console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
+  if( numFail > 0 ){
+    console.error( 'FATAL ERROR: %s failures(s) detected.'.red.inverse, numFail );
     process.exit( 1 );
   }
   else {
-    console.log( '0 regressions detected. All good.' );
+    console.log( '0 failures detected. All good.' );
   }
 }
 
