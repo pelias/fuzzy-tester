@@ -3,3 +3,4 @@ node_modules
 .validate.json
 errors-*.json
 fail_*.json
+history.json
