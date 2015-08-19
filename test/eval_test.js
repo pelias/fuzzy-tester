@@ -51,6 +51,24 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'placeholder'
     },
     {
+      description: 'Test case with string in properties array matching location uses that location',
+      priorityThresh: 2,
+      locations:  {
+          'my home': {
+              'name': 'la casa'
+          }
+      },
+      apiResults: [{ properties: {} }, { properties: { name: 'la casa' }}],
+      testCase: {
+        expected: {
+          properties: [
+              'my home'
+          ]
+        }
+      },
+      expected: 'pass'
+    },
+    {
       description: 'Test case with no `locations.json` props identified as a placeholder.',
       priorityThresh: -1,
       apiResults: [{ properties: {} }, { properties: { a: 1 }}],
@@ -126,6 +144,24 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'pass'
     },
     {
+      description: 'Expected blocks need not be specified in the order they appear in the api results',
+      priorityThresh: 3,
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:3, b:5} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:4, b:6},
+            {a:1, b:2}
+          ]
+        }
+      },
+      expected: 'pass'
+    },
+    {
       description: 'Only one of multiple expected blocks found should fail',
       priorityThresh: 3,
       apiResults: [
@@ -159,14 +195,47 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
         }
       },
       expected: 'fail'
+    },
+    {
+      description: 'Weights can be set at the testSuite level',
+      priorityThresh: 3,
+      weights: {
+        properties: {
+          a: 50
+        }
+      },
+      apiResults: [
+        { properties: {a:1, b:2} },
+        { properties: {a:4, b:6} }
+      ],
+      testCase: {
+        expected: {
+          properties: [
+            {a:1, b:2},
+            {a:4, b:6}
+          ]
+        }
+      },
+      expected: 'pass',
+      expected_score: 104 // 2x 50 for a, 2x1 for b, 2x1 for priorityThresh
     }
   ];
 
-  tests.forEach( function ( testCase ){
+  tests.forEach( function ( one_test ){
+    var context = {
+      priorityThresh: one_test.priorityThresh,
+      locations: one_test.locations,
+      weights: one_test.weights
+    };
+
     var result = evalTest(
-      testCase.priorityThresh, testCase.testCase, testCase.apiResults
+      one_test.testCase, one_test.apiResults, context
     );
-    test.equal( result.result, testCase.expected, testCase.description );
+    test.equal( result.result, one_test.expected, one_test.description );
+
+    if (one_test.expected_score) {
+      test.equal( result.score, one_test.expected_score, 'score should be as expected');
+    }
   });
 
   test.end();

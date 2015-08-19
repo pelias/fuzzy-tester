@@ -22,6 +22,7 @@
   "dependencies": {
     "colors": "^1.x.x",
     "commander": "2.7.0",
+    "deep-diff": "0.3.2",
     "fs-extra": "^0.22.1",
     "handlebars": "^3.x.x",
     "is-object": "^1.0.1",
