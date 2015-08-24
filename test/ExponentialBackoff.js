@@ -29,5 +29,14 @@ tape( 'ExponentialBackoff', function(test) {
         t.end();
     });
 
+    test.test( 'calling increaseBackoff() will not raise backoff above maximum', function(t) {
+      var maxBackoff = 300;
+      var eb = new ExponentialBackoff(100, 5, 100, maxBackoff);
+      eb.increaseBackoff();
+
+      t.equal(eb.getBackoff(), maxBackoff, 'backoff capped at maximum');
+      t.end();
+    });
+
     test.end();
 });
