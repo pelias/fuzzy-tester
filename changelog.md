@@ -1,3 +1,17 @@
+0.3.2 / 2015-08-24
+==================
+
+Bug fix:
+ * backoff between tests will no longer grow exponentiall forever
+   - it's now capped at a default of 10 seconds
+
+0.3.1 / 2015-07-29
+==================
+
+Bug fix:
+ * 500 errors no longer cause the entire test suite to fail
+   - instead the invidual test will be marked as failed
+
 0.3.0 / 2015-07-17
 ==================
 
