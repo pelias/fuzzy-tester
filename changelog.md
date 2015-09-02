@@ -1,3 +1,9 @@
+0.4.1 / 2015-09-02
+==================
+
+New features:
+ * [allow specifying api keys in pelias config](https://github.com/pelias/fuzzy-tester/pull/14)
+
 0.4.0 / 2015-08-19
 ==================
 
