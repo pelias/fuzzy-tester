@@ -1,3 +1,9 @@
+0.4.0 / 2015-08-19
+==================
+
+New features:
+ * [score based test evaluation, with a nice diff-like output](https://github.com/pelias/fuzzy-tester/pull/4)
+
 0.3.0 / 2015-07-17
 ==================
 
