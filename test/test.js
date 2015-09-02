@@ -4,6 +4,7 @@
 
 'use strict';
 
+require('./apiKey');
 require('./exec_test_suite');
 require('./ExponentialBackoff');
 require('./eval_test');
