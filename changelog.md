@@ -1,3 +1,14 @@
+0.4.3 / 2015-09-25
+==================
+
+Bug fix
+* [handle timeout responses](https://github.com/pelias/fuzzy-tester/pull/16)
+
+0.4.2 / 2015-09-04
+==================
+
+* update pelias-config for v1 responses
+
 0.4.1 / 2015-09-02
 ==================
 
