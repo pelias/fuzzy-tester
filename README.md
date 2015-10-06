@@ -1,5 +1,3 @@
-#### status of [pelias.mapzen.com](http://pelias.mapzen.com): [![Build Status](https://travis-ci.org/pelias/acceptance-tests.png)](https://travis-ci.org/pelias/acceptance-tests)
-
 # fuzzy tester
 
 This is the pelias fuzzy tester library, used for running our
