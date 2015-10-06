@@ -1,6 +1,6 @@
-# fuzzy tester
+# Pelias Fuzzy Tester
 
-This is the pelias fuzzy tester library, used for running our
+This is the Pelias fuzzy tester library, used for running our
 [acceptance-tests](https://github.com/pelias/acceptance-tests) and
 [fuzzy-tests](https://github.com/pelias/fuzzy-tests).
 
@@ -61,7 +61,7 @@ properties:
  + `weights` (optional) test case specific weighting for scores of the individual expectations. See the
    weights section below
 
-## output generators
+## Output Generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
 --help` for details on how to specify a generator besides the default. Note that the `email` generator requires an
 AWS account, and that your `pelias-config` file contain the following configuration:
