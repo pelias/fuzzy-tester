@@ -1,3 +1,10 @@
+0.4.4 / 2015-10-06
+==================
+
+Text changes:
+* remove broken and old status badge from readme
+* update the readme with better capitalization
+
 0.4.3 / 2015-09-25
 ==================
 
