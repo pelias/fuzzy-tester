@@ -4,7 +4,7 @@ var evalTest = require( '../lib/eval_test' );
 
 tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
   var tests = [
-    {
+/*    {
       description: '0 API results results in failure.',
       priorityThresh: 1,
       apiResults: [],
@@ -218,6 +218,66 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       },
       expected: 'pass',
       expected_score: 104 // 2x 50 for a, 2x1 for b, 2x1 for priorityThresh
+    },*/
+    {
+      description: 'single normalizer should apply to expected and actual',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {a: 'a!b@c#d'}
+      }],
+      testCase: {
+        expected: {
+          properties: [{
+            a: 'a-b*c^d'
+          }]
+        },
+        normalizers: {
+          a: 'stripPunctuation'
+        }
+      },
+      expected: 'pass'
+    },
+    {
+      description: 'array of normalizers should apply all in order specified',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {
+          a: 'A!b@C#d'
+        }
+      }],
+      testCase: {
+        expected: {
+          properties: [{
+            a: 'a-B*c^D'
+          }]
+        },
+        normalizers: {
+          a: ['stripPunctuation', 'toLowerCase']
+        }
+      },
+      expected: 'pass'
+    },
+    {
+      description: 'properties without normalizers should match exactly',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {
+          a: 'AbC',
+          b: 'B'
+        }
+      }],
+      testCase: {
+        expected: {
+          properties: [{
+            a: 'aBc',
+            b: 'B'
+          }]
+        },
+        normalizers: {
+          a: 'toLowerCase'
+        }
+      },
+      expected: 'pass'
     }
   ];
 
@@ -240,4 +300,3 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
 
   test.end();
 });
-
