@@ -4,7 +4,7 @@ var evalTest = require( '../lib/eval_test' );
 
 tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
   var tests = [
-/*    {
+    {
       description: '0 API results results in failure.',
       priorityThresh: 1,
       apiResults: [],
@@ -218,7 +218,7 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       },
       expected: 'pass',
       expected_score: 104 // 2x 50 for a, 2x1 for b, 2x1 for priorityThresh
-    },*/
+    },
     {
       description: 'single normalizer should apply to expected and actual',
       priorityThresh: 1,
