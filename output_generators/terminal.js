@@ -11,6 +11,7 @@ var util = require( 'util' );
  */
 function prettyPrintResult( result ){
   var id = result.testCase.id;
+  delete result.testCase.in.api_key; // don't display API key
   var input = JSON.stringify(result.testCase.in);
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
