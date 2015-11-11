@@ -188,3 +188,52 @@ tape( 'all expanded city terms should be replaced with abbreviations', function(
   test.equal(normalizers.abbreviateMountSaintFort(input), 'Mt St Ft');
   test.end();
 });
+
+tape( 'remove ordinals handles all ordinals', function(test) {
+  var tests = ['35TH', '1ST', '3RD', '2ND'];
+  var expected = [ '35', '1', '3', '2'];
+
+  var actual = tests.map(normalizers.removeOrdinals);
+  test.deepEqual(actual, expected, 'all ordinals are removed');
+  test.end();
+});
+
+tape( 'remove ordinals leaves other numbers alone', function(test) {
+  var input = '101 60TH';
+  var expected = '101 60';
+
+  test.equal(normalizers.removeOrdinals(input), expected, 'other numbers left alone');
+  test.end();
+});
+
+tape( 'remove ordinals handles lowercase and uppercase', function(test) {
+  var input = '5th';
+  var expected = '5';
+
+  test.equal(normalizers.removeOrdinals(input), expected, 'lowercase ordinals removed');
+  test.end();
+});
+
+tape( 'remove ordinals handles multiple ordinals', function(test) {
+  var input = '4th and 5th';
+  var expected = '4 and 5';
+
+  test.equal(normalizers.removeOrdinals(input), expected, 'multiple ordinals all removed');
+  test.end();
+});
+
+tape( 'remove ordinals leaves lone ordinal suffexes alone', function(test) {
+  var input = 'th';
+  var expected = 'th';
+
+  test.equal(normalizers.removeOrdinals(input), expected, 'lone ordinal suffix not removed');
+  test.end();
+});
+
+tape( 'remove ordinals does not touch fully spelled out ordinals', function(test) {
+  var input = 'third';
+  var expected = 'third';
+
+  test.equal(normalizers.removeOrdinals(input), expected, 'fully spelled out ordinal not removed');
+  test.end();
+});
