@@ -2,6 +2,9 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 var util = require( 'util' );
 
+// add color methods to String.prototype
+require( 'colors' );
+
 var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );

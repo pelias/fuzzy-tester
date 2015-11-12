@@ -4,6 +4,9 @@
 
 'use strict';
 
+// add color methods to String.prototype
+require( 'colors' );
+
 var util = require( 'util' );
 
 /**
