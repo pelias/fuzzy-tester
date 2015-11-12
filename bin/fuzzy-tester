@@ -8,7 +8,7 @@ var processArguments = require('../lib/processArguments');
 var execTestSuites = require( '../lib/exec_test_suites.js' );
 
 (function runTests(){
-  var config = processArguments.runIt();
+  var config = processArguments.getConfig();
 
   var callback = function(results) {
 	config.outputGenerator(results);
