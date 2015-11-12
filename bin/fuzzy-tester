@@ -14,5 +14,5 @@ var execTestSuites = require( '../lib/exec_test_suites.js' );
 	config.outputGenerator(results);
   };
 
-  execTestSuites( config.apiUrl, config.endpoint, config.testSuites, callback, config.testType );
+  execTestSuites( config.endpoint.url, config.endpoint.name, config.testSuites, callback, config.testType );
 })();
