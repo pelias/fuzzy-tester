@@ -1,8 +1,6 @@
 var fs =  require('fs-extra');
-var extend = require('extend');
 var path = require('path');
 var request = require('sync-request');
-var sleep = require('sleep');
 var _ = require('lodash');
 
 var fileName = process.argv[2];
@@ -40,19 +38,18 @@ function changeTestCases(tests) {
 
 function changeTest(test) {
   if (typeof test.expected.properties === 'string') {
-    //console.log(test.expected.properties);
-    //sleep.usleep(200000);
-    var res = request('get', "http://search.mapzen.com/v1/search?api_key=search-DSuCnN0&text="+test.expected.properties);
+    var urlBase = 'http://search.mapzen.com/v1/search?api_key=search-DSuCnN0&text=';
+    var res = request('get', urlBase + test.expected.properties);
     var json = JSON.parse(res.getBody());
 
-    var first = json['features'][0];
+    var first = json.features[0];
 
     if(first) {
-      console.log(first['properties']);
+      console.log(first.properties);
 
       var ignoredKeys = ['id', 'gid', 'layer', 'source', 'confidence'];
 
-      var newValue = _.pick(first['properties'], function(value, key) {
+      var newValue = _.pick(first.properties, function(value, key) {
         return ignoredKeys.indexOf(key) === -1;
       });
 
