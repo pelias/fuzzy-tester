@@ -5,7 +5,14 @@
  */
 
 var processArguments = require('../lib/processArguments');
+var execTestSuites = require( '../lib/exec_test_suites.js' );
 
 (function runTests(){
-	processArguments.runIt();
+  var config = processArguments.runIt();
+
+  var callback = function(results) {
+	config.outputGenerator(results);
+  };
+
+  execTestSuites( config.apiUrl, config.endpoint, config.testSuites, callback, config.testType );
 })();
