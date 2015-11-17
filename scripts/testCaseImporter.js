@@ -25,7 +25,6 @@ function importTestCases(fileNamePrefix, testSuiteConfig, testCaseStream, max_te
   var test_suite_template = _.extend({}, base_test_skeleton, testSuiteConfig);
 
   var testCaseSampler = through.obj(function(chunk, encoding, callback) {
-
     if (sample_percent(sampling_factor)) {
       this.push(chunk);
     }
@@ -52,8 +51,16 @@ function importTestCases(fileNamePrefix, testSuiteConfig, testCaseStream, max_te
     var testSuite = _.extend({}, test_suite_template);
 
     testSuite.tests = chunk;
-    testSuite.name = testSuite.name + ' part ' + fileCount;
-    var filename = fileNamePrefix + '_' + fileCount + '.json';
+
+    var filename;
+    // detect case where test case is or is not split across files
+    // only append partX to file and test suite name if there is a split
+    if (fileCount === 1 && testSuite.tests.length < max_tests_per_file) {
+      filename = fileNamePrefix + '.json';
+    } else {
+      testSuite.name = testSuite.name + ' part ' + fileCount;
+      filename = fileNamePrefix + '_' + fileCount + '.json';
+    }
 
     fs.writeFile(filename, JSON.stringify(testSuite, null, 2), function(err) {
       if (err) {
