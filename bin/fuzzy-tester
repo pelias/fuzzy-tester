@@ -5,14 +5,33 @@
  */
 
 var processArguments = require('../lib/processArguments');
-var execTestSuites = require( '../lib/exec_test_suites.js' );
+var gather_test_suites = require( '../lib/gather_test_suites' );
+var validateTestSuites = require( '../lib/validate_test_suites' );
+var gather_test_urls = require( '../lib/gather_test_urls' );
+var request_urls = require( '../lib/request_urls' );
+var eval_tests = require( '../lib/eval_tests' );
+var analyze_results = require( '../lib/analyze_results' );
 
 (function runTests(){
   var config = processArguments.getConfig();
 
   var callback = function(results) {
-	config.outputGenerator(results);
+	  // evaluate all test suites
+	  var evaled_results = eval_tests(testSuites, results);
+
+	  // perform any final required analysis (such as calculating stats)
+	  var analyzed_results = analyze_results(evaled_results);
+
+	  // display output
+	  config.outputGenerator(evaled_results, config);
   };
 
-  execTestSuites( config, callback );
+  // gather test suites
+  var testSuites = gather_test_suites(config);
+  // validate test suites
+  validateTestSuites(testSuites);
+  // gather test suite urls
+  var urls = gather_test_urls(config, testSuites);
+  // request all urls
+  var results = request_urls(urls, callback);
 })();
