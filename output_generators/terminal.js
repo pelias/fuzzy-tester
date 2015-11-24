@@ -43,11 +43,11 @@ function prettyPrintResult( result ){
 /**
  * Format and print all of the results from any number of test-suites.
  */
-function prettyPrintSuiteResults( suiteResults ){
-  console.log( 'Tests for:', suiteResults.stats.url.blue + ' (' + suiteResults.stats.endpoint.blue + ')' );
-  suiteResults.results.forEach( function ( suiteResult ){
-    console.log( '\n' + suiteResult.stats.name.blue );
-    suiteResult.results.forEach( function ( testResult ){
+function prettyPrintSuiteResults( suiteResults, config ){
+  console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
+  suiteResults.forEach( function ( suiteResult ){
+    //console.log( '\n' + suiteResult.stats.name.blue );
+    suiteResult.forEach( function ( testResult ){
       prettyPrintResult( testResult );
     });
   });
