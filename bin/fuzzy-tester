@@ -13,26 +13,29 @@ var eval_tests = require( '../lib/eval_tests' );
 var analyze_results = require( '../lib/analyze_results' );
 
 (function runTests(){
+  // get configuration options sent via command line parameters
   var config = processArguments.getConfig();
 
+  // steps to be performed after urls have been fetched
   var callback = function(results) {
-	  // evaluate all test suites
+	  // evaluate all test suites (perform scoring, generate diffs, etc)
 	  var evaled_results = eval_tests(testSuites, results);
 
 	  // perform any final required analysis (such as calculating stats)
 	  var analyzed_results = analyze_results(evaled_results);
 
-	  // display output
+	  // display results using the correct output generator
 	  var return_code = config.outputGenerator(evaled_results, config);
 
 	  process.exit(return_code);
   };
 
-  // gather test suites
+  // find all test suites and test cases that will be run
+  // configuration parameters may filter out some tests (i.e. with -t dev)
   var testSuites = gather_test_suites(config);
-  // validate test suites
+  // check all test suites for errors and perform any needed cleanup
   validateTestSuites(testSuites);
-  // gather test suite urls
+  // collect all urls with parameters that tests require fetched
   var urls = gather_test_urls(config, testSuites);
   // request all urls
   var results = request_urls(urls, callback);
