@@ -89,8 +89,9 @@ function emailResults( suiteResults  ){
     }
 
     if( suiteResults.stats.regression > 0 ){
-      process.exit( 1 );
+      return 1;
     }
+    return 0;
   });
 }
 

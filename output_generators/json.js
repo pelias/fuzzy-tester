@@ -36,7 +36,7 @@ function prettyPrintSuiteResults( suiteResults ) {
     });
   });
 
-  terminal( suiteResults );
+  return terminal( suiteResults );
 }
 
 module.exports = prettyPrintSuiteResults;

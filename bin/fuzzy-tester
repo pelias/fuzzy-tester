@@ -23,7 +23,9 @@ var analyze_results = require( '../lib/analyze_results' );
 	  var analyzed_results = analyze_results(evaled_results);
 
 	  // display output
-	  config.outputGenerator(evaled_results, config);
+	  var return_code = config.outputGenerator(evaled_results, config);
+
+	  process.exit(return_code);
   };
 
   // gather test suites
