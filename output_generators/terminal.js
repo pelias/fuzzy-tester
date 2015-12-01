@@ -69,10 +69,11 @@ function prettyPrintSuiteResults( suiteResults, config ){
   console.log( '' );
   if( numRegressions > 0 ){
     console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
-    process.exit( 1 );
+    return 1;
   }
   else {
     console.log( '0 regressions detected. All good.' );
+    return 0;
   }
 }
 
