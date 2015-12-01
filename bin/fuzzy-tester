@@ -18,16 +18,16 @@ var analyze_results = require( '../lib/analyze_results' );
 
   // steps to be performed after urls have been fetched
   var callback = function(results) {
-	  // evaluate all test suites (perform scoring, generate diffs, etc)
-	  var evaled_results = eval_tests(testSuites, results);
+    // evaluate all test suites (perform scoring, generate diffs, etc)
+    var evaled_results = eval_tests(testSuites, results);
 
-	  // perform any final required analysis (such as calculating stats)
-	  var analyzed_results = analyze_results(evaled_results);
+    // perform any final required analysis (such as calculating stats)
+    var analyzed_results = analyze_results(evaled_results);
 
-	  // display results using the correct output generator
-	  var return_code = config.outputGenerator(evaled_results, config);
+    // display results using the correct output generator
+    var return_code = config.outputGenerator(evaled_results, config);
 
-	  process.exit(return_code);
+    process.exit(return_code);
   };
 
   // find all test suites and test cases that will be run
