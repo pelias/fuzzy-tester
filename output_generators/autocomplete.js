@@ -13,21 +13,18 @@ var _ = require( 'lodash' );
 
 function prettyPrintTestCase(testCase, suiteResults) {
   var result_parts = testCase.autocompleteURLs.map(function (url) {
-    var results = suiteResults.filter(function(suiteResult) {
-      return suiteResult.url === url;
-    });
+    var result = suiteResults[url];
 
     var parsedUrl = url_module.parse(url, true);
     var text = parsedUrl.query.text;
     var score = 'F';
-    if (results.length > 0) {
-      var r = results[0];
-      if( r.result === 'pass') {
+    if (result) {
+      if( result.result === 'pass') {
         score = '.'.green;
-      } else if (r.result === 'fail') {
+      } else if (result.result === 'fail') {
         score = 'F'.red;
       } else {
-        console.log(r.result);
+        console.log(result.result);
       }
     } else {
       score = 'F'.blue;
@@ -50,11 +47,16 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   var allSuiteResults = _.flatten(suiteResults);
 
+  var indexedResults = allSuiteResults.reduce(function(index, result) {
+    index[result.url] = result;
+    return index;
+  }, {});
+
   testSuites.forEach( function(testSuite, index) {
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintTestCase(testCase, allSuiteResults);
+      prettyPrintTestCase(testCase, indexedResults);
     });
   });
 
