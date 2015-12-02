@@ -34,8 +34,14 @@ function prettyPrintTestCase(testCase, suiteResults) {
 
   // filter out /reverse tests
   if(testCase.in.text !== undefined) {
-    console.log(testCase.in.text);
-    console.log(result_parts.join(''));
+    var total_failure = result_parts.every(function(char) {
+      return char === 'F'.red;
+    });
+
+    if (!total_failure) {
+      console.log(testCase.in.text);
+      console.log(result_parts.join(''));
+    }
   };
 }
 
