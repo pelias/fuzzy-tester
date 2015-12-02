@@ -19,10 +19,13 @@ function prettyPrintTestCase(testCase, suiteResults) {
     var text = parsedUrl.query.text;
     var score = 'F';
     if (result) {
+      var idx = result.index;
       if( result.result === 'pass') {
-        score = '.'.green;
+        var c = (idx === undefined) ? '.' : idx.toString();
+        score = c.green;
       } else if (result.result === 'fail') {
-        score = 'F'.red;
+        var c = (idx === undefined) ? 'F' : idx.toString();
+        score = c.red;
       } else {
         console.log(result.result);
       }
@@ -34,14 +37,8 @@ function prettyPrintTestCase(testCase, suiteResults) {
 
   // filter out /reverse tests
   if(testCase.in.text !== undefined) {
-    var total_failure = result_parts.every(function(char) {
-      return char === 'F'.red;
-    });
-
-    if (!total_failure) {
-      console.log(testCase.in.text);
-      console.log(result_parts.join(''));
-    }
+    console.log(testCase.in.text);
+    console.log(result_parts.join(''));
   };
 }
 
