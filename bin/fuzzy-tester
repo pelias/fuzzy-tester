@@ -8,6 +8,7 @@ var processArguments = require('../lib/processArguments');
 var gather_test_suites = require( '../lib/gather_test_suites' );
 var validateTestSuites = require( '../lib/validate_test_suites' );
 var gather_test_urls = require( '../lib/gather_test_urls' );
+var gather_autocomplete_urls = require( '../lib/gather_autocomplete_urls' );
 var request_urls = require( '../lib/request_urls' );
 var eval_tests = require( '../lib/eval_tests' );
 var analyze_results = require( '../lib/analyze_results' );
@@ -27,7 +28,7 @@ var analyze_results = require( '../lib/analyze_results' );
     var analyzed_results = analyze_results(evaled_results, startTime);
 
     // display results using the correct output generator
-    var return_code = config.outputGenerator(evaled_results, config);
+    var return_code = config.outputGenerator(evaled_results, config, testSuites);
 
     process.exit(return_code);
   };
@@ -38,7 +39,9 @@ var analyze_results = require( '../lib/analyze_results' );
   // check all test suites for errors and perform any needed cleanup
   validateTestSuites(testSuites);
   // collect all urls with parameters that tests require fetched
-  var urls = gather_test_urls(config, testSuites);
+  var autocomplete_urls = gather_autocomplete_urls(config, testSuites);
+
+  var urls = autocomplete_urls;//urls.concat(autocomplete_urls);
   // request all urls
   var results = request_urls(urls, callback);
 })();
