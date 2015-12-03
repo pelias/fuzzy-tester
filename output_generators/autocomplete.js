@@ -9,7 +9,34 @@ require( 'colors' );
 
 var _ = require( 'lodash' );
 
+/* get a title for this test case with the following features:
+ * * contains any extra query parameters (api key and of course text don't count)
+ * * changes the color of the text to match the test result of the original query
+ *   - except passing tests which are kept uncolored to avoid color overload
+ */
+function getTestCaseTitleString(testCase, suiteResults) {
+  var original_result = suiteResults[testCase.full_url];
+  var colors = {
+    pass: 'reset', // avoid color overload by keeping passing tests plainly colored
+    improvement: 'green',
+    regression: 'red',
+    fail: 'yellow'
+  };
+  var params = _.clone(testCase.in);
+  delete params.api_key;
+  delete params.text;
+  var paramsString = (Object.keys(params).length === 0 ) ? '' : JSON.stringify(params);
+
+  var textColor = colors[original_result.progress || original_result.result];
+  return testCase.in.text[textColor] + ' ' + paramsString;
+}
+
 function prettyPrintTestCase(testCase, suiteResults) {
+  // filter out /reverse tests
+  if(testCase.in.text === undefined) {
+    return;
+  }
+
   var result_parts = testCase.autocompleteURLs.map(function (url) {
     var result = suiteResults[url];
 
@@ -32,11 +59,8 @@ function prettyPrintTestCase(testCase, suiteResults) {
     return score;
   });
 
-  // filter out /reverse tests
-  if(testCase.in.text !== undefined) {
-    console.log(testCase.in.text);
-    console.log(result_parts.join(''));
-  }
+  console.log(getTestCaseTitleString(testCase, suiteResults));
+  console.log(result_parts.join(''));
 }
 
 /**
