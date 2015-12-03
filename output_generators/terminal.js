@@ -15,22 +15,27 @@ var util = require( 'util' );
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
+
   var input = JSON.stringify(result.testCase.in);
+  var expectationCount = result.testCase.expected.properties.length;
+  var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
+  var testDescription = input + expectationString;
+
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, input ).green );
+      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, testDescription ).green );
       break;
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
       console.error(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ]
+        util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
       );
       break;
 
     case 'placeholder':
-      console.error( util.format( '  ! [%s] "%s": %s', id, input, result.msg ).cyan );
+      console.error( util.format( '  ! [%s] "%s": %s', id, testDescription, result.msg ).cyan );
       break;
 
     default:

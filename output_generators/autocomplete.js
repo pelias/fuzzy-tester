@@ -28,7 +28,11 @@ function getTestCaseTitleString(testCase) {
   var paramsString = (Object.keys(params).length === 0 ) ? '' : JSON.stringify(params);
 
   var textColor = colors[original_result.progress || original_result.result];
-  return testCase.in.text[textColor] + ' ' + paramsString;
+
+  var expectationCount = testCase.expected.properties.length;
+  var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
+
+  return testCase.in.text[textColor] + ' ' + paramsString + expectationString;
 }
 
 function prettyPrintTestCase(testCase) {
