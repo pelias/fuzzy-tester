@@ -41,5 +41,5 @@ var analyze_results = require( '../lib/analyze_results' );
   var urls = gather_test_urls(config, testSuites);
 
   // request all urls
-  var results = request_urls(urls, callback);
+  request_urls(urls, callback);
 })();
