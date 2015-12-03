@@ -14,8 +14,8 @@ var _ = require( 'lodash' );
  * * changes the color of the text to match the test result of the original query
  *   - except passing tests which are kept uncolored to avoid color overload
  */
-function getTestCaseTitleString(testCase, suiteResults) {
-  var original_result = suiteResults[testCase.full_url];
+function getTestCaseTitleString(testCase) {
+  var original_result = testCase.results[testCase.full_url];
   var colors = {
     pass: 'reset', // avoid color overload by keeping passing tests plainly colored
     improvement: 'green',
@@ -31,14 +31,14 @@ function getTestCaseTitleString(testCase, suiteResults) {
   return testCase.in.text[textColor] + ' ' + paramsString;
 }
 
-function prettyPrintTestCase(testCase, suiteResults) {
+function prettyPrintTestCase(testCase) {
   // filter out /reverse tests
   if(testCase.in.text === undefined) {
     return;
   }
 
   var result_parts = testCase.autocompleteURLs.map(function (url) {
-    var result = suiteResults[url];
+    var result = testCase.results[url];
 
     var score = 'F';
     if (result) {
@@ -59,7 +59,7 @@ function prettyPrintTestCase(testCase, suiteResults) {
     return score;
   });
 
-  console.log(getTestCaseTitleString(testCase, suiteResults));
+  console.log(getTestCaseTitleString(testCase));
   console.log(result_parts.join(''));
 }
 
@@ -69,18 +69,11 @@ function prettyPrintTestCase(testCase, suiteResults) {
 function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Autocomplete Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
-  var allSuiteResults = _.flatten(suiteResults);
-
-  var indexedResults = allSuiteResults.reduce(function(index, result) {
-    index[result.url] = result;
-    return index;
-  }, {});
-
   testSuites.forEach( function(testSuite) {
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintTestCase(testCase, indexedResults);
+      prettyPrintTestCase(testCase);
     });
   });
 

@@ -8,7 +8,6 @@
 require( 'colors' );
 
 var util = require( 'util' );
-var _ = require( 'lodash' );
 
 /**
  * Format and print a test result to the terminal.
@@ -47,19 +46,11 @@ function prettyPrintResult( result ){
 function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
-  var allSuiteResults = _.flatten(suiteResults);
-
-  var indexedResults = allSuiteResults.reduce(function(index, result) {
-    index[result.url] = result;
-    return index;
-  }, {});
-
   testSuites.forEach( function(testSuite) {
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
-      var testResult = indexedResults[testCase.full_url];
-      prettyPrintResult( testResult );
+      prettyPrintResult( testCase.results[testCase.full_url] );
     });
   });
 
