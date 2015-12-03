@@ -7,24 +7,21 @@
 // add color methods to String.prototype
 require( 'colors' );
 
-var url_module = require( 'url' );
-var util = require( 'util' );
 var _ = require( 'lodash' );
 
 function prettyPrintTestCase(testCase, suiteResults) {
   var result_parts = testCase.autocompleteURLs.map(function (url) {
     var result = suiteResults[url];
 
-    var parsedUrl = url_module.parse(url, true);
-    var text = parsedUrl.query.text;
     var score = 'F';
     if (result) {
       var idx = result.index;
+      var c;
       if( result.result === 'pass') {
-        var c = (idx === undefined) ? '.' : idx.toString();
+        c = idx.toString();
         score = c.green;
       } else if (result.result === 'fail') {
-        var c = (idx === undefined) ? 'F' : idx.toString();
+        c = (result.score > 0 && idx !== undefined) ? idx.toString() : 'F';
         score = c.red;
       } else {
         console.log(result.result);
@@ -39,7 +36,7 @@ function prettyPrintTestCase(testCase, suiteResults) {
   if(testCase.in.text !== undefined) {
     console.log(testCase.in.text);
     console.log(result_parts.join(''));
-  };
+  }
 }
 
 /**
@@ -55,7 +52,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
     return index;
   }, {});
 
-  testSuites.forEach( function(testSuite, index) {
+  testSuites.forEach( function(testSuite) {
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
