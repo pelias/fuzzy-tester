@@ -1,3 +1,9 @@
+0.5.0 / 2015-12-07
+==================
+
+New features:
+* use a more concise diff output that is easier to read
+
 0.4.4 / 2015-10-06
 ==================
 
