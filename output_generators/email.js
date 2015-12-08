@@ -2,6 +2,9 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 var util = require( 'util' );
 
+// add color methods to String.prototype
+require( 'colors' );
+
 var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
@@ -86,8 +89,9 @@ function emailResults( suiteResults  ){
     }
 
     if( suiteResults.stats.regression > 0 ){
-      process.exit( 1 );
+      return 1;
     }
+    return 0;
   });
 }
 
