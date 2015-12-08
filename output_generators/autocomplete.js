@@ -83,8 +83,8 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
-  console.error( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
-  console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
+  console.log( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
+  console.log( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
   var numRegressions = suiteResults.stats.regression;
   var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
@@ -97,7 +97,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '' );
   if( numRegressions > 0 ){
-    console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
+    console.log( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
     return 1;
   }
   else {
