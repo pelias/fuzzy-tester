@@ -24,7 +24,7 @@ var analyze_results = require( '../lib/analyze_results' );
     var evaled_results = eval_tests(testSuites, results);
 
     // perform any final required analysis (such as calculating stats)
-    var analyzed_results = analyze_results(evaled_results, startTime);
+    var analyzed_results = analyze_results(testSuites, evaled_results, config, startTime);
 
     // display results using the correct output generator
     var return_code = config.outputGenerator(evaled_results, config, testSuites);
