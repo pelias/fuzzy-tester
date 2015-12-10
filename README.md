@@ -80,6 +80,25 @@ AWS account, and that your `pelias-config` file contain the following configurat
 }
 ```
 
+### Autocomplete mode
+
+A special output generator, `-o autocomplete` not only changes the output, but changes the behaviour of the test suite.
+Instead of running each test case exactly as defined, it will run many tests for each test case. The tests will be run
+against the autocomplete endpoint and will correspond to successively longer substrings of the input text, similar to
+how a user would type the text into autocomplete. It looks like this:
+
+![autocomplete example output](./autocomplete_example_output.png)
+
+The results are shown underneath the input text, with each character corresponding to the result of the autocomplete
+query with the input text up to the character above entered. Tests that pass are green, tests that fail are red. If the
+expected output was not found at all, the result character will be an `F`, if the expected output was found, the
+character will be the zero indexed location in the API results where it was found.
+
+To the right of the input text, some additional info might be displayed. The first is any additional parameters being
+sent with the API call, like a location bias. The second is a count of the number of expectations included in the test
+case. This helps detect situations where one expectation is found, but the other isn't (the result might be a confusing
+red `0` in that case).
+
 ## API URL aliases
 The acceptance-tests runner recognizes a number of aliases for Pelias API URLs (eg, `stage` corresponds to
 `pelias.stage.mapzen.com`), which can be specified as command-line arguments when running a test suite. You can
