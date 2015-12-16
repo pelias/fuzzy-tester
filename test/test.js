@@ -5,6 +5,7 @@
 'use strict';
 
 require('./apiKey');
+require('./ExponentialBackoff');
 require('./eval_test');
 require('./equal_properties');
 require('./sanitiseTestCase');
