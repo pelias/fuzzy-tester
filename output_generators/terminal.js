@@ -4,6 +4,9 @@
 
 'use strict';
 
+// add color methods to String.prototype
+require( 'colors' );
+
 var util = require( 'util' );
 
 /**
@@ -12,22 +15,27 @@ var util = require( 'util' );
 function prettyPrintResult( result ){
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
+
   var input = JSON.stringify(result.testCase.in);
+  var expectationCount = result.testCase.expected.properties.length;
+  var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
+  var testDescription = input + expectationString;
+
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, input ).green );
+      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, testDescription ).green );
       break;
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
       console.error(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, input, result.msg )[ color ]
+        util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
       );
       break;
 
     case 'placeholder':
-      console.error( util.format( '  ! [%s] "%s": %s', id, input, result.msg ).cyan );
+      console.error( util.format( '  ! [%s] "%s": %s', id, testDescription, result.msg ).cyan );
       break;
 
     default:
@@ -40,12 +48,14 @@ function prettyPrintResult( result ){
 /**
  * Format and print all of the results from any number of test-suites.
  */
-function prettyPrintSuiteResults( suiteResults ){
-  console.log( 'Tests for:', suiteResults.stats.url.blue + ' (' + suiteResults.stats.endpoint.blue + ')' );
-  suiteResults.results.forEach( function ( suiteResult ){
-    console.log( '\n' + suiteResult.stats.name.blue );
-    suiteResult.results.forEach( function ( testResult ){
-      prettyPrintResult( testResult );
+function prettyPrintSuiteResults( suiteResults, config, testSuites ){
+  console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
+
+  testSuites.forEach( function(testSuite) {
+    console.log();
+    console.log(testSuite.name.blue);
+    testSuite.tests.forEach( function(testCase) {
+      prettyPrintResult( testCase.results[testCase.full_url] );
     });
   });
 
@@ -66,10 +76,11 @@ function prettyPrintSuiteResults( suiteResults ){
   console.log( '' );
   if( numRegressions > 0 ){
     console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
-    process.exit( 1 );
+    return 1;
   }
   else {
     console.log( '0 regressions detected. All good.' );
+    return 0;
   }
 }
 

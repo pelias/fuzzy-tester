@@ -4,89 +4,42 @@
  * their results into grokkable output.
  */
 
-var colors = require( 'colors' ); // jshint ignore:line
-var commander = require( 'commander' );
-var requireDir = require( 'require-dir' );
-var peliasConfig = require( 'pelias-config' ).generate();
-var execTestSuites = require( '../lib/exec_test_suites.js' );
-var util = require( 'util' );
+var processArguments = require('../lib/processArguments');
+var gather_test_suites = require( '../lib/gather_test_suites' );
+var validateTestSuites = require( '../lib/validate_test_suites' );
+var gather_test_urls = require( '../lib/gather_test_urls' );
+var request_urls = require( '../lib/request_urls' );
+var eval_tests = require( '../lib/eval_tests' );
+var analyze_results = require( '../lib/analyze_results' );
 
-var path = require( 'path' );
-var fs = require( 'fs' );
-var OUTPUT_GENERATOR_DIR = __dirname + '/../output_generators';
-var outputGenerators = fs.readdirSync( OUTPUT_GENERATOR_DIR )
-  .reduce( function ( modules, nextFile ){
-    if( nextFile.match( /.js$/ ) ){
-      modules.push( nextFile.replace( /.js$/, '' ) );
-    }
-    return modules;
-  }, []);
-
-var cwd = path.resolve(process.cwd());
-
-/**
- * URLs for the various Pelias APIs out in the wild. Can be specified as a
- * command-line argument (see `runTests()`).
- */
-var PELIAS_ENDPOINTS = peliasConfig[ 'acceptance-tests' ].endpoints;
-
-/**
- * Parse command-line arguments and execute indicated test-suites.
- */
 (function runTests(){
-  var endpts = Object.keys( PELIAS_ENDPOINTS ).join( ', ' );
-  commander
-    .usage( '[flags] [file]' )
-    .option(
-      '-e, --endpoint <endpoint>',
-      'The name of the Pelias API to target. Any of: ' + endpts, 'prod'
-    )
-    .option(
-      '-o, --output <type>',
-      util.format(
-        'The type of output to generate. Any of: %s. Defaults to: terminal',
-        outputGenerators.join( ', ' )
-      ),
-      'terminal'
-    )
-    .option(
-      '-t, --test-type <testType>',
-      util.format( 'The type of tests to run, as specified in test-cases\' `type` property.' )
-    )
-    .option( 'file', 'The specific test-suite to execute instead of all of them.' )
-    .parse( process.argv );
+  var startTime = new Date().getTime();
 
-  var apiUrl;
-  if( commander.endpoint in PELIAS_ENDPOINTS ){
-    apiUrl = PELIAS_ENDPOINTS[ commander.endpoint ].replace( /\/*$/, '' );
-  }
-  else {
-    console.error(
-      commander.endpoint + ' is not a recognized endpoint. Try: ',
-      JSON.stringify( PELIAS_ENDPOINTS, undefined, 4 )
-    );
-    process.exit( 1 );
-  }
+  // get configuration options sent via command line parameters
+  var config = processArguments.getConfig();
 
-  if( outputGenerators.indexOf( commander.output ) === -1 ){
-    console.error( commander.output + ' is not a recognized output generator.' );
-    process.exit( 1 );
-  }
+  // steps to be performed after urls have been fetched
+  var callback = function(results) {
+    // evaluate all test suites (perform scoring, generate diffs, etc)
+    var evaled_results = eval_tests(testSuites, results);
 
-  var testSuites;
-  if( commander.args.length > 0 ){
-    testSuites = commander.args.map( function ( filePath ){
-      return require( path.resolve( filePath ) );
-    });
-  }
-  else {
-    var testFiles = requireDir( path.resolve(cwd, 'test_cases') );
-    testSuites = [];
-    for( var file in testFiles ){
-      testSuites.push( testFiles[ file ] );
-    }
-  }
+    // perform any final required analysis (such as calculating stats)
+    var analyzed_results = analyze_results(testSuites, evaled_results, config, startTime);
 
-  var outputGenerator = require( path.join( OUTPUT_GENERATOR_DIR, commander.output ) );
-  execTestSuites( apiUrl, commander.endpoint, testSuites, outputGenerator, commander.testType );
+    // display results using the correct output generator
+    var return_code = config.outputGenerator(evaled_results, config, testSuites);
+
+    process.exit(return_code);
+  };
+
+  // find all test suites and test cases that will be run
+  // configuration parameters may filter out some tests (i.e. with -t dev)
+  var testSuites = gather_test_suites(config);
+  // check all test suites for errors and perform any needed cleanup
+  validateTestSuites(testSuites);
+  // collect all urls with parameters that tests require fetched
+  var urls = gather_test_urls(config, testSuites);
+
+  // request all urls
+  request_urls(urls, callback);
 })();

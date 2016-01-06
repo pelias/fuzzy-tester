@@ -44,6 +44,22 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'fail'
     },
     {
+      description: 'A result in the priority threshold that fails has zero score.',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {a: 1}
+      }],
+      testCase: {
+        expected: {
+          properties: [{
+            a: 2
+          }]
+        }
+      },
+      expected: 'fail',
+      expected_score: 0
+    },
+    {
       description: 'Test case with no `expected`/`unexpected` props identified as a placeholder.',
       priorityThresh: -1,
       apiResults: [],
@@ -293,7 +309,7 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
     );
     test.equal( result.result, one_test.expected, one_test.description );
 
-    if (one_test.expected_score) {
+    if (one_test.expected_score !== undefined) {
       test.equal( result.score, one_test.expected_score, 'score should be as expected');
     }
   });
