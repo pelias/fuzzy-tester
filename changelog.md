@@ -1,3 +1,9 @@
+0.6.0 / 2016-01-06
+==================
+
+New features:
+* [Autocomplete mode!](https://github.com/pelias/fuzzy-tester/pull/28)
+
 0.5.0 / 2015-12-07
 ==================
 
