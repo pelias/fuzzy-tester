@@ -14,7 +14,7 @@ var test_file_json = {
   source: 'digitransit@195.255.176.166/ftproot/rnj/poi.zip',
   priorityThresh: 1,
   normalizers: {
-      name: [ 'toUpperCase', 'stripPunctuation','abbreviateDirectionals']
+      name: [ 'toUpperCase', 'removeNumbers']
   },
 };
 
@@ -27,10 +27,9 @@ var testCaseStream = through({objectMode: true}, function(record, encoding, call
     status: 'pass',
     user: 'vesameskanen',
     in: {
-	text: record.name + ',' + record.locality
-//	boundary_circle_lat: 60.20,
-//	boundary_circle_lon: 24.93,
-//	boundary_circle_radius: 25
+	text: record.name + ',' + record.locality,
+	focus_point_lat: 60.20,
+	focus_point_lon: 24.93
     },
     expected: {
       properties: [

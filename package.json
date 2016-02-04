@@ -41,7 +41,11 @@
     "jshint": "^2.6.3",
     "precommit-hook": "1.0.7",
     "tape": "3.5.0",
-    "tap-dot": "^1.0.0"
+    "tap-dot": "^1.0.0",
+    "through2": "^2.0.0",
+    "lodash": "^3.10.1",
+    "csv-parse": ">=1.0.0",
+    "fs": ">=0.0.2"
   },
   "repository": {
     "type": "git",
