@@ -48,8 +48,8 @@ var testCaseStream = through({objectMode: true}, function(record, encoding, call
     expected: {
       properties: [
         {
-        // enable name property for strict name comparison instead of coordinate matching
-        // name: record.name,
+          // enable name property for strict name comparison
+          name: record.name,
           locality: record.locality
         }
       ],
