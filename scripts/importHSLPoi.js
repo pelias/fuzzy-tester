@@ -21,9 +21,10 @@ var test_file_json = {
   name: 'HSL poi tests',
   description: 'A poi list in Helsinki region',
   source: 'digitransit@195.255.176.166/ftproot/rnj/poi.zip',
-  priorityThresh: 1,
+  priorityThresh: 4,
+  distanceThresh: 500, // meters
   normalizers: {
-      name: [ 'toUpperCase', 'removeNumbers']
+    name: [ 'toUpperCase', 'removeNumbers']
   },
 };
 
