@@ -69,10 +69,10 @@ A snapshot of the data is stored into `data/poi.txt` file. To update the test to
    and add a similar header line as in the example csv file `data/poi.txt`.
  + Edit the import script `scripts/importHSLpoi.js` to specify which poi attributes and search attributes
    will be compared in the test. The current defaults serve as a good starting point.
- + Run the command `nodejs scripts/importHSLpoi.js newpoi.txt`, where newpoi.txt is the new data file.
+ + Run the command `node scripts/importHSLpoi.js newpoi.txt`, where newpoi.txt is the new data file.
  + The script creates a test file called `HslPoitest.json`. You may edit it to fine tune the test setup.
    For example, you can change the threshold values afterwards, or add subtest specific thresholds.
- + Move the test file to the testing environment path ../pelias-fuzzy-tests/test_cases and run the test there.
+ + Move the test file to the testing environment `../pelias-fuzzy-tests/test_cases` and run the test there.
    For more information, check [pelias-fuzzy-tests](http://github.com/HSLdevcom/pelias-fuzzy-tests).
 
 ## Output Generators
