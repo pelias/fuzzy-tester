@@ -61,6 +61,20 @@ properties:
  + `weights` (optional) test case specific weighting for scores of the individual expectations. See the
    weights section below
 
+## Import Scripts for Test Cases
+The data import script `scripts/importHSLpoi.js` can be used to create a fuzzy test from HSL poi data.
+A snapshot of the data is stored into `data/poi.txt` file. To update the test to use the latest data:
+
+ + Download and extract the latest data from digitransit@195.255.176.166/ftproot/rnj/poi.zip
+   and add a similar header line as in the example csv file `data/poi.txt`.
+ + Edit the import script `scripts/importHSLpoi.js` to specify which poi attributes and search attributes
+   will be compared in the test. The current defaults serve as a good starting point.
+ + Run the command `node scripts/importHSLpoi.js newpoi.txt`, where newpoi.txt is the new data file.
+ + The script creates a test file called `HslPoitest.json`. You may edit it to fine tune the test setup.
+   For example, you can change the threshold values afterwards, or add subtest specific thresholds.
+ + Move the test file to the testing environment `../pelias-fuzzy-tests/test_cases` and run the test there.
+   For more information, check [pelias-fuzzy-tests](http://github.com/HSLdevcom/pelias-fuzzy-tests).
+
 ## Output Generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
 --help` for details on how to specify a generator besides the default. Note that the `email` generator requires an
