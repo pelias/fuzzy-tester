@@ -46,7 +46,7 @@ var testCaseStream = through.obj(function(record, encoding, callback) {
   };
 
   if (record.long && record.lat) {
-    test.expected.coordinates = [record.long, record.lat];
+    test.expected.coordinates = [[record.long, record.lat]];
   } else {
     return callback();
   }
