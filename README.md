@@ -64,7 +64,7 @@ properties:
    locations. This is often useful, because matching the name labels may fail even when the geocoder has found a
    proper result ('Harvard' != 'Harvard University'). Location coordinates are less ambiguous.
 
-   Coordinate based tests also help to track invalid location data in the seacrh database.
+   Coordinate based tests also help to track invalid location data in the search database.
 
  + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
