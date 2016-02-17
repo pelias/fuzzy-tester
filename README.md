@@ -59,7 +59,7 @@ properties:
 
    If `properties` is `null`, the test-case is assumed to be a placeholder.
 
-   `expected' can also contain a test specific `distanceThresh` value, and an array of `[lon, lat]` coordinates.
+   `expected` can also contain a test specific `distanceThresh` value, and an array of `[lon, lat]` coordinates.
    With these coordinates, it is possible to compare distance between locations found in the search and expected
    locations. This is often useful, because matching the name labels may fail even when the geocoder has found a
    proper result ('Harvard' != 'Harvard University'). Location coordinates are less ambiguous.
