@@ -8,7 +8,7 @@ var csv_parser = csv_parse({ delimiter: '|', columns: true});
 var filename = process.argv[2];
 var read_stream = fs.createReadStream(filename);
 
-var proj4 = require('proj4');
+var proj4 = require('proj4'); // for transforming source data into wgs84
 proj4.defs([
   [
     'EPSG:2392', //# KKJ / Finland zone 2
@@ -20,7 +20,6 @@ proj4.defs([
 var test_file_json = {
   name: 'HSL poi tests',
   description: 'A poi list in Helsinki region',
-  source: 'digitransit@195.255.176.166/ftproot/rnj/poi.zip',
   priorityThresh: 4,
   distanceThresh: 500, // meters
   normalizers: {
@@ -35,7 +34,7 @@ var testCaseStream = through({objectMode: true}, function(record, encoding, call
   var test = {
     id: count,
     status: 'pass',
-    user: 'vesameskanen',
+    user: 'hsldevcom',
     in: {
       text: record.name + ', ' + record.locality
     },
@@ -43,7 +42,7 @@ var testCaseStream = through({objectMode: true}, function(record, encoding, call
       properties: [
         {
           // enable name property for strict name comparison
-          name: record.name,
+          // name: record.name,
           locality: record.locality
         }
       ],
