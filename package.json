@@ -12,7 +12,8 @@
   "author": "mapzen",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test | tap-dot",
+    "units": "node test/test | tap-dot",
+    "test": "npm run units",
     "lint": "jshint .",
     "validate": "npm ls"
   },
