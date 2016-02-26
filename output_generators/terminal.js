@@ -17,9 +17,15 @@ function prettyPrintResult( result ){
   delete result.testCase.in.api_key; // don't display API key
 
   var input = JSON.stringify(result.testCase.in);
-  var expectationCount = result.testCase.expected.properties.length;
+  var expectationCount;
   var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
   var testDescription = input + expectationString;
+
+  if (result.testCase.expected.properties) {
+    expectationCount = result.testCase.expected.properties.length;
+  } else {
+    expectationCount = 0;
+  }
 
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
