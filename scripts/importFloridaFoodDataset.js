@@ -45,7 +45,7 @@ read_stream.pipe(csv_parser).on('readable',function() {
             locality: record.city
           }
         ],
-        coordinates: [ record.long, record.lat ]
+        coordinates: [[ record.long, record.lat ]]
       }
     };
     test_file_json.tests.push(test);

@@ -31,6 +31,9 @@ properties:
 
  + `name` is the suite title displayed when executing.
  + `priorityThresh` indicates the expected result must be found within the top N locations. This can be set for the entire suite as well as overwritten in individual test cases.
+ + `distanceThresh` (optional) defines the accepted maximal distance (in meters) between search result coordinates and the coordinates defined in each test.
+    Each test case can include a specific threshold value. This makes sense because location of a neigborhood is not as accurately defined as location of,
+    say, a building. Default threshold is 500 meters.
  + `tests` is an array of test cases that make up the suite.
  + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
  + `weights` (optional) test suite wide weighting for scores of the individual expectations. See the
@@ -56,10 +59,30 @@ properties:
 
    If `properties` is `null`, the test-case is assumed to be a placeholder.
 
-+ `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
+   `expected` can also contain a test specific `distanceThresh` value, and an array of `[lon, lat]` coordinates.
+   With these coordinates, it is possible to compare distance between locations found in the search and expected
+   locations. This is often useful, because matching the name labels may fail even when the geocoder has found a
+   proper result ('Harvard' != 'Harvard University'). Location coordinates are less ambiguous.
+
+   Coordinate based tests also help to track invalid location data in the search database.
+
+ + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
  + `weights` (optional) test case specific weighting for scores of the individual expectations. See the
    weights section below
+
+## Import Scripts for Test Cases
+
+The `scripts` folder contains example scripts for creating fuzzy tests. For example, the data import script
+`scripts/importHSLpoi.js` can be used to create a fuzzy test from a poi data list as follows:
+
+ + Edit the import script `scripts/importHSLPoi.js` to specify which poi attributes and search attributes
+   will be compared in the test. The current defaults serve as a good starting point.
+ + Run the command `node scripts/importHSLPoi.js data/poi.txt`, where poi.txt is the source data file.
+ + The script creates a test file called `HslPoitest.json`. You may edit it to fine tune the test setup.
+   For example, you can change the threshold values afterwards, or add subtest specific thresholds.
+ + Move the test file to the testing environment `../fuzzy-tests/test_cases` and run the test there.
+   For more information, check [fuzzy-tests](http://github.com/Pelias/fuzzy-tests).
 
 ## Output Generators
 The acceptance-tests support multiple different output generators, like an email and terminal output. See `node test
