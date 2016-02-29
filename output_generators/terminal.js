@@ -21,7 +21,7 @@ function prettyPrintResult( result ){
   var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
   var testDescription = input + expectationString;
 
-  if (result.testCase.expected.properties) {
+  if (result.testCase.expected && result.testCase.expected.properties) {
     expectationCount = result.testCase.expected.properties.length;
   } else {
     expectationCount = 0;
