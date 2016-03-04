@@ -37,7 +37,7 @@ function getTestCaseTitleString(testCase) {
 
 function prettyPrintTestCase(testCase) {
   // filter out /reverse tests
-  if(testCase.in.text === undefined) {
+  if(testCase.in.text === undefined || !testCase.expected) {
     return;
   }
 
