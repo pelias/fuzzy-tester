@@ -1,3 +1,10 @@
+0.5.1 / 2016-03-28
+==================
+
+Bug fixes:
+* Backport usage of http.Agent to limit maximum concurrent requests to 1
+  This helps avoid overloading small clusters during testing
+
 0.5.0 / 2015-12-07
 ==================
 
