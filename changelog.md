@@ -1,3 +1,10 @@
+0.6.1 / 2016-04-04
+==================
+
+Bug fixes:
+* Output from large test suites is no longer truncated
+  See https://github.com/pelias/fuzzy-tester/pull/44
+
 0.5.1 / 2016-03-28
 ==================
 
