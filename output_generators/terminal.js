@@ -35,17 +35,17 @@ function prettyPrintResult( result ){
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
-      console.error(
+      console.log(
         util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
       );
       break;
 
     case 'placeholder':
-      console.error( util.format( '  ! [%s] "%s": %s', id, testDescription, result.msg ).cyan );
+      console.log( util.format( '  ! [%s] "%s": %s', id, testDescription, result.msg ).cyan );
       break;
 
     default:
-      console.error( util.format( 'Result type `%s` not recognized.', result.result ) );
+      console.log( util.format( 'Result type `%s` not recognized.', result.result ) );
       process.exit( 1 );
       break;
   }
@@ -67,8 +67,8 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
-  console.error( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
-  console.error( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
+  console.log( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
+  console.log( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
   var numRegressions = suiteResults.stats.regression;
   var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
@@ -81,7 +81,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '' );
   if( numRegressions > 0 ){
-    console.error( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
+    console.log( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
     return 1;
   }
   else {
