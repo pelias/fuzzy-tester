@@ -49,7 +49,7 @@ function changeTest(test) {
 
       var ignoredKeys = ['id', 'gid', 'layer', 'source', 'confidence'];
 
-      var newValue = _.pick(first.properties, function(value, key) {
+      var newValue = _.pickBy(first.properties, function(value, key) {
         return ignoredKeys.indexOf(key) === -1;
       });
 
