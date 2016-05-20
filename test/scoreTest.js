@@ -12,7 +12,7 @@ tape( 'scoreUnexpected basics', function ( test ){
       ]
     };
 
-    var results = [
+    var features = [
       {
         properties: {
           name: 'a great name'
@@ -24,7 +24,7 @@ tape( 'scoreUnexpected basics', function ( test ){
         }
       }
     ];
-    var result = scoreTest.scoreUnexpected(unexpected, results);
+    var result = scoreTest.scoreUnexpected(unexpected, features);
     t.equal(result.score, 1, 'score is 1 (the default weight)');
     t.equal(result.max_score, 1, 'max score is 1');
     t.equal(result.diff, '', 'diff is empty');
@@ -40,7 +40,7 @@ tape( 'scoreUnexpected basics', function ( test ){
       ]
     };
 
-    var results = [
+    var features = [
       {
         properties: {
           name: 'a great name'
@@ -52,11 +52,11 @@ tape( 'scoreUnexpected basics', function ( test ){
         }
       }
     ];
-    var result = scoreTest.scoreUnexpected(unexpected, results);
+    var result = scoreTest.scoreUnexpected(unexpected, features);
     t.equal(result.score, 0, 'score is 0');
     t.equal(result.max_score, 1, 'max score is 1');
-    t.deepEquals(result.diff,[ 'unexpected result found from {"name":"unexpectedName"}' ],
-                 'the diff says which unexpected result was found');
+    t.deepEquals(result.diff,[ 'unexpected property found from {"name":"unexpectedName"}' ],
+                 'the diff says which unexpected feature was found');
     t.end();
   });
 });

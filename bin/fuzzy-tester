@@ -27,15 +27,15 @@ var analyze_results = require( '../lib/analyze_results' );
   var urls = gather_test_urls(config, testSuites);
 
   // request all urls
-  request_urls(urls, function processResults(results) {
-    // results is a simple object where the keys are urls, and the value is the
+  request_urls(urls, function processResponses(responses) {
+    // responses is a simple object where the keys are urls, and the value is the
     // entire response from fetching that url
     // test cases can have many URLs (in autocomplete mode), and the same url
     // could be used in multiple tests, so the relationship between test cases and
-    // results is complex.
+    // responses is complex.
 
     // evaluate all test suites (perform scoring, generate diffs, etc)
-    var evaled_results = eval_tests(testSuites, results);
+    var evaled_results = eval_tests(testSuites, responses);
 
     // perform any final required analysis (such as calculating stats)
     var analyzed_results = analyze_results(testSuites, evaled_results, config, startTime);
