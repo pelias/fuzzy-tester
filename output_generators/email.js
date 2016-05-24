@@ -1,6 +1,5 @@
 var fs = require( 'fs' );
 var path = require( 'path' );
-var util = require( 'util' );
 
 // add color methods to String.prototype
 require( 'colors' );
@@ -10,6 +9,8 @@ var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
 var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate();
+var formatTestCase = require('../lib/email/format_test_case');
+
 try {
   var emailConfig = peliasConfig[ 'acceptance-tests' ].email;
 }
@@ -40,34 +41,6 @@ function replace(key, value) {
     }
   });
 })();
-
-function formatTestCase( testCase ){
-  var id = testCase.id;
-  var input = JSON.stringify( testCase.in, undefined, 4 );
-  var result = testCase.results[testCase.full_url];
-  var status = (result.progress === undefined) ? '' :
-    util.format( '<span class="status">%s</span> ', result.progress );
-
-  var out;
-  switch( result.result ){
-    case 'pass':
-      out = new handlebars.SafeString( util.format( '✔ %s[%s] "%s"', status, id, input ) );
-      break;
-
-    case 'fail':
-      out = new handlebars.SafeString( util.format( '✘ %s[%s] "%s": %s', status, id, input, result.msg ) );
-      break;
-
-    case 'placeholder':
-      return util.format( '! [%s] "%s": %s', id, input, result.msg );
-
-    default:
-      console.error( util.format( 'Result type `%s` not recognized.', result.result ) );
-      process.exit( 1 );
-  }
-
-  return out;
-}
 
 function emailResults( suiteResults , config, testSuites ){
   handlebars.registerHelper( 'json', JSON.stringify );
