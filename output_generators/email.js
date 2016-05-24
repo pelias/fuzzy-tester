@@ -1,15 +1,10 @@
-var fs = require( 'fs' );
-var path = require( 'path' );
-
 // add color methods to String.prototype
 require( 'colors' );
 
-var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
-var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate();
-var formatTestCase = require('../lib/email/format_test_case');
+var generateEmailBody = require('../lib/email/generate_email_body');
 
 try {
   var emailConfig = peliasConfig[ 'acceptance-tests' ].email;
@@ -43,20 +38,7 @@ function replace(key, value) {
 })();
 
 function emailResults( suiteResults , config, testSuites ){
-  handlebars.registerHelper( 'json', JSON.stringify );
-  handlebars.registerHelper( 'testCase', formatTestCase );
-
-  var templateParams = { suiteResults: suiteResults, config: config, testSuites: testSuites };
-
-  testSuites.forEach(function(suite) {
-    suite.tests.forEach(function(testCase) {
-      testCase.result = testCase.results[testCase.full_url];
-    });
-  });
-
-  var templatePath = path.join( __dirname, 'email_static/email.html' );
-  var emailTemplate = fs.readFileSync( templatePath ).toString();
-  var emailHtml = juice( handlebars.compile( emailTemplate )( templateParams ) );
+  var emailHtml = generateEmailBody( suiteResults, config, testSuites );
   var transporter = nodemailer.createTransport( nodemailerSesTransport( emailConfig.ses ) );
 
   var emailOpts = {
