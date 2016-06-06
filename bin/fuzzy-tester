@@ -18,20 +18,6 @@ var analyze_results = require( '../lib/analyze_results' );
   // get configuration options sent via command line parameters
   var config = processArguments.getConfig();
 
-  // steps to be performed after urls have been fetched
-  var callback = function(results) {
-    // evaluate all test suites (perform scoring, generate diffs, etc)
-    var evaled_results = eval_tests(testSuites, results);
-
-    // perform any final required analysis (such as calculating stats)
-    var analyzed_results = analyze_results(testSuites, evaled_results, config, startTime);
-
-    // display results using the correct output generator
-    var return_code = config.outputGenerator(evaled_results, config, testSuites);
-
-    process.exitCode = return_code;
-  };
-
   // find all test suites and test cases that will be run
   // configuration parameters may filter out some tests (i.e. with -t dev)
   var testSuites = gather_test_suites(config);
@@ -41,5 +27,23 @@ var analyze_results = require( '../lib/analyze_results' );
   var urls = gather_test_urls(config, testSuites);
 
   // request all urls
-  request_urls(urls, callback);
+  request_urls(urls, function processResponses(responses) {
+    // responses is a simple object where the keys are urls, and the value is the
+    // entire response from fetching that url
+    // test cases can have many URLs (in autocomplete mode), and the same url
+    // could be used in multiple tests, so the relationship between test cases and
+    // responses is complex.
+
+    // evaluate all test suites (perform scoring, generate diffs, etc)
+    var evaled_results = eval_tests(testSuites, responses);
+
+    // perform any final required analysis (such as calculating stats)
+    var analyzed_results = analyze_results(testSuites, evaled_results, config, startTime);
+
+    // display results using the correct output generator
+    var return_code = config.outputGenerator(evaled_results, config, testSuites);
+
+    process.exitCode = return_code;
+  });
+
 })();

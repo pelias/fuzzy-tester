@@ -12,7 +12,7 @@ tape( 'scoreUnexpected basics', function ( test ){
       ]
     };
 
-    var results = [
+    var features = [
       {
         properties: {
           name: 'a great name'
@@ -24,7 +24,7 @@ tape( 'scoreUnexpected basics', function ( test ){
         }
       }
     ];
-    var result = scoreTest.scoreUnexpected(unexpected, results);
+    var result = scoreTest.scoreUnexpected(unexpected, features);
     t.equal(result.score, 1, 'score is 1 (the default weight)');
     t.equal(result.max_score, 1, 'max score is 1');
     t.equal(result.diff, '', 'diff is empty');
@@ -40,7 +40,7 @@ tape( 'scoreUnexpected basics', function ( test ){
       ]
     };
 
-    var results = [
+    var features = [
       {
         properties: {
           name: 'a great name'
@@ -52,11 +52,92 @@ tape( 'scoreUnexpected basics', function ( test ){
         }
       }
     ];
-    var result = scoreTest.scoreUnexpected(unexpected, results);
+    var result = scoreTest.scoreUnexpected(unexpected, features);
     t.equal(result.score, 0, 'score is 0');
     t.equal(result.max_score, 1, 'max score is 1');
-    t.deepEquals(result.diff,[ 'unexpected result found from {"name":"unexpectedName"}' ],
-                 'the diff says which unexpected result was found');
+    t.deepEquals(result.diff,[ 'unexpected property found from {"name":"unexpectedName"}' ],
+                 'the diff says which unexpected feature was found');
+    t.end();
+  });
+
+  test.test('correct score returned when result not within specified distance of coordinates', function(t) {
+    var context = {
+      distanceThresh: 1000,
+      priorityThresh: 1,
+      weights: {
+        coordinates: 1,
+        priorityThresh: 1
+      }
+    };
+    var testCase = {
+      expected: {
+        properties: [
+          {
+            name: 'test'
+          }
+        ],
+        coordinates: [
+          [ 1.0, 1.0]
+        ]
+      }
+    };
+
+    var features = [
+      {
+        properties: {
+          name: 'test',
+          locality: 'place'
+        },
+        geometry: {
+          coordinates: [ 50.0, 50.0]
+        }
+      }
+    ];
+
+    var result = scoreTest.scoreTest(testCase, features, context);
+    t.equal(result.score, 2, 'score is 2');
+    t.equal(result.max_score, 3, 'max score is 3');
+    t.deepEquals(result.diff,[ 'test,place is not close enough, distance=7140266 m' ],
+                 'the diff shows the distance from the expected coordinate');
+    t.end();
+  });
+
+  test.test('correct score when result not within specified distance, and there are no properties', function(t) {
+    var context = {
+      distanceThresh: 1000,
+      priorityThresh: 1,
+      weights: {
+        coordinates: 1,
+        priorityThresh: 1
+      }
+    };
+    var testCase = {
+      expected: {
+        properties: [
+        ],
+        coordinates: [
+          [ 1.0, 1.0]
+        ]
+      }
+    };
+
+    var features = [
+      {
+        properties: {
+          name: 'test',
+          locality: 'place'
+        },
+        geometry: {
+          coordinates: [ 50.0, 50.0]
+        }
+      }
+    ];
+
+    var result = scoreTest.scoreTest(testCase, features, context);
+    t.equal(result.score, 0, 'score is 0');
+    t.equal(result.max_score, 1, 'max score is 1');
+    t.deepEquals(result.diff,[ 'test,place is not close enough, distance=7140266 m' ],
+                 'the diff shows the distance from the expected coordinate');
     t.end();
   });
 });
