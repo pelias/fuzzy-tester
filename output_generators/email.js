@@ -1,15 +1,11 @@
-var fs = require( 'fs' );
-var path = require( 'path' );
-var util = require( 'util' );
-
 // add color methods to String.prototype
 require( 'colors' );
 
-var handlebars = require( 'handlebars' );
 var nodemailer = require( 'nodemailer' );
 var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
-var juice = require( 'juice' );
 var peliasConfig = require( 'pelias-config' ).generate();
+var generateEmailBody = require('../lib/email/generate_email_body');
+
 try {
   var emailConfig = peliasConfig[ 'acceptance-tests' ].email;
 }
@@ -17,6 +13,14 @@ catch ( ex ) {
   console.error( ex );
   console.error( 'No email config present in your pelias-config!' );
   process.exit( 1 );
+}
+
+// replacer for stringifying testCase to avoid circular structure
+function replace(key, value) {
+  if (key === 'results' || key === 'result') {
+    return undefined;
+  }
+  return value;
 }
 
 (function checkEmailConfig() {
@@ -33,50 +37,18 @@ catch ( ex ) {
   });
 })();
 
-function formatTestCase( res ){
-  var id = res.testCase.id;
-  var input = JSON.stringify( res.testCase.in, undefined, 4 );
-  var status = (res.progress === undefined) ? '' :
-    util.format( '<span class="status">%s</span> ', res.progress );
-
-  var out;
-  switch( res.result ){
-    case 'pass':
-      out = new handlebars.SafeString( util.format( '✔ %s[%s] "%s"', status, id, input ) );
-      break;
-
-    case 'fail':
-      out = new handlebars.SafeString( util.format( '✘ %s[%s] "%s": %s', status, id, input, res.msg ) );
-      break;
-
-    case 'placeholder':
-      return util.format( '! [%s] "%s": %s', id, input, res.msg );
-
-    default:
-      console.error( util.format( 'Result type `%s` not recognized.', res.result ) );
-      process.exit( 1 );
-  }
-
-  return out;
-}
-
-function emailResults( suiteResults  ){
-  handlebars.registerHelper( 'json', JSON.stringify );
-  handlebars.registerHelper( 'testCase', formatTestCase );
-
-  var templatePath = path.join( __dirname, 'email_static/email.html' );
-  var emailTemplate = fs.readFileSync( templatePath ).toString();
-  var emailHtml = juice( handlebars.compile( emailTemplate )( suiteResults ) );
+function emailResults( suiteResults , config, testSuites ){
+  var emailHtml = generateEmailBody( suiteResults, config, testSuites );
   var transporter = nodemailer.createTransport( nodemailerSesTransport( emailConfig.ses ) );
 
   var emailOpts = {
-    from: emailConfig.from || '"pelias-acceptance-tests" <noreply@pelias-acceptance-tests>',
+    from: emailConfig.from || '"pelias-acceptance-tests" <noreply@pelias.mapzen.com>',
     to: emailConfig.recipients.join( ', ' ),
     subject: 'pelias acceptance-tests results ' + new Date().toString(),
     html: emailHtml,
     attachments: [{
       filename: 'results.json',
-      content: JSON.stringify( suiteResults, undefined, 4 )
+      content: JSON.stringify( suiteResults, replace, 4 )
     }]
   };
 

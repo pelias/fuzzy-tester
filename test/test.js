@@ -6,6 +6,7 @@
 
 require('./apiKey');
 require('./ExponentialBackoff');
+require('./email/format_test_case');
 require('./eval_test');
 require('./equal_properties');
 require('./sanitiseTestCase');
