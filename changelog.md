@@ -1,3 +1,9 @@
+0.6.3 / 2016-06-13
+==================
+
+Bug fixes:
+* Fix the long standing email sending bug! (https://github.com/pelias/fuzzy-tester/issues/30)
+
 0.6.2 / 2016-05-03
 ==================
 
