@@ -9,6 +9,8 @@ require( 'colors' );
 
 var _ = require( 'lodash' );
 
+var percentageForDisplay = require('../lib/percentageForDisplay');
+
 /* get a title for this test case with the following features:
  * * contains any extra query parameters (api key and of course text don't count)
  * * changes the color of the text to match the test result of the original query
@@ -95,11 +97,10 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
   var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression;
   var pass = total - numRegressions;
-  var percentage = pass * 100.0 / total;
+
   console.log( 'Regressions: ' + numRegressions.toString()[ regressionsColor ] );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
-  console.log( 'Test success rate %s%%', Math.round(percentage).toString());
-
+  console.log( 'Test success rate %s%%', percentageForDisplay(total, pass));
   console.log( '' );
   if( numRegressions > 0 ){
     console.log( 'FATAL ERROR: %s regression(s) detected.'.red.inverse, numRegressions );
