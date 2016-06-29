@@ -1,3 +1,16 @@
+0.7.0 / 2016-06-29
+==================
+
+New features:
+* Add improvement count to terminal and email output (https://github.com/pelias/fuzzy-tester/pull/64)
+
+Bug fixes:
+* Round success percentages to 2 decimals to avoid inaccurately reporting 100% success (https://github.com/pelias/fuzzy-tester/pull/62)
+
+Dependency updates:
+* nodemailer-ses-transport 1.4.0 (https://github.com/pelias/fuzzy-tester/pull/61)
+* juice 2.0.0 (https://github.com/pelias/fuzzy-tester/pull/56)
+
 0.6.3 / 2016-06-13
 ==================
 
