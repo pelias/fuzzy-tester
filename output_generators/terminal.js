@@ -69,6 +69,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
+  console.log( 'Improvements: ' + suiteResults.stats.improvement.toString().green);
   console.log( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
   console.log( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
