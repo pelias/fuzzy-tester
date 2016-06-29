@@ -40,7 +40,7 @@ tape( 'percentageForDisplay basics', function ( test ){
   test.test('repeating decimals', function(t){
   	var total_tests = 3;
   	var passed_tests = 2;
-  	
+
   	var actual = percentageForDisplay(total_tests,passed_tests);
 
   	t.equal(actual, 66.67, 'output is 66.67%');
@@ -56,5 +56,5 @@ tape( 'percentageForDisplay basics', function ( test ){
     t.equal(actual, 0, 'output is 0%');
 
     t.end();
-  });  
+  });
 });
