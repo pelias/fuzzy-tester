@@ -28,7 +28,7 @@
     "fs-extra": "^0.30.0",
     "handlebars": "^4.0.5",
     "is-object": "^1.0.1",
-    "juice": "^1.x.x",
+    "juice": "^2.0.0",
     "lodash": "^4.5.1",
     "nodemailer": "^2.2.1",
     "nodemailer-ses-transport": "1.4.0",
