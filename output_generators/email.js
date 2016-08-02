@@ -37,6 +37,10 @@ function replace(key, value) {
   });
 })();
 
+function getSubject(config) {
+  return 'pelias ' + config.endpoint.name + ' acceptance-test results ' + new Date().toString();
+}
+
 function emailResults( suiteResults , config, testSuites ){
   var emailHtml = generateEmailBody( suiteResults, config, testSuites );
   var transporter = nodemailer.createTransport( nodemailerSesTransport( emailConfig.ses ) );
@@ -44,7 +48,7 @@ function emailResults( suiteResults , config, testSuites ){
   var emailOpts = {
     from: emailConfig.from || '"pelias-acceptance-tests" <noreply@pelias.mapzen.com>',
     to: emailConfig.recipients.join( ', ' ),
-    subject: 'pelias acceptance-tests results ' + new Date().toString(),
+    subject: getSubject(config),
     html: emailHtml,
     attachments: [{
       filename: 'results.json',
