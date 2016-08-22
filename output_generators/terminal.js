@@ -14,20 +14,22 @@ var percentageForDisplay = require('../lib/percentageForDisplay');
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintResult( result ){
-  var id = result.testCase.id;
-  delete result.testCase.in.api_key; // don't display API key
+function prettyPrintResult( testCase ){
+  var id = testCase.id;
+  delete testCase.in.api_key; // don't display API key
 
-  var input = JSON.stringify(result.testCase.in);
+  var input = JSON.stringify(testCase.in);
   var expectationCount;
   var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
   var testDescription = input + expectationString;
 
-  if (result.testCase.expected && result.testCase.expected.properties) {
-    expectationCount = result.testCase.expected.properties.length;
+  if (testCase.expected && testCase.expected.properties) {
+    expectationCount = testCase.expected.properties.length;
   } else {
     expectationCount = 0;
   }
+
+  var result = testCase.results[testCase.full_url];
 
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
@@ -63,7 +65,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintResult( testCase.results[testCase.full_url] );
+      prettyPrintResult( testCase );
     });
   });
 
