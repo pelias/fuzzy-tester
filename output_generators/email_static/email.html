@@ -59,15 +59,6 @@
 </style>
 Tests for: <b>{{config.endpoint.url}} ( {{ config.endpoint.name }} )</b>
 
-{{#each testSuites}}
-	<h2>{{name}}</h2>
-	<ul>
-		{{#each tests}}
-			<li class="{{result.result}}-{{status}}">{{testCase this}}</li>
-		{{/each}}
-	</ul>
-{{/each}}
-
 <div>
 	pass: <span style="color: green;">{{suiteResults.stats.pass}}</span><br>
 	improvements: <span style="color: green;">{{suiteResults.stats.improvement}}</span><br>
@@ -82,3 +73,12 @@ Tests for: <b>{{config.endpoint.url}} ( {{ config.endpoint.name }} )</b>
 		<p class="success">No regressions detected. All clear.</p>
 	{{/if}}
 </div>
+
+{{#each testSuites}}
+	<h2>{{name}}</h2>
+	<ul>
+		{{#each tests}}
+			<li class="{{result.result}}-{{status}}">{{testCase this}}</li>
+		{{/each}}
+	</ul>
+{{/each}}
