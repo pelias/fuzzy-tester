@@ -16,7 +16,8 @@
     "test": "npm run units",
     "lint": "jshint .",
     "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "check-dependencies": "node_modules/.bin/npm-check --production"
   },
   "bin": {
     "fuzzy-tester": "./bin/fuzzy-tester"
@@ -62,7 +63,8 @@
   "pre-commit": [
     "lint",
     "validate",
-    "test"
+    "test",
+    "check-dependencies"
   ],
   "engines": {
     "node": ">=4.0.0",
