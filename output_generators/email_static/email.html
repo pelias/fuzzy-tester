@@ -75,10 +75,12 @@ Tests for: <b>{{config.endpoint.url}} ( {{ config.endpoint.name }} )</b>
 </div>
 
 {{#each testSuites}}
+  {{#if (shouldDisplayTestSuite this) }}
 	<h2>{{name}}</h2>
 	<ul>
 		{{#each tests}}
 			<li class="{{result.result}}-{{status}}">{{testCase this}}</li>
 		{{/each}}
 	</ul>
+  {{/if}}
 {{/each}}
