@@ -14,7 +14,7 @@ var percentageForDisplay = require('../lib/percentageForDisplay');
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintResult( result ){
+function prettyPrintResult( result, quiet ){
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
 
@@ -32,7 +32,9 @@ function prettyPrintResult( result ){
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, testDescription ).green );
+      if (!quiet) {
+        console.log(util.format('  ✔ %s[%s] "%s"', status, id, testDescription).green);
+      }
       break;
 
     case 'fail':
@@ -63,7 +65,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
     console.log();
     console.log(testSuite.name.blue);
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintResult( testCase.results[testCase.full_url] );
+      prettyPrintResult( testCase.results[testCase.full_url], config.quiet );
     });
   });
 
