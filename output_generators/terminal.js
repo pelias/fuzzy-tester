@@ -59,6 +59,15 @@ function prettyPrintTestCase( testCase, quiet ){
   }
 }
 
+/*
+ * Decide whether a test suite should be displayed in output
+ * only tests where an unexpected (regression or improvement) result occured should cause
+ * the test suite to display
+ */
+function shouldDisplayTestSuite(testSuite) {
+  return !testSuiteHelpers.allTestsAsExpected(testSuite);
+}
+
 /**
  * Format and print all of the results from any number of test-suites.
  */
@@ -66,12 +75,15 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
   testSuites.forEach( function(testSuite) {
-    console.log();
-    console.log(testSuite.name.blue);
 
-    testSuite.tests.forEach( function(testCase) {
-      prettyPrintTestCase( testCase, config.quiet );
-    });
+    if (!config.quiet || shouldDisplayTestSuite(testSuite)) {
+      console.log();
+      console.log(testSuite.name.blue);
+
+      testSuite.tests.forEach( function(testCase) {
+        prettyPrintTestCase( testCase, config.quiet );
+      });
+    }
   });
 
   console.log( '\nAggregate test results'.blue );
