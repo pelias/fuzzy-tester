@@ -41,9 +41,11 @@ function prettyPrintTestCase( testCase, quiet ){
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
-      console.log(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
-      );
+      if (!quiet || color === 'red') {
+        console.log(
+          util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
+        );
+      }
       break;
 
     case 'placeholder':
