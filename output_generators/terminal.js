@@ -10,11 +10,13 @@ require( 'colors' );
 var util = require( 'util' );
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
+var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintResult( result, quiet ){
+function prettyPrintTestCase( testCase, quiet ){
+  var result = testSuiteHelpers.getMainResult(testCase);
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
 
@@ -64,8 +66,9 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   testSuites.forEach( function(testSuite) {
     console.log();
     console.log(testSuite.name.blue);
+
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintResult( testCase.results[testCase.full_url], config.quiet );
+      prettyPrintTestCase( testCase, config.quiet );
     });
   });
 

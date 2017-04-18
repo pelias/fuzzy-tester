@@ -9,6 +9,8 @@ var fs = require('fs-extra');
 var terminal = require('./terminal');
 var sanitize_filename = require('sanitize-filename');
 
+var testSuiteHelpers = require('../lib/test_suite_helpers');
+
 // replacer for stringifying testCase to avoid circular structure
 function replace(key, value) {
   if (key === 'results' || key === 'result') {
@@ -21,13 +23,14 @@ function replace(key, value) {
  * Format and print a test result to json file.
  */
 function saveFailTestResult( testCase ) {
-  if( testCase.result.result === 'fail' && testCase.status === 'pass' ) {
+  var result = testSuiteHelpers.getMainResult(testCase);
+  if( result.result === 'fail' && testCase.status === 'pass' ) {
     fs.ensureDirSync('./failures');
     var recordFailFile = './failures/' + sanitize_filename(
         util.format('%s_%s.json', testCase.id, testCase.in.text));
     var recordFail = {
       test_case: testCase,
-      response: testCase.result.response.body.features
+      response: result.response.body.features
     };
     fs.writeFileSync(recordFailFile, JSON.stringify(recordFail, replace, 2));
   }
@@ -40,7 +43,6 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ) {
 
   testSuites.forEach(function(suite) {
     suite.tests.forEach(function(testCase) {
-      testCase.result = testCase.results[testCase.full_url];
       saveFailTestResult( testCase );
     });
   });
