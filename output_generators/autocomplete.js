@@ -10,6 +10,7 @@ require( 'colors' );
 var _ = require( 'lodash' );
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
+var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 /* get a title for this test case with the following features:
  * * contains any extra query parameters (api key and of course text don't count)
@@ -17,7 +18,7 @@ var percentageForDisplay = require('../lib/percentageForDisplay');
  *   - except passing tests which are kept uncolored to avoid color overload
  */
 function getTestCaseTitleString(testCase) {
-  var original_result = testCase.results[testCase.full_url];
+  var original_result = testSuiteHelpers.getMainResult(testCase);
   var colors = {
     pass: 'reset', // avoid color overload by keeping passing tests plainly colored
     improvement: 'green',

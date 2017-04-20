@@ -10,11 +10,13 @@ require( 'colors' );
 var util = require( 'util' );
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
+var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintResult( result ){
+function prettyPrintTestCase( testCase, quiet ){
+  var result = testSuiteHelpers.getMainResult(testCase);
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
 
@@ -32,14 +34,18 @@ function prettyPrintResult( result ){
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, testDescription ).green );
+      if (!quiet) {
+        console.log(util.format('  ✔ %s[%s] "%s"', status, id, testDescription).green);
+      }
       break;
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
-      console.log(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
-      );
+      if (!quiet || color === 'red') {
+        console.log(
+          util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
+        );
+      }
       break;
 
     case 'placeholder':
@@ -53,6 +59,15 @@ function prettyPrintResult( result ){
   }
 }
 
+/*
+ * Decide whether a test suite should be displayed in output
+ * only tests where an unexpected (regression or improvement) result occured should cause
+ * the test suite to display
+ */
+function shouldDisplayTestSuite(testSuite) {
+  return !testSuiteHelpers.allTestsAsExpected(testSuite);
+}
+
 /**
  * Format and print all of the results from any number of test-suites.
  */
@@ -60,11 +75,15 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
   testSuites.forEach( function(testSuite) {
-    console.log();
-    console.log(testSuite.name.blue);
-    testSuite.tests.forEach( function(testCase) {
-      prettyPrintResult( testCase.results[testCase.full_url] );
-    });
+
+    if (!config.quiet || shouldDisplayTestSuite(testSuite)) {
+      console.log();
+      console.log(testSuite.name.blue);
+
+      testSuite.tests.forEach( function(testCase) {
+        prettyPrintTestCase( testCase, config.quiet );
+      });
+    }
   });
 
   console.log( '\nAggregate test results'.blue );
