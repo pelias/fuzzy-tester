@@ -1,5 +1,7 @@
 # Pelias Fuzzy Tester
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/fuzzy-tester.svg)](https://greenkeeper.io/)
+
 This is the Pelias fuzzy tester library, used for running our
 [acceptance-tests](https://github.com/pelias/acceptance-tests) and
 [fuzzy-tests](https://github.com/pelias/fuzzy-tests).
