@@ -14,8 +14,8 @@ var percentageForDisplay = require('../lib/percentageForDisplay');
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintResult( result ){
-  var id = result.testCase.id;
+function prettyPrintResult( result, testSuite, quiet ){
+  var id = quiet ? `[${testSuite}][${result.testCase.id}]` : `[${result.testCase.id}]`;
   delete result.testCase.in.api_key; // don't display API key
 
   var input = JSON.stringify(result.testCase.in);
@@ -32,18 +32,20 @@ function prettyPrintResult( result ){
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      console.log( util.format( '  ✔ %s[%s] "%s"', status, id, testDescription ).green );
+      if (!quiet) {
+        console.log(util.format('  ✔ %s %s "%s"', status, id, testDescription).green);
+      }
       break;
 
     case 'fail':
       var color = (result.progress === 'regression') ? 'red' : 'yellow';
       console.log(
-        util.format( '  ✘ %s[%s] "%s": %s', status, id, testDescription, result.msg )[ color ]
+        util.format( '  ✘ %s %s "%s": %s', status, id, testDescription, result.msg )[ color ]
       );
       break;
 
     case 'placeholder':
-      console.log( util.format( '  ! [%s] "%s": %s', id, testDescription, result.msg ).cyan );
+      console.log( util.format( '  ! %s "%s": %s', id, testDescription, result.msg ).cyan );
       break;
 
     default:
@@ -59,11 +61,13 @@ function prettyPrintResult( result ){
 function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
-  testSuites.forEach( function(testSuite) {
-    console.log();
-    console.log(testSuite.name.blue);
+  testSuites.forEach(function (testSuite) {
+    if (!config.quiet) {
+      console.log();
+      console.log(testSuite.name.blue);
+    }
     testSuite.tests.forEach( function(testCase) {
-      prettyPrintResult( testCase.results[testCase.full_url] );
+      prettyPrintResult( testCase.results[testCase.full_url], testSuite.name, config.quiet );
     });
   });
 
