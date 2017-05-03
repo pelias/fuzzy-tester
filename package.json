@@ -24,7 +24,7 @@
   "dependencies": {
     "colors": "^1.x.x",
     "commander": "2.9.0",
-    "deep-diff": "0.3.5",
+    "deep-diff": "0.3.7",
     "fj-compose": "^1.1.0",
     "fs-extra": "^2.1.2",
     "handlebars": "^4.0.5",
