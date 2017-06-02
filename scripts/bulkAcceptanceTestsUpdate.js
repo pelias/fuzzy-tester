@@ -1,6 +1,6 @@
 var fs = require('fs-extra');
 var fileName = process.argv[2];
-var extend = require('extend');
+var _ = require('lodash');
 var path = require('path');
 
 // config mapping of old names to new ones
@@ -103,7 +103,7 @@ function renameProperties(place) {
   var newPlace = {};
   Object.keys(place).forEach(function (property) {
     if (property === 'address') {
-      extend(newPlace, renameProperties(place[property]));
+      _.extend(newPlace, renameProperties(place[property]));
     }
     else {
       renameProperty(place, newPlace, property);
