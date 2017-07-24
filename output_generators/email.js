@@ -49,11 +49,7 @@ function emailResults( suiteResults , config, testSuites ){
     from: emailConfig.from || '"pelias-acceptance-tests" <noreply@pelias.mapzen.com>',
     to: emailConfig.recipients.join( ', ' ),
     subject: getSubject(config),
-    html: emailHtml,
-    attachments: [{
-      filename: 'results.json',
-      content: JSON.stringify( suiteResults, replace, 4 )
-    }]
+    html: emailHtml
   };
 
   transporter.sendMail( emailOpts, function( err, info ){
