@@ -20,7 +20,8 @@ notifications:
 before_script:
   - npm prune
 after_success:
-  - npm run semantic-release
+  - npm install -g npx
+  - npx -p node@8 npm run semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
