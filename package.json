@@ -38,7 +38,7 @@
     "nodemailer-ses-transport": "1.5.1",
     "pelias-config": "2.14.0",
     "request": "^2.55.0",
-    "require-dir": "^0.3.2",
+    "require-dir": "^1.0.0",
     "sanitize-filename": "^1.3.0",
     "sync-request": "^5.0.0"
   },
