@@ -14,11 +14,10 @@
   "scripts": {
     "units": "node test/test | tap-dot",
     "test": "npm run units",
-    "travis": "npm run check-dependencies && npm test",
+    "travis": "npm test",
     "lint": "jshint .",
     "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "check-dependencies": "node_modules/.bin/npm-check --production"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "bin": {
     "fuzzy-tester": "./bin/fuzzy-tester"
@@ -45,7 +44,6 @@
   "devDependencies": {
     "csv-parse": ">=1.0.0",
     "jshint": "^2.6.3",
-    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "precommit-hook": "3.0.0",
     "proj4": "^2.3.12",
     "semantic-release": "^15.0.0",
@@ -66,8 +64,7 @@
   "pre-commit": [
     "lint",
     "validate",
-    "test",
-    "check-dependencies"
+    "test"
   ],
   "engines": {
     "node": ">=6.0.0",
