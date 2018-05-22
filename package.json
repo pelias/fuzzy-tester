@@ -28,7 +28,7 @@
     "commander": "2.15.0",
     "deep-diff": "0.3.8",
     "fj-compose": "^1.1.0",
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^6.0.0",
     "handlebars": "^4.0.5",
     "haversine": "^1.0.0",
     "is-object": "^1.0.1",
