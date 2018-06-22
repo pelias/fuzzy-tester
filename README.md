@@ -157,3 +157,42 @@ giving it a weight of 10 points, set weights to the following:
 ```
 
 Weights can be nested and are completely optional, in which case the defaults will be in effect.
+
+## Using the Docker image
+
+### rebuild the image
+
+you can rebuild the image on any system with the following command:
+
+```bash
+$ docker build -t pelias/fuzzy-tester .
+```
+
+### download pre-built image
+
+Up to date Docker images are built and automatically pushed to Docker Hub from our continuous integration pipeline
+
+You can pull the latest stable image with
+
+```bash
+$ docker pull pelias/fuzzy-tester
+```
+
+### running tests in a container
+
+You can bind-mount local tests to make them available inside the container using the `-v` flag.
+
+In this example, the local file `./pelias.json` and local directory `./test_cases` are bind-mounted in to the container.
+
+```bash
+docker run --rm -i \
+  -v './pelias.json:/code/pelias.json' \
+  -v './test_cases:/code/pelias/fuzzy-tester/test_cases' \
+  pelias/fuzzy-tester --help
+```
+
+### download custom image tags
+
+We publish each commit and the latest of each branch to separate tags
+
+A list of all available tags to download can be found at https://hub.docker.com/r/pelias/fuzzy-tester/tags/
