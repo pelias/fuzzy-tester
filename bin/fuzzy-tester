@@ -27,7 +27,7 @@ var analyze_results = require( '../lib/analyze_results' );
   var urls = gather_test_urls(config, testSuites);
 
   // request all urls
-  request_urls(urls, function processResponses(responses) {
+  request_urls(config, urls, function processResponses(responses) {
     // responses is a simple object where the keys are urls, and the value is the
     // entire response from fetching that url
     // test cases can have many URLs (in autocomplete mode), and the same url
