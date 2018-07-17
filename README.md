@@ -16,7 +16,7 @@ maximum were achieved. The weighting of individual parts of the test can be adju
 **Note:** fuzzy-tester requires NPM version 2 or greater. The NPM team
 [recommends](http://blog.npmjs.org/post/85484771375/how-to-install-npm) you update NPM using NPM
 itself with `sudo npm install -g npm`.
-## Usage
+## Example Usage
 
 ```
 // in the root directory of the repo containing the tests
@@ -25,6 +25,15 @@ fuzzy-tester --help
 fuzzy-tester -e prod
 fuzzy-tester -t dev
 ```
+
+
+## Command Line Parameters
+
+* `--help` show help :)
+* `-e` Select an envronment from `pelias.json` to run tests against. A list of valid environments will be printed if an invalid value or no value is passed
+* `-o` Select an output mode. Valid values are `terminal` (default), `csv`, `json`, and `autocomplete` (see below)
+* `-q` Enable quiet mode. Only test failures (not successes) are printed
+* `-t` Select a test 'type' to filter on. This is a free-text value that can be added to each test, to allow running a subset of tests
 
 ## Test Case Files
 Test-cases are expected to live in `test_cases/`, and are split into test
