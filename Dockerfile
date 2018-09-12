@@ -15,5 +15,7 @@ ADD . ${WORKDIR}
 # run tests
 RUN npm test
 
+USER pelias
+
 # set entrypoint
 ENTRYPOINT [ "./bin/fuzzy-tester" ]
