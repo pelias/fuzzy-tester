@@ -71,6 +71,13 @@ tape( 'toUpperCase should return string input uppercased', function(test) {
 
 });
 
+tape( 'trim returns string without leading and trailing whitespace', function(test) {
+  var input = ' abc ';
+
+  test.equal(normalizers.trim(input), 'abc');
+  test.end();
+});
+
 tape( 'non-string input to abbreviateDirectionals should return input value unmodified', function(test) {
   var input = { 'foo': { 'bar': '!@#$'}, 'baz': 'AB*()CD'};
 
