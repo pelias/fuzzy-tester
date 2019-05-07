@@ -34,7 +34,7 @@
     "lodash": "^4.5.1",
     "nodemailer": "^4.2.0",
     "nodemailer-ses-transport": "^1.5.1",
-    "pelias-config": "^3.0.2",
+    "pelias-config": "^4.0.0",
     "request": "^2.55.0",
     "require-dir": "^1.0.0",
     "sanitize-filename": "^1.3.0",
