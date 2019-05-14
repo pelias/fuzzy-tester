@@ -19,7 +19,7 @@ tape( 'api_key not found in config', function ( test ){
   delete process.env.PELIAS_CONFIG;
 
   // delete temp file
-  fs.unlink( '/tmp/pelias_temp.json' );
+  fs.unlinkSync( '/tmp/pelias_temp.json' );
 
   test.end();
 });
@@ -41,7 +41,7 @@ tape( 'stage api_key imported from pelias config', function ( test ){
   delete process.env.PELIAS_CONFIG;
 
   // delete temp file
-  fs.unlink( '/tmp/pelias_temp2.json' );
+  fs.unlinkSync( '/tmp/pelias_temp2.json' );
 
   test.end();
 });
@@ -63,7 +63,7 @@ tape( 'avoid matching partial urls', function ( test ){
   delete process.env.PELIAS_CONFIG;
 
   // delete temp file
-  fs.unlink( '/tmp/pelias_temp3.json' );
+  fs.unlinkSync( '/tmp/pelias_temp3.json' );
 
   test.end();
 });
