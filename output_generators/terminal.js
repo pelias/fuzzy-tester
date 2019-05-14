@@ -22,14 +22,15 @@ function prettyPrintTestCase( testCase, quiet ){
 
   var input = JSON.stringify(result.testCase.in);
   var expectationCount;
-  var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
-  var testDescription = input + expectationString;
 
   if (result.testCase.expected && result.testCase.expected.properties) {
     expectationCount = result.testCase.expected.properties.length;
   } else {
     expectationCount = 0;
   }
+
+  var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
+  var testDescription = input + expectationString;
 
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
