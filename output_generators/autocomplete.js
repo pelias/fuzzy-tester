@@ -86,7 +86,7 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '\nAutocomplete stats'.blue);
   console.log( 'Search passes but autocomplete fails: ' + suiteResults.autocomplete.autocomplete_fails_search_passes );
-  console.log( 'Jumpy autocomplete cases: ' + suiteResults.autocomplete.autocomplete_passes_then_fails );
+  console.log( 'Tests with jitter: ' + suiteResults.autocomplete.autocomplete_passes_then_fails );
   console.log( 'Tests that pass only on last character: ' + suiteResults.autocomplete.only_last_character_passes );
 
   console.log( '\nAggregate test results'.blue );
