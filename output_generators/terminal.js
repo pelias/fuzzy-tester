@@ -8,9 +8,37 @@
 require( 'colors' );
 
 var util = require( 'util' );
+const url = require('url');
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
 var testSuiteHelpers = require('../lib/test_suite_helpers');
+
+function inputToUrl(testCase) {
+  const path = `/v1/${testCase.endpoint}`;
+
+  const paramStrings = [];
+
+  const priorityParams = ['point.lat', 'point.lon', 'text'];
+
+  Object.keys(testCase.in).forEach(function(key) {
+    // skip keys already in the priority list
+    if (priorityParams.includes(key)) {
+      return;
+    } else {
+      paramStrings.push(`${key}=${testCase.in[key]}`);
+    }
+  });
+
+  // ensure priority params are last
+  priorityParams.forEach(function (priorityParam) {
+    if (testCase.in[priorityParam]) {
+      paramStrings.push(`${priorityParam}=${testCase.in[priorityParam]}`);
+    }
+  });
+
+  return `${path}?${paramStrings.join('&')}`;
+}
+
 
 /**
  * Format and print a test result to the terminal.
@@ -20,7 +48,8 @@ function prettyPrintTestCase( testCase, quiet ){
   var id = result.testCase.id;
   delete result.testCase.in.api_key; // don't display API key
 
-  var input = JSON.stringify(result.testCase.in);
+  const query = inputToUrl(testCase);
+
   var expectationCount;
 
   if (result.testCase.expected && result.testCase.expected.properties) {
@@ -30,7 +59,7 @@ function prettyPrintTestCase( testCase, quiet ){
   }
 
   var expectationString = (expectationCount > 1) ? ' (' + expectationCount + ' expectations)' : '';
-  var testDescription = input + expectationString;
+  var testDescription = query + expectationString;
 
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
