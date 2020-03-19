@@ -5,7 +5,7 @@
 'use strict';
 
 var util = require( 'util' );
-var fs = require('fs-extra');
+var fs = require('fs');
 var terminal = require('./terminal');
 var haversine = require( 'haversine' ); // distance measure for angle coords
 
