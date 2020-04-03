@@ -27,7 +27,7 @@
     "deep-diff": "^1.0.0",
     "fj-compose": "^1.1.0",
     "fs-extra": "^9.0.0",
-    "handlebars": "^4.0.5",
+    "handlebars": "^4.7.5",
     "haversine": "^1.0.0",
     "is-object": "^1.0.1",
     "juice": "^6.0.0",
