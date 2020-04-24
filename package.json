@@ -65,8 +65,7 @@
     "test"
   ],
   "engines": {
-    "node": ">=10.0.0",
-    "npm": "~2.0.0"
+    "node": ">=10.0.0"
   },
   "release": {
     "success": []
