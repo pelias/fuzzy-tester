@@ -64,7 +64,7 @@ function prettyPrintTestCase( testCase, quiet ){
   var status = (result.progress === undefined) ? '' : result.progress.inverse + ' ';
   switch( result.result ){
     case 'pass':
-      if (!quiet) {
+      if (!quiet || result.progress === 'improvement') {
         console.log(util.format('  ✔ %s[%s] "%s"', status, id, testDescription).green);
       }
       break;
