@@ -1,4 +1,4 @@
-var fs = require('fs-extra');
+var fs = require('fs');
 var fileName = process.argv[2];
 var _ = require('lodash');
 var path = require('path');
@@ -63,14 +63,15 @@ function changeTestSuite(file) {
   if (path.extname(file) !== '.json') {
     return;
   }
-  var json = fs.readJSONSync(file);
+  const file_contents = fs.readFileSync(file);
+  var json = JSON.parse(file_contents);
   json.tests = changeTestCases(json.tests);
 
   if (ENDPOINT_MAP.hasOwnProperty(json.endpoint)) {
     json.endpoint = ENDPOINT_MAP[json.endpoint];
   }
 
-  fs.writeJsonSync(file, json);
+  fs.writeSync(file, JSON.stringify(json, null, 2));
 }
 
 function changeTestCases(tests) {

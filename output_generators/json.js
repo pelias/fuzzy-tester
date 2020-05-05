@@ -5,7 +5,7 @@
 'use strict';
 
 var util = require( 'util' );
-var fs = require('fs-extra');
+var fs = require('fs');
 var terminal = require('./terminal');
 var sanitize_filename = require('sanitize-filename');
 
@@ -25,7 +25,7 @@ function replace(key, value) {
 function saveFailTestResult( testCase ) {
   var result = testSuiteHelpers.getMainResult(testCase);
   if( result.result === 'fail' && testCase.status === 'pass' ) {
-    fs.ensureDirSync('./failures');
+    fs.mkdirSync('./failures', { recursive: true });
     var recordFailFile = './failures/' + sanitize_filename(
         util.format('%s_%s.json', testCase.id, testCase.in.text));
     var recordFail = {

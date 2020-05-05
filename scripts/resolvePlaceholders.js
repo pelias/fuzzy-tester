@@ -1,4 +1,4 @@
-var fs =  require('fs-extra');
+var fs =  require('fs');
 var path = require('path');
 var request = require('sync-request');
 var _ = require('lodash');
@@ -26,10 +26,12 @@ function changeTestSuite(file) {
   if (path.extname(file) !== '.json') {
     return;
   }
-  var json = fs.readJSONSync(file);
+  const file_contents = fs.readFileSync(file);
+  var json = JSON.parse(file_contents);
+
   json.tests = changeTestCases(json.tests);
 
-  fs.writeJsonSync(file, json);
+  fs.writeSync(file, JSON.stringify(json, null, 2));
 }
 
 function changeTestCases(tests) {
