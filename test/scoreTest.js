@@ -97,7 +97,7 @@ tape( 'scoreUnexpected basics', function ( test ){
     var result = scoreTest.scoreTest(testCase, features, context);
     t.equal(result.score, 2, 'score is 2');
     t.equal(result.max_score, 3, 'max score is 3');
-    t.deepEquals(result.diff,[ 'test,place is not close enough, distance=7140266 m' ],
+    t.deepEquals(result.diff,[ '\'test\' is not close enough: distance is 7140266m but should be under 1000m' ],
                  'the diff shows the distance from the expected coordinate');
     t.end();
   });
@@ -125,7 +125,8 @@ tape( 'scoreUnexpected basics', function ( test ){
       {
         properties: {
           name: 'test',
-          locality: 'place'
+          locality: 'place',
+          label: 'test, place, country'
         },
         geometry: {
           coordinates: [ 50.0, 50.0]
@@ -136,7 +137,7 @@ tape( 'scoreUnexpected basics', function ( test ){
     var result = scoreTest.scoreTest(testCase, features, context);
     t.equal(result.score, 0, 'score is 0');
     t.equal(result.max_score, 1, 'max score is 1');
-    t.deepEquals(result.diff,[ 'test,place is not close enough, distance=7140266 m' ],
+    t.deepEquals(result.diff,[ '\'test, place, country\' is not close enough: distance is 7140266m but should be under 1000m' ],
                  'the diff shows the distance from the expected coordinate');
     t.end();
   });
