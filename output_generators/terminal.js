@@ -102,6 +102,11 @@ function shouldDisplayTestSuite(testSuite) {
  * Format and print all of the results from any number of test-suites.
  */
 function prettyPrintSuiteResults( suiteResults, config, testSuites ){
+  if (testSuites.length === 0) {
+    console.log('No tests found. Place test definitions in the `test_cases` directory');
+    return 0;
+  }
+
   console.log( 'Tests for:', config.endpoint.url.blue + ' (' + config.endpoint.name.blue + ')' );
 
   testSuites.forEach( function(testSuite) {
