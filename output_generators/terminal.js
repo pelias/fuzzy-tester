@@ -43,9 +43,9 @@ function inputToUrl(testCase) {
 /**
  * Format and print a test result to the terminal.
  */
-function prettyPrintTestCase( testCase, quiet ){
+function prettyPrintTestCase( testCase, quiet, index ){
   var result = testSuiteHelpers.getMainResult(testCase);
-  var id = result.testCase.id;
+  var id = result.testCase.id || index;
   delete result.testCase.in.api_key; // don't display API key
 
   const query = inputToUrl(testCase);
@@ -110,8 +110,8 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
       console.log();
       console.log(testSuite.name.blue);
 
-      testSuite.tests.forEach( function(testCase) {
-        prettyPrintTestCase( testCase, config.quiet );
+      testSuite.tests.forEach( function(testCase, index) {
+        prettyPrintTestCase( testCase, config.quiet, index );
       });
     }
   });
