@@ -168,6 +168,43 @@ giving it a weight of 10 points, set weights to the following:
 
 Weights can be nested and are completely optional, in which case the defaults will be in effect.
 
+## Normalizers
+
+Not all string matches should be exact. Many minor differences might make sense
+to ignore because they are not relevant for the goals of a particular test.
+
+The fuzzy-tester supports many [normalizers](./lib/normalizers.js) to serve these needs.
+
+#### List of normalizers
+
+- **stripPunctuation**: remove anything that's not a letter, number, underscore, or whitespace
+- **toLowerCase**: convert all string values to lower case
+- **toUpperCase**: convert all string values to upper case
+- **trim**: remove leading and trailing whitespace
+- **abbreviateDirectionals**: Replace directionals such as 'NorthWest' with their abbreviated form, such as 'NW'
+- **abbreviateStreetSuffixes**: Abbreviate common street suffixes, such as replacing `avenue` with `ave`
+- **removeOrdinals**: Remove [ordinal numbers](https://en.wikipedia.org/wiki/Ordinal_numeral) such as 1st, 2nd, in favor of 1, 2
+
+### Specifying normalizers
+
+Normalizers are specified at the top level of a test suite. Each property in the result can have one or more normalizers applied.
+
+For example, to lowercase all `name` properties, and ensure all street values
+are lowercased with abbreviated suffixes, use the following configuration:
+
+```json
+{
+  "name": "My Test Suite",
+  "normalizers": {
+    "name": [ "toLowerCase" ],
+    "street": [
+      "toLowerCase",
+      "abbreviateStreetSuffixes"
+    ]
+  }
+}
+```
+
 ## Using the Docker image
 
 ### rebuild the image
