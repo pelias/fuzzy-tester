@@ -2,20 +2,19 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/fuzzy-tester.svg)](https://greenkeeper.io/)
 
-This is the Pelias fuzzy tester library, used for running our
+This is the Pelias fuzzy tester library, used for testing the [Pelias Geocoder](https://github.com/pelias/pelias) by running our
 [acceptance-tests](https://github.com/pelias/acceptance-tests) and
 [fuzzy-tests](https://github.com/pelias/fuzzy-tests).
 
-What are fuzzy tests? See the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
+Unlike a traditional unit test suite, testing a geocoder requires a bit of flexibility for many reasons:
+- data can change
+- minor differences in expected output should be handled
+- it may not be feasible to fix certain errors at a certain time.
+- The number of test cases is extremely large
+
+For more info on the challenges,see the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
 that lead to the creation of this library.
 
-Most importantly, fuzzy tests deliver more than just a single bit of pass or fail for each test:
-they specify a total number of points (a score) for the test, and return how many points out of the
-maximum were achieved. The weighting of individual parts of the test can be adjusted.
-
-**Note:** fuzzy-tester requires NPM version 2 or greater. The NPM team
-[recommends](http://blog.npmjs.org/post/85484771375/how-to-install-npm) you update NPM using NPM
-itself with `sudo npm install -g npm`.
 ## Example Usage
 
 ```
@@ -103,15 +102,15 @@ AWS account, and that your `pelias-config` file contain the following configurat
 
 ```javascript
 {
-	"acceptance-tests": {
-		"email": {
-			"ses": {
-				"accessKeyId": "AWSACCESSKEY",
-				"secretAccessKey": "AWS/Secret/key",
-			},
-			"recipients": ["recipient1@domain.com", "recipient2@domain.com"], // the list of recipients
-		}
-	}
+  "acceptance-tests": {
+    "email": {
+      "ses": {
+        "accessKeyId": "AWSACCESSKEY",
+        "secretAccessKey": "AWS/Secret/key",
+      },
+      "recipients": ["recipient1@domain.com", "recipient2@domain.com"], // the list of recipients
+    }
+  }
 }
 ```
 
@@ -135,17 +134,18 @@ case. This helps detect situations where one expectation is found, but the other
 red `0` in that case).
 
 ## API URL aliases
+
 The acceptance-tests runner recognizes a number of aliases for Pelias API URLs (eg, `stage` corresponds to
 `pelias.stage.mapzen.com`), which can be specified as command-line arguments when running a test suite. You can
 override the default aliases and define your own in `pelias-config`:
 
 ```javascript
 {
-	"acceptance-tests": {
-		"endpoints": {
-			"alias": "http://my.pelias.instance"
-		}
-	}
+  "acceptance-tests": {
+    "endpoints": {
+      "alias": "http://my.pelias.instance"
+    }
+  }
 }
 ```
 
