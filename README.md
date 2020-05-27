@@ -34,6 +34,7 @@ fuzzy-tester -t dev
 * `-q` Enable quiet mode. Only test failures (not successes) are printed
 * `-t` Select a test 'type' to filter on. This is a free-text value that can be added to each test, to allow running a subset of tests
 * `-r` Set a limit of the number of requests that can be sent per second when running tests. This is useful to avoid overloading a small Pelias server
+* `-m` Set a limit on the maximum number of requests that can be in progress simultaneously (default 1). Higher values can be faster, but can overload a small Pelias server.
 
 ## Test Case Files
 Test-cases are expected to live in `test_cases/`, and are split into test
