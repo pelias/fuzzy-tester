@@ -52,7 +52,7 @@ fuzzy-tester -t dev
 
 * `--help` show help :)
 * `-e` Select an envronment from `pelias.json` to run tests against. A list of valid environments will be printed if an invalid value or no value is passed
-* `-o` Select an output mode. Valid values are `terminal` (default), `csv`, `json`, and `autocomplete` (see below)
+* `-o` Select an output mode. Valid values are `terminal` (default), `csv`, `json`, and `autocomplete` ([see below](#autocomplete-mode))
 * `-q` Enable quiet mode. Only test failures (not successes) are printed
 * `-t` Select a test 'type' to filter on. This is a free-text value that can be added to each test, to allow running a subset of tests
 * `-r` Set a limit of the number of requests that can be sent per second when running tests. This is useful to avoid overloading a small Pelias server
