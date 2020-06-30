@@ -128,10 +128,11 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
   var numRegressions = suiteResults.stats.regression;
-  var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression;
+  var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression + suiteResults.stats.improvement;
   var pass = total - numRegressions;
 
   console.log( 'Regressions: ' + numRegressions.toString().red);
+  console.log( 'Total tests: ' + total );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
   console.log( 'Test success rate %s%%', percentageForDisplay(total,pass));
 
