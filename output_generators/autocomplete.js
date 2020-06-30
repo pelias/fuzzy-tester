@@ -91,15 +91,17 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
 
   console.log( '\nAggregate test results'.blue );
   console.log( 'Pass: ' + suiteResults.stats.pass.toString().green );
+  console.log( 'Improvements: ' + suiteResults.stats.improvement.toString().green );
   console.log( 'Fail: ' + suiteResults.stats.fail.toString().yellow );
   console.log( 'Placeholders: ' + suiteResults.stats.placeholder.toString().cyan );
 
   var numRegressions = suiteResults.stats.regression;
   var regressionsColor = ( numRegressions > 0 ) ? 'red' : 'yellow';
-  var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression;
+  var total = suiteResults.stats.pass +  suiteResults.stats.fail + suiteResults.stats.regression + suiteResults.stats.improvement;
   var pass = total - numRegressions;
 
   console.log( 'Regressions: ' + numRegressions.toString()[ regressionsColor ] );
+  console.log( 'Total tests: ' + total );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
   console.log( 'Test success rate %s%%', percentageForDisplay(total, pass));
   console.log( '' );
