@@ -24,7 +24,7 @@ tape( 'api_key not found in config', function ( test ){
   test.end();
 });
 
-tape( 'stage api_key imported from pelias config, old location', function ( test ){
+tape( 'stage string api_key imported from pelias config, old location', function ( test ){
 
   var config = '{ "mapzen": { "api_key": { "pelias.stage.mapzen.com": "my_api_key" } } }';
 
@@ -35,7 +35,9 @@ tape( 'stage api_key imported from pelias config, old location', function ( test
   process.env.PELIAS_CONFIG = '/tmp/pelias_temp2.json';
 
   // staging
-  test.equal( apiKey( 'http://pelias.stage.mapzen.com/foo' ), 'my_api_key', 'api key loaded' );
+  test.deepEqual( apiKey( 'http://pelias.stage.mapzen.com/foo' ), 
+    { method: 'GET', keyName: 'api_key', value: 'my_api_key' }, 
+    'api key loaded' );
 
   // unset the PELIAS_CONFIG env var
   delete process.env.PELIAS_CONFIG;
@@ -46,7 +48,7 @@ tape( 'stage api_key imported from pelias config, old location', function ( test
   test.end();
 });
 
-tape( 'stage api_key imported from preferred config location first', function ( test ){
+tape( 'stage string api_key imported from preferred config location first', function ( test ){
   const custom_config = {
     'acceptance-tests': {
       credentials: {
@@ -67,7 +69,9 @@ tape( 'stage api_key imported from preferred config location first', function ( 
   process.env.PELIAS_CONFIG = '/tmp/pelias_temp3.json';
 
   // staging
-  test.equal( apiKey( 'http://pelias.stage.mapzen.com/foo' ), 'my_new_api_key', 'api key loaded' );
+  test.deepEqual( apiKey( 'http://pelias.stage.mapzen.com/foo' ), 
+    { method: 'GET', keyName: 'api_key', value: 'my_new_api_key' }, 
+    'api key loaded' );
 
   // unset the PELIAS_CONFIG env var
   delete process.env.PELIAS_CONFIG;
@@ -96,6 +100,38 @@ tape( 'avoid matching partial urls', function ( test ){
 
   // delete temp file
   fs.unlinkSync( '/tmp/pelias_temp3.json' );
+
+  test.end();
+});
+
+
+
+tape( 'stage object api_key imported correctly', function ( test ){
+  const custom_config = {
+    'acceptance-tests': {
+      credentials: {
+        'pelias.stage.mapzen.com': {
+          method: 'Header',
+          value: '12345'
+        }
+      }
+    }
+  };
+
+  // write a temporary pelias config
+  fs.writeFileSync( '/tmp/pelias_temp4.json', JSON.stringify(custom_config), 'utf8' );
+
+  // set the PELIAS_CONFIG env var
+  process.env.PELIAS_CONFIG = '/tmp/pelias_temp4.json';
+
+  // staging
+  test.deepEqual( apiKey( 'http://pelias.stage.mapzen.com/foo' ), { method: 'Header',value: '12345' }, 'api key loaded' );
+
+  // unset the PELIAS_CONFIG env var
+  delete process.env.PELIAS_CONFIG;
+
+  // delete temp file
+  fs.unlinkSync( '/tmp/pelias_temp4.json' );
 
   test.end();
 });

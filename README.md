@@ -166,7 +166,36 @@ override the default aliases and define your own in `pelias-config`:
 {
   "acceptance-tests": {
     "endpoints": {
-      "alias": "http://my.pelias.instance"
+      "prod": "http://pelias-prod.myhost.com/protectedpath/",
+      "staging": "http://pelias-staging.myhost.com",
+      "localhost": "http://localhost:3100"
+    }
+  }
+}
+```
+
+
+### Credentials
+You can specify api keys for different hosts in the pelias-config. There is an optional dict of credentials in
+`acceptance-tests.credentials`. The keys are bare hostnames (with no path or protocol). The values can either be a
+string, which will be added to the urls as `&api_key=${value}` which is the default pelias api key schema, but it can
+also be a dict that specifies `method=Header` (which will send credentials in the http authorization header) or 
+`method=GET` (which supports an optional key "keyName", which if specified means it will be added to urls like `&${keyName}=${value}`)
+
+```javascript
+{
+  "acceptance-tests": {
+    "endpoints": {
+      "prod": "http://pelias-prod.myhost.com/protectedpath/",
+      "staging": "http://pelias-staging.myhost.com",
+      "localhost": "http://localhost:3100"
+    },
+    "credentials": {
+      "pelias-staging.myhost.com": 'secret_key_12342354',
+      "pelias-prod.myhost.com": {
+        "method": "Header",
+        "value": "prj_sk_XXXXXXXXX"
+      }
     }
   }
 }
