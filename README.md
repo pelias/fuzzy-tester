@@ -176,11 +176,21 @@ override the default aliases and define your own in `pelias-config`:
 
 
 ### Credentials
-You can specify api keys for different hosts in the pelias-config. There is an optional dict of credentials in
-`acceptance-tests.credentials`. The keys are bare hostnames (with no path or protocol). The values can either be a
-string, which will be added to the urls as `&api_key=${value}` which is the default pelias api key schema, but it can
-also be a dict that specifies `method=Header` (which will send credentials in the http authorization header) or 
-`method=GET` (which supports an optional key "keyName", which if specified means it will be added to urls like `&${keyName}=${value}`)
+
+You can specify api keys for different hosts via `pelias.json` in the `acceptance-tests.credentials`
+section.
+
+The keys are bare hostnames (with no path or protocol). The values can either be a string, or an
+object.
+
+If using a string, the string will be used as an API key and appended to the query URL with
+`&api_key=${value}`.  or an object.
+
+If using an object, the `method` property can be specified as either `GET` (the default`) or
+`Header`. Selecting `Header` will send the API key in the `authorization:` HTTP header.
+
+The optional `keyName` property can be specified with `GET` if an authorization URL other than
+`api_key` is required.
 
 ```javascript
 {
@@ -194,6 +204,11 @@ also be a dict that specifies `method=Header` (which will send credentials in th
       "pelias-staging.myhost.com": 'secret_key_12342354',
       "pelias-prod.myhost.com": {
         "method": "Header",
+        "value": "prj_sk_XXXXXXXXX"
+      },
+      "pelias-testing.myhost.com": {
+        "method": "GET",
+		"keyName": "my_auth_parameter",
         "value": "prj_sk_XXXXXXXXX"
       }
     }
