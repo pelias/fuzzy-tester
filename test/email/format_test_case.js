@@ -19,12 +19,10 @@ tape( 'format_test_case', function ( test ){
       }
     };
 
-    var output = formatTestCase(testCase);
-    var expected = {
-      string: '✔ <span class="status">pass</span> [1] "{\n    "text": "London, UK"\n}"'
-    };
+    var output = formatTestCase(testCase).toString();
+    var expected = '✔ <span class="status">pass</span> [1] "{\n    "text": "London, UK"\n}"';
 
-    t.deepEqual(output, expected, 'passing output is as expected');
+    t.equal(output, expected, 'passing output is as expected');
     t.end();
   });
 
@@ -44,12 +42,10 @@ tape( 'format_test_case', function ( test ){
       }
     };
 
-    var output = formatTestCase(testCase);
-    var expected = {
-      string: '✘ <span class="status">fail</span> [1] "{\n    "text": "London, UK"\n}": There was some sort of failure'
-    };
+    var output = formatTestCase(testCase).toString();
+    var expected = '✘ <span class="status">fail</span> [1] "{\n    "text": "London, UK"\n}": There was some sort of failure';
 
-    t.deepEqual(output, expected, 'failing output is as expected');
+    t.equal(output, expected, 'failing output is as expected');
     t.end();
   });
 });
