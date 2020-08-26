@@ -34,7 +34,7 @@ Unlike a traditional unit test suite, testing a geocoder requires a bit of flexi
 - it may not be feasible to fix certain errors at a certain time.
 - The number of test cases is extremely large
 
-For more info on the challenges,see the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
+For more info on the challenges, see the original [problem statement](https://github.com/pelias/acceptance-tests/issues/109)
 that lead to the creation of this library.
 
 ## Example Usage
