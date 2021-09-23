@@ -14,7 +14,7 @@
   "scripts": {
     "units": "node test/test | tap-dot",
     "test": "npm run units",
-    "travis": "npm test",
+    "ci": "npm test",
     "lint": "jshint .",
     "validate": "npm ls"
   },
