@@ -274,6 +274,26 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'pass'
     },
     {
+      description: 'normalizers should be applied to unexpected properties',
+      priorityThresh: 2,
+      apiResults: [{
+        properties: {
+          a: 'UNEXPECTED'
+        }
+      }],
+      testCase: {
+        unexpected: {
+          properties: [{
+            a: 'Unexpected'
+          }]
+        },
+        normalizers: {
+          a: ['toLowerCase']
+        }
+      },
+      expected: 'fail'
+    },
+    {
       description: 'properties without normalizers should match exactly',
       priorityThresh: 1,
       apiResults: [{
