@@ -100,6 +100,10 @@ properties:
 
    Coordinate based tests also help to track invalid location data in the search database.
 
+   `size` property that will check the number of results, you can set a number or a String with a comparison sign
+   (`<`, `<=`, `>`, `>=` or `==`). If the sign is not recognized, the test will fail. Usage example: `> 5` will ensure
+   a number or result greater than 5.
+
  + `unexpected` is analogous to `expected`, except that you *cannot* specify a `priorityThresh` and the `properties`
   array does *not* support strings.
  + `weights` (optional) test case specific weighting for scores of the individual expectations. See the

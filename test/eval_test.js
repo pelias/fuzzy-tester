@@ -314,6 +314,76 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
         }
       },
       expected: 'pass'
+    },
+    {
+      description: 'size should match exactly - pass',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: 1
+        }
+      },
+      expected: 'pass'
+    },
+    {
+      description: 'size should match exactly - fail',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: 0
+        }
+      },
+      expected: 'fail'
+    },
+    {
+      description: 'size supports comparison signs - pass',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: '>=1'
+        }
+      },
+      expected: 'pass'
+    },
+    {
+      description: 'size supports comparison signs - pass',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: '< 1'
+        }
+      },
+      expected: 'fail'
+    },
+    {
+      description: 'size wrong input - fail',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: 's 1'
+        }
+      },
+      expected: 'fail'
     }
   ];
 
