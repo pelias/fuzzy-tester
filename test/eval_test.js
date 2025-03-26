@@ -344,6 +344,22 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
       expected: 'fail'
     },
     {
+      description: 'size supports comparison signs, two results - pass',
+      priorityThresh: 1,
+      apiResults: [{
+        properties: {}
+      },{
+        properties: {}
+      }],
+      testCase: {
+        expected: {
+          properties: {},
+          size: '>=2'
+        }
+      },
+      expected: 'pass'
+    },
+    {
       description: 'size supports comparison signs - pass',
       priorityThresh: 1,
       apiResults: [{
