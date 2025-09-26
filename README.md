@@ -69,7 +69,7 @@ properties:
     Each test case can include a specific threshold value. This makes sense because location of a neigborhood is not as accurately defined as location of,
     say, a building. Default threshold is 500 meters.
  + `tests` is an array of test cases that make up the suite.
- + `endpoint` the API endpoint (`search`, `reverse`, `suggest`) to target. Defaults to `search`.
+ + `endpoint` the API endpoint (`search`, `reverse`, `autocomplete`) to target. Defaults to `search`.
  + `weights` (optional) test suite wide weighting for scores of the individual expectations. See the
    weights section below
 
