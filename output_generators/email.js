@@ -2,7 +2,7 @@
 require( 'colors' );
 
 var nodemailer = require( 'nodemailer' );
-var nodemailerSesTransport = require( 'nodemailer-ses-transport' );
+var aws = require( '@aws-sdk/client-ses' );
 var peliasConfig = require( 'pelias-config' ).generate();
 var generateEmailBody = require('../lib/email/generate_email_body');
 
@@ -43,7 +43,8 @@ function getSubject(config) {
 
 function emailResults( suiteResults , config, testSuites ){
   var emailHtml = generateEmailBody( suiteResults, config, testSuites );
-  var transporter = nodemailer.createTransport( nodemailerSesTransport( emailConfig.ses ) );
+  var ses = new aws.SESClient( emailConfig.ses || {} );
+  var transporter = nodemailer.createTransport({ SES: { ses: ses, aws: aws } });
 
   var emailOpts = {
     from: emailConfig.from || '"pelias-acceptance-tests" <noreply@pelias.mapzen.com>',
