@@ -14,7 +14,7 @@ var percentageForDisplay = require('../lib/percentageForDisplay');
 var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 function inputToUrl(testCase) {
-  const path = `/v1/${testCase.endpoint}`;
+  const path = new URL(testCase.full_url).pathname;
 
   const paramStrings = [];
 
