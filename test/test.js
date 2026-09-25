@@ -7,6 +7,7 @@
 require('./apiKey');
 require('./ExponentialBackoff');
 require('./eval_test');
+require('./latencySummary');
 require('./equal_properties');
 require('./percentageForDisplay');
 require('./sanitiseTestCase');

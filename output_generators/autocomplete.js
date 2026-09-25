@@ -10,6 +10,7 @@ require( 'colors' );
 var _ = require( 'lodash' );
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
+var latencySummary = require('../lib/latencySummary');
 var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 /* get a title for this test case with the following features:
@@ -103,6 +104,9 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Regressions: ' + numRegressions.toString()[ regressionsColor ] );
   console.log( 'Total tests: ' + total );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
+  if( suiteResults.stats.latency ){
+    console.log( latencySummary.format( suiteResults.stats.latency ) );
+  }
   console.log( 'Test success rate %s%%', percentageForDisplay(total, pass));
   console.log( '' );
   if( numRegressions > 0 ){

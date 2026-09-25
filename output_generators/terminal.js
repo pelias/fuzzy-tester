@@ -11,6 +11,7 @@ var util = require( 'util' );
 const url = require('url');
 
 var percentageForDisplay = require('../lib/percentageForDisplay');
+var latencySummary = require('../lib/latencySummary');
 var testSuiteHelpers = require('../lib/test_suite_helpers');
 
 function inputToUrl(testCase) {
@@ -134,6 +135,9 @@ function prettyPrintSuiteResults( suiteResults, config, testSuites ){
   console.log( 'Regressions: ' + numRegressions.toString().red);
   console.log( 'Total tests: ' + total );
   console.log( 'Took %sms', suiteResults.stats.timeTaken );
+  if( suiteResults.stats.latency ){
+    console.log( latencySummary.format( suiteResults.stats.latency ) );
+  }
   console.log( 'Test success rate %s%%', percentageForDisplay(total,pass));
 
   console.log( '' );
