@@ -422,3 +422,36 @@ tape( 'evalTest() evaluates all edge cases correctly', function ( test ){
 
   test.end();
 });
+
+tape( 'normalizer order is consistent across multiple evalTest calls', function ( test ) {
+  // Regression test for array mutation bug: composeNormalizer was calling
+  // normalizers.reverse() which mutated the shared array in context.normalizers.
+  // This caused the order to flip on every call, producing alternating results.
+  //
+  // With normalizers ['abbreviateDirectionals', 'toLowerCase']:
+  //   correct order: "North Main" -> "N Main" -> "n main"  (matches expected "n main") PASS
+  //   reversed order: "North Main" -> "north main" -> "N main" (does not match "n main") FAIL
+  //
+  // The bug caused calls to alternate between PASS and FAIL on identical inputs.
+
+  var context = {
+    priorityThresh: 1,
+    normalizers: { street: [ 'abbreviateDirectionals', 'toLowerCase' ] }
+  };
+
+  var result1 = evalTest(
+    { expected: { properties: [ { street: 'n main' } ] } },
+    [ { properties: { street: 'North Main' } } ],
+    context
+  );
+
+  var result2 = evalTest(
+    { expected: { properties: [ { street: 'n main' } ] } },
+    [ { properties: { street: 'North Main' } } ],
+    context
+  );
+
+  test.equal( result1.result, 'pass', 'first call passes' );
+  test.equal( result2.result, 'pass', 'second call passes with same normalizer order' );
+  test.end();
+});
